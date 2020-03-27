@@ -376,7 +376,7 @@ FFF
 2. Got valid Credential from Config Portal, then connected to WiFi
 
 ```
-
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
 *NN: CrCCSum=7558,CrRCSum=7558
 *NN: CCSum=2104,RCSum=2104
 *NN: Hdr=WIFININA,SSID=HueNet1,PW=****
