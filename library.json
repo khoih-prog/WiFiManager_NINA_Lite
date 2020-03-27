@@ -1,0 +1,13 @@
+{
+  "name": "WiFiManager_NINA_Lite",
+  "keywords": "wifi, wi-fi, WiFiNINA, U-Blox, W101, W102, shield, Teensy, SAM DUE, SAMD, STM32, Credentials, Manager",
+  "description": "Light-Weight WiFi/Credentials Manager for Teensy, SAM DUE, SAMD, STM32, etc. boards running U-Blox WiFiNINA modules/shields with fallback web configuration portal",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/khoih-prog/WiFiManager_NINA_Lite"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif",
+  "version": "1.0.0"
+}

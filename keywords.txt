@@ -1,0 +1,47 @@
+##########################################
+# Syntax Coloring Map For ESP_WifiManager
+##########################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+WiFiManager_NINA_Lite	KEYWORD1
+WiFiNINA_Configuration KEYWORD1
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+connectWiFi KEYWORD2
+begin KEYWORD2
+run KEYWORD2
+setConfigPortalIP KEYWORD2
+setConfigPortalChannel KEYWORD2
+setConfigPortal KEYWORD2
+setSTAStaticIPConfig	KEYWORD2
+getFullConfigData KEYWORD2
+localIP KEYWORD2
+clearConfigData KEYWORD2
+isConfigDataValid KEYWORD2
+resetFunc	KEYWORD2
+
+IPAddressToString KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+#	LITERAL1
+
+CONFIG_DATA_SIZE  LITERAL1
+NUM_MENU_ITEMS  LITERAL1
+WIFININA_HTML_HEAD  LITERAL1
+WIFININA_FLDSET_START LITERAL1
+WIFININA_FLDSET_END LITERAL1
+WIFININA_HTML_PARAM LITERAL1
+WIFININA_HTML_BUTTON  LITERAL1
+WIFININA_HTML_SCRIPT  LITERAL1
+WIFININA_HTML_SCRIPT_ITEM LITERAL1
+WIFININA_HTML_SCRIPT_END  LITERAL1
+WIFININA_HTML_END LITERAL1
