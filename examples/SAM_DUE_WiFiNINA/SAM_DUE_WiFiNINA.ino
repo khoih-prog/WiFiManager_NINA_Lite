@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-   SAMD_WiFiNINA.ino
-   For SAMD boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+   SAM_DUE_WiFiNINA.ino
+   For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards (https://github.com/khoih-prog/WiFiManager_NINA_Lite)
    to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
@@ -14,56 +14,33 @@
    ------- -----------  ----------   -----------
    1.0.0   K Hoang      26/03/2020  Initial coding
    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
-  *****************************************************************************************************************************/
+ *****************************************************************************************************************************/
 
 /* Comment this out to disable prints and save space */
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 #define WIFININA_DEBUG_OUTPUT     Serial
 
-#define WIFININA_DEBUG    true
-
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__)  )
-#if defined(WIFININA_USE_SAMD)
-#undef WIFININA_USE_SAMD
+#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
+#if defined(WIFININA_USE_SAM_DUE)
+#undef WIFININA_USE_SAM_DUE
 #endif
-#define WIFININA_USE_SAMD      true
-#else
-#error This code is intended to run only on the SAMD boards ! Please check your Tools->Board setting.
+#define WIFININA_USE_SAM_DUE      true
+#warning Use SAM_DUE architecture
 #endif
 
-#if defined(WIFININA_USE_SAMD)
+#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || \
+      defined(CORE_TEENSY) || defined(CORE_TEENSY) || !(WIFININA_USE_SAM_DUE) )
+#error This code is intended to run on the SAM DUE platform! Please check your Tools->Board setting.
+#endif
 
-#if defined(ARDUINO_SAMD_ZERO)
-#define BOARD_TYPE      "SAMD Zero"
-#elif defined(ARDUINO_SAMD_MKR1000)
-#define BOARD_TYPE      "SAMD MKR1000"
-#elif defined(ARDUINO_SAMD_MKRWIFI1010)
-#define BOARD_TYPE      "SAMD MKRWIFI1010"
-#elif defined(ARDUINO_SAMD_NANO_33_IOT)
-#define BOARD_TYPE      "SAMD NANO_33_IOT"
-#elif defined(ARDUINO_SAMD_MKRFox1200)
-#define BOARD_TYPE      "SAMD MKRFox1200"
-#elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-#define BOARD_TYPE      "SAMD MKRWAN13X0"
-#elif defined(ARDUINO_SAMD_MKRGSM1400)
-#define BOARD_TYPE      "SAMD MKRGSM1400"
-#elif defined(ARDUINO_SAMD_MKRNB1500)
-#define BOARD_TYPE      "SAMD MKRNB1500"
-#elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-#define BOARD_TYPE      "SAMD MKRVIDOR4000"
-#elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-#define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-#define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-#elif ( defined(__SAMD21G18A__) || (__SAM3X8E__) || (__CPU_ARC__) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) )
-#define BOARD_TYPE      "SAMD Board"
+#if defined(WIFININA_USE_SAM_DUE)
+// For SAM DUE
+#if defined(ARDUINO_SAM_DUE)
+#define BOARD_TYPE      "SAM DUE"
+#elif defined(__SAM3X8E__)
+#define BOARD_TYPE      "SAM SAM3X8E"
 #else
-#define BOARD_TYPE      "SAMD Unknown"
+#define BOARD_TYPE      "SAM Unknown"
 #endif
 #endif
 
@@ -71,9 +48,7 @@
 // Config data Size currently is 128 bytes)
 #define EEPROM_START      0
 
-#include "WiFiNINA_Pinout_Generic.h"
-
-#include <WiFiManager_NINA_Lite_SAMD.h>
+#include <WiFiManager_NINA_Lite_DUE.h>
 
 #define MAX_BLYNK_SERVER_LEN      34
 #define MAX_BLYNK_TOKEN_LEN       34
@@ -143,9 +118,8 @@ void setup()
   // Debug console
   Serial.begin(115200);
   while (!Serial);
-  
-  Serial.println("\nStart SAMD_WiFiNINA on " + String(BOARD_TYPE));
 
+  Serial.println("\nStart SAM_DUE_WiFiNINA on " + String(BOARD_TYPE));
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
 

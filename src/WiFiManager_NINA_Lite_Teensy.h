@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-   WiFiManager_NINA_Lite_SAMD.h
-   For SAMD boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+   Esp8266_AT_WM_Lite_Teensy.h
+   For Teensy boards using using WiFiNINA modules/shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards (https://github.com/khoih-prog/WiFiManager_NINA_Lite)
    to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
@@ -12,32 +12,25 @@
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
-    1.0.0   K Hoang      26/03/2020  Initial coding
-    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
-  *****************************************************************************************************************************/
+   1.0.0   K Hoang      26/03/2020  Initial coding
+   1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
+ *****************************************************************************************************************************/
+ 
+#ifndef WiFiManager_NINA_Lite_Teensy_h
+#define WiFiManager_NINA_Lite_Teensy_h
 
-#ifndef WiFiManager_NINA_Lite_SAMD_SAMD_h
-#define WiFiManager_NINA_Lite_SAMD_SAMD_h
-
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) )
-#if defined(WIFININA_USE_SAMD)
-#undef WIFININA_USE_SAMD
-#endif
-#define WIFININA_USE_SAMD      true
+#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || !defined(CORE_TEENSY) )
+#error This code is intended to run on Teensy platform! Please check your Tools->Board setting.
 #endif
 
-#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || \
-      defined(CORE_TEENSY) || !(WIFININA_USE_SAMD) )
-#error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.
+#if defined(__AVR_AT90USB1286__)
+#error Teensy 2.0++ not supported yet
+#elif defined(__AVR_ATmega32U4__)
+#error Teensy 2.0 not supported yet
 #endif
 
 #include <WiFiWebServer.h>
-// Include EEPROM-like API for FlashStorage
-//#include <FlashAsEEPROM.h>                //https://github.com/cmaglie/FlashStorage
-#include <FlashAsEEPROM_SAMD.h>                //https://github.com/khoih-prog/FlashStorage_SAMD
+#include <EEPROM.h>
 #include <WiFiManager_NINA_Lite_Debug.h>
 
 //NEW
@@ -71,20 +64,20 @@ typedef struct Configuration
 uint16_t CONFIG_DATA_SIZE = sizeof(WiFiNINA_Configuration);
 
 // -- HTML page fragments
-const char WIFININA_HTML_HEAD[]     /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>SAMD_WM_NINA_Lite</title><style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style></head><div style=\"text-align:left;display:inline-block;min-width:260px;\"><fieldset><div><label>SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
+const char WiFiNINA_HTML_HEAD[]     /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>Teensy_WM_NINA_Lite</title><style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style></head><div style=\"text-align:left;display:inline-block;min-width:260px;\"><fieldset><div><label>SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
 <div><label>PWD</label><input value=\"[[pw]]\"id=\"pw\"><div></div></div></fieldset>";
-const char WIFININA_FLDSET_START[]  /*PROGMEM*/ = "<fieldset>";
-const char WIFININA_FLDSET_END[]    /*PROGMEM*/ = "</fieldset>";
-const char WIFININA_HTML_PARAM[]    /*PROGMEM*/ = "<div><label>{b}</label><input value='[[{v}]]'id='{i}'><div></div></div>";
-const char WIFININA_HTML_BUTTON[]   /*PROGMEM*/ = "<button onclick=\"sv()\">Save</button></div>";
-const char WIFININA_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
+const char WiFiNINA_FLDSET_START[]  /*PROGMEM*/ = "<fieldset>";
+const char WiFiNINA_FLDSET_END[]    /*PROGMEM*/ = "</fieldset>";
+const char WiFiNINA_HTML_PARAM[]    /*PROGMEM*/ = "<div><label>{b}</label><input value='[[{v}]]'id='{i}'><div></div></div>";
+const char WiFiNINA_HTML_BUTTON[]   /*PROGMEM*/ = "<button onclick=\"sv()\">Save</button></div>";
+const char WiFiNINA_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
 function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+val;\
 request.open('GET',url,false);request.send(null);}\
 function sv(){udVal('id',document.getElementById('id').value);udVal('pw',document.getElementById('pw').value);";
 
-const char WIFININA_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getElementById('{d}').value);";
-const char WIFININA_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
-const char WIFININA_HTML_END[]          /*PROGMEM*/ = "</html>";
+const char WiFiNINA_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getElementById('{d}').value);";
+const char WiFiNINA_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
+const char WiFiNINA_HTML_END[]          /*PROGMEM*/ = "</html>";
 ///
 
 String IPAddressToString(IPAddress _address)
@@ -109,7 +102,7 @@ class WiFiManager_NINA_Lite
       if (WiFi.status() == WL_NO_MODULE) 
       {
         DEBUG_WM1(F("NoESP"));
-      }     
+      }
     }
 
     ~WiFiManager_NINA_Lite()
@@ -315,39 +308,27 @@ class WiFiManager_NINA_Lite
 
       EEPROM_put();
     }
+    
+    bool isConfigDataValid(void)
+    {
+      return hadConfigData;
+    }
 
     void resetFunc()
-    {    
-#if ( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__)  )
-      // For SAMD51
-      // see Table 17-5 Timeout Period (valid values 0-11)
-      WDT->CONFIG.reg = 5; 
-      WDT->CTRLA.reg = WDT_CTRLA_ENABLE;
-      // To check if OK or bit.ENABLE/CLEAR
-      while (WDT->SYNCBUSY.bit.WEN == 1);
-      
-      // use the WDT watchdog timer to force a system reset.
-      WDT->CLEAR.reg= 0x00;
-      // To check if OK or bit.ENABLE/CLEAR
-      while (WDT->SYNCBUSY.bit.WEN == 1);
-#else   
-      // For SAMD21, etc
-      // see Table 17-5 Timeout Period (valid values 0-11)
-      WDT->CONFIG.reg = 5; 
-      WDT->CTRL.reg = WDT_CTRL_ENABLE;
-      while (WDT->STATUS.bit.SYNCBUSY == 1);
-      
-      // use the WDT watchdog timer to force a system reset.
-      WDT->CLEAR.reg= 0x00;
-      while (WDT->STATUS.bit.SYNCBUSY == 1);
-#endif      
+    {
+      #if defined(__IMXRT1062__)
+        // Teensy 4.0
+        SCB_AIRCR = 0x05FA0004; //write value for restart for Teensy
+      #else 
+        void(*resetFunc)(void) = 0;
+        resetFunc();
+      #endif
     }
 
   private:
     String ipAddress = "0.0.0.0";
 
     WiFiWebServer* server = NULL;
-    
     bool configuration_mode = false;
 
     unsigned long configTimeout;
@@ -374,7 +355,7 @@ class WiFiManager_NINA_Lite
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {
         DEBUG_WM6("i=", i, ",id=", myMenuItems[i].id, ",data=", myMenuItems[i].pdata);
-      }           
+      }
     }
 
     void displayWiFiData(void)
@@ -382,8 +363,70 @@ class WiFiManager_NINA_Lite
       DEBUG_WM2(F("IP="), localIP());
     }
 
-#define WIFININA_BOARD_TYPE   "WIFININA"
+#define WiFiNINA_BOARD_TYPE   "WIFININA"
 #define NO_CONFIG             "blank"
+
+    //#define EEPROM_SIZE       E2END
+    //#define EEPROM_SIZE       512
+
+    //KH
+    // Teensy 4.0 :  EEPROM_SIZE = 3824 = (255 * 15) - 1, why 1080 ???
+    // Teensy++2.0, 3.5 and 3.6 : EEPROM_SIZE = 4096
+    // Teensy++1.0, 3.0, 3.1 and 3.2 : EEPROM_SIZE = 2048
+    // Teensy2.0 : EEPROM_SIZE = 1024
+    // Teensy1.0 : EEPROM_SIZE = 512
+    // Teensy LC : EEPROM_SIZE = 128
+
+    /*
+      Teensy 4.0 => EEPROM_SIZE = 3824 = (255 * 15) - 1
+      #define FLASH_SECTORS  15
+      #if E2END > (255*FLASH_SECTORS-1)
+      #error "E2END is set larger than the maximum possible EEPROM size"
+      #endif
+      ======================================================
+      Teensy3.x
+      #if defined(__MK20DX128__)      //Teensy 3.0
+      #define EEPROM_MAX  2048
+      #elif defined(__MK20DX256__)    //Teensy 3.1 and 3.2
+      #define EEPROM_MAX  2048
+      #elif defined(__MK64FX512__)    //Teensy 3.5
+      #define EEPROM_MAX  4096
+      #elif defined(__MK66FX1M0__)    //Teensy 3.6
+      #define EEPROM_MAX  4096
+      #elif defined(__MKL26Z64__)     //Teensy LC
+      #define EEPROM_MAX  255
+      #endif
+      ======================================================
+      Teensy 2.x
+      Teensy 2.0
+      #if defined(__AVR_ATmega32U4__)     //Teensy 2.0
+      #elif defined(__AVR_AT90USB162__)   //Teensy 1.0
+      #elif defined(__AVR_AT90USB646__)   //Teensy++ 1.0
+      #elif defined(__AVR_AT90USB1286__)  //Teensy++ 2.0
+    */
+
+#ifndef EEPROM_SIZE
+#define EEPROM_SIZE     512
+#else
+#if (EEPROM_SIZE > 4096)
+#warning EEPROM_SIZE must be <= 4096. Reset to 4096
+#undef EEPROM_SIZE
+#define EEPROM_SIZE     4096
+#endif
+#if (EEPROM_SIZE < CONFIG_DATA_SIZE)
+#warning EEPROM_SIZE must be > CONFIG_DATA_SIZE. Reset to 512
+#undef EEPROM_SIZE
+#define EEPROM_SIZE     512
+#endif
+#endif
+
+#ifndef EEPROM_START
+#define EEPROM_START     0
+#else
+#if (EEPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE)
+#error EPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE. Please adjust.
+#endif
+#endif
 
     int calcChecksum()
     {
@@ -400,18 +443,12 @@ class WiFiManager_NINA_Lite
     
     bool EEPROM_get()
     {
-      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library
-      
       uint16_t offset = EEPROM_START;
-                
-      uint8_t* _pointer = (uint8_t *) &WiFiNINA_config;
       
-      for (int i = 0; i < sizeof(WiFiNINA_config); i++, _pointer++, offset++)
-      {              
-        *_pointer = EEPROM.read(offset);
-      }
-           
+      EEPROM.get(offset, WiFiNINA_config);
+      
+      offset += sizeof(WiFiNINA_config);
+      
       int checkSum = 0;
       int readCheckSum;
       
@@ -419,24 +456,20 @@ class WiFiManager_NINA_Lite
    
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {       
-        _pointer = (uint8_t *) myMenuItems[i].pdata;
+        char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
                
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++, _pointer++, offset++)
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
         {
-          *_pointer = EEPROM.read(offset);          
+          *_pointer = EEPROM.read(offset);
+          
           checkSum += *_pointer;  
          }       
       }
       
-      _pointer = (uint8_t *) &readCheckSum;
+      EEPROM.get(offset, readCheckSum);
       
-      for (int i = 0; i < sizeof(readCheckSum); i++, _pointer++, offset++)
-      {                  
-        *_pointer = EEPROM.read(offset);
-      }
-         
-      DEBUG_WM4(F("CrCCSum="), checkSum, F(",CrRCSum="), readCheckSum);
+      DEBUG_WM4(F("CrCCsum="), checkSum, F(",CrRCsum="), readCheckSum);
       
       if ( checkSum != readCheckSum)
       {
@@ -448,23 +481,17 @@ class WiFiManager_NINA_Lite
     
     void EEPROM_put()
     {
-      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library
-      
       uint16_t offset = EEPROM_START;
-           
-      uint8_t* _pointer = (uint8_t *) &WiFiNINA_config;
       
-      for (int i = 0; i < sizeof(WiFiNINA_config); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
-      }
-           
+      EEPROM.put(offset, WiFiNINA_config);
+      
+      offset += sizeof(WiFiNINA_config);
+      
       int checkSum = 0;
     
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {       
-        _pointer = (uint8_t *) myMenuItems[i].pdata;
+        char* _pointer = myMenuItems[i].pdata;
         
         DEBUG_WM4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
                      
@@ -476,31 +503,24 @@ class WiFiManager_NINA_Lite
          }
       }
       
-      _pointer = (uint8_t *) &checkSum;
-      
-      for (int i = 0; i < sizeof(checkSum); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
-      }
-      
-      EEPROM.commit();
+      EEPROM.put(offset, checkSum);
       
       DEBUG_WM2(F("CrCCSum="), checkSum);
     }   
     
     bool getConfigData()
-    {
+    {             
       bool credDataValid;   
       
-      hadConfigData = false;     
-      
+      hadConfigData = false;       
+
       credDataValid = EEPROM_get();
 
       int calChecksum = calcChecksum();
 
       DEBUG_WM4(F("CCSum="), calChecksum, F(",RCSum="), WiFiNINA_config.checkSum);
 
-      if ( (strncmp(WiFiNINA_config.header, WIFININA_BOARD_TYPE, strlen(WIFININA_BOARD_TYPE)) != 0) ||
+      if ( (strncmp(WiFiNINA_config.header, WiFiNINA_BOARD_TYPE, strlen(WiFiNINA_BOARD_TYPE)) != 0) ||
            (calChecksum != WiFiNINA_config.checkSum) || !credDataValid )
       {
         memset(&WiFiNINA_config, 0, sizeof(WiFiNINA_config));
@@ -509,12 +529,12 @@ class WiFiManager_NINA_Lite
         {
           memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen);
         }
-
+        
         // Including Credentials CSum
         DEBUG_WM4(F("InitEEPROM,sz="), EEPROM.length(), F(",Datasz="), totalDataSize);
         
         // doesn't have any configuration
-        strcpy(WiFiNINA_config.header,           WIFININA_BOARD_TYPE);
+        strcpy(WiFiNINA_config.header,           WiFiNINA_BOARD_TYPE);
         strcpy(WiFiNINA_config.wifi_ssid,        NO_CONFIG);
         strcpy(WiFiNINA_config.wifi_pw,          NO_CONFIG);
         
@@ -533,7 +553,7 @@ class WiFiManager_NINA_Lite
       else if ( !strncmp(WiFiNINA_config.wifi_ssid,       NO_CONFIG, strlen(NO_CONFIG) ) ||
                 !strncmp(WiFiNINA_config.wifi_pw,         NO_CONFIG, strlen(NO_CONFIG) ) ||
                 !strlen(WiFiNINA_config.wifi_ssid) ||
-                !strlen(WiFiNINA_config.wifi_pw)  )
+                !strlen(WiFiNINA_config.wifi_pw) )
       {
         // If SSID, PW ="nothing", stay in config mode forever until having config Data.
         return false;
@@ -604,11 +624,11 @@ class WiFiManager_NINA_Lite
     {
       String pitem;
       
-      root_html_template = String(WIFININA_HTML_HEAD)  + WIFININA_FLDSET_START;
+      root_html_template = String(WiFiNINA_HTML_HEAD)  + WiFiNINA_FLDSET_START;
       
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {
-        pitem = String(WIFININA_HTML_PARAM);
+        pitem = String(WiFiNINA_HTML_PARAM);
 
         pitem.replace("{b}", myMenuItems[i].displayName);
         pitem.replace("{v}", myMenuItems[i].id);
@@ -617,18 +637,18 @@ class WiFiManager_NINA_Lite
         root_html_template += pitem;
       }
       
-      root_html_template += String(WIFININA_FLDSET_END) + WIFININA_HTML_BUTTON + WIFININA_HTML_SCRIPT;     
+      root_html_template += String(WiFiNINA_FLDSET_END) + WiFiNINA_HTML_BUTTON + WiFiNINA_HTML_SCRIPT;     
       
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {
-        pitem = String(WIFININA_HTML_SCRIPT_ITEM);
+        pitem = String(WiFiNINA_HTML_SCRIPT_ITEM);
         
         pitem.replace("{d}", myMenuItems[i].id);
         
         root_html_template += pitem;
       }
       
-      root_html_template += String(WIFININA_HTML_SCRIPT_END) + WIFININA_HTML_END;
+      root_html_template += String(WiFiNINA_HTML_SCRIPT_END) + WiFiNINA_HTML_END;
       
       return root_html_template;     
     }
@@ -645,7 +665,7 @@ class WiFiManager_NINA_Lite
         if (key == "" && value == "")
         {
           String result = createHTML();
-
+          
           // Reset configTimeout to stay here until finished.
           configTimeout = 0;
 
@@ -666,7 +686,7 @@ class WiFiManager_NINA_Lite
         if (number_items_Updated == 0)
         {
           memset(&WiFiNINA_config, 0, sizeof(WiFiNINA_config));
-          strcpy(WiFiNINA_config.header, WIFININA_BOARD_TYPE);
+          strcpy(WiFiNINA_config.header, WiFiNINA_BOARD_TYPE);
         }
 
         if (key == "id")
@@ -720,7 +740,23 @@ class WiFiManager_NINA_Lite
         }
       }   // if (server)
     }
-
+    
+    #if 0
+    uint8_t macTeensy[6];
+    
+    static void teensyMAC(uint8_t *mac)
+    {
+      uint32_t m1 = HW_OCOTP_MAC1;
+      uint32_t m2 = HW_OCOTP_MAC0;
+      mac[0] = m1 >> 8;
+      mac[1] = m1 >> 0;
+      mac[2] = m2 >> 24;
+      mac[3] = m2 >> 16;
+      mac[4] = m2 >> 8;
+      mac[5] = m2 >> 0;
+    } 
+    #endif
+    
     void startConfigurationMode()
     {
 #define CONFIG_TIMEOUT			60000L
@@ -729,19 +765,27 @@ class WiFiManager_NINA_Lite
 
       if ( (portal_ssid == "") || portal_pass == "" )
       {
+#if defined(__IMXRT1062__)
+        //Teensy 4.0 only      
+        String hardwareID = String(HW_OCOTP_MAC0, HEX);
+        hardwareID.toUpperCase();
+        
+        portal_ssid = "WiFiNINA_" + hardwareID;
+        portal_pass = "MyWiFiNINA_" + hardwareID;
+#else
         String randomNum = String(random(0xFFFFFF), HEX);
         randomNum.toUpperCase();
 
         portal_ssid = "WIFININA_" + randomNum;
         portal_pass = "MyWIFININA_" + randomNum;
+#endif        
       }
 
       INFO_WM4(F("SSID="), portal_ssid, F(",PW="), portal_pass);
       INFO_WM4(F("IP="), portal_apIP, F(",CH="), AP_channel);
 
-      // start access point, AP only,default channel 10
+      // start access point, AP only, default channel 10
       WiFi.beginAP(portal_ssid.c_str(), portal_pass.c_str(), AP_channel);
-      
 
       if (!server)
       {
@@ -768,4 +812,4 @@ class WiFiManager_NINA_Lite
 };
 
 
-#endif    //WiFiManager_NINA_Lite_SAMD_SAMD_h
+#endif    //WiFiManager_NINA_Lite_Teensy_h

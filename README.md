@@ -2,6 +2,11 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiManager_NINA_Lite.svg?)](https://www.ardu-badge.com/WiFiManager_NINA_Lite)
 
+#### New in v1.0.1
+
+1. Use new  [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic) to provide support to many more boards (Teensy, AVR Mega, SAM DUE, SAMD51, STM32, etc.) running WiFiNINA. The original WiFiNINA library only supports Nano-33 IoT, Arduino MKR WiFi 1010, Arduino MKR VIDOR 4000 and Arduino UNO WiFi Rev.2.
+2. Use new [`FlashStorage_SAMD library`](https://github.com/khoih-prog/FlashStorage_SAMD) to provide EEPROM/FlashStorage support to SAMD51 boards (Itsy-Bitsy M4, etc).
+
 #### New in v1.0.0
 
 1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
@@ -33,9 +38,9 @@ The web configuration portal, served from the `WiFiNINA modules/shields` is oper
  6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
  7. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
  8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
- 9. [`WiFiNINA library 1.5.0 or later`](https://www.arduino.cc/en/Reference/WiFiNINA)
-10. [`WiFiWebServer library`](https://github.com/khoih-prog/WiFiWebServer)
-11. [`FlashStorage library`](https://github.com/khoih-prog/FlashStorage) for SAMD boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit CIRCUITPLAYGROUND_EXPRESS, etc.)
+ 9. [`WiFiNINA_Generic library v1.5.0 or later`](https://github.com/khoih-prog/WiFiNINA_Generic)
+10. [`WiFiWebServer library v1.0.1 or later`](https://github.com/khoih-prog/WiFiWebServer)
+11. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
 12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
 
 
@@ -134,8 +139,13 @@ While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` 
 OnceCredentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
 
 
-Also see examples )to be added more): 
+Also see examples: 
 1. [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
+2. [Teensy40_WiFiNINA](examples/Teensy40_WiFiNINA)
+3. [STM32_WiFiNINA](examples/STM32_WiFiNINA)
+4. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
+5. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
+
 
 ## So, how it works?
 In `Configuration Portal Mode`, it starts an AP called `WIFININA_XXXXXX`. Connect to it using the `configurable password` you can define in the code. For example, `MyWIFININA_XXXXXX` (see examples):
@@ -425,7 +435,12 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 
 1. Too many things to list, EEPROM, SPIFFS/FS/FAT FS (if available)
 2. Find better and easier way to add more parameters.
-3. Add more examples 
+
+
+#### New in v1.0.1
+
+1. Use new  [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic) to provide support to many more boards (Teensy, AVR Mega, SAM DUE, SAMD51, STM32, etc.) running WiFiNINA. The original WiFiNINA library only supports Nano-33 IoT, Arduino MKR WiFi 1010, Arduino MKR VIDOR 4000 and Arduino UNO WiFi Rev.2.
+2. Use new [`FlashStorage_SAMD library`](https://github.com/khoih-prog/FlashStorage_SAMD) to provide EEPROM/FlashStorage support to SAMD51 boards (Itsy-Bitsy M4, etc).
 
 #### New in v1.0.0
 
