@@ -23,8 +23,10 @@
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(WIFININA_USE_STM32)
 #undef WIFININA_USE_STM32
+#undef WIFI_USE_STM32
 #endif
 #define WIFININA_USE_STM32      true
+#define WIFI_USE_STM32          true
 #endif
 
 #if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || defined(CORE_TEENSY) || !(WIFININA_USE_STM32) )

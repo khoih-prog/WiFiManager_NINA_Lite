@@ -29,8 +29,10 @@
       || defined(__SAMD51G19A__)  )
 #if defined(WIFININA_USE_SAMD)
 #undef WIFININA_USE_SAMD
+#undef WIFI_USE_SAMD
 #endif
 #define WIFININA_USE_SAMD      true
+#define WIFI_USE_SAMD          true
 #else
 #error This code is intended to run only on the SAMD boards ! Please check your Tools->Board setting.
 #endif
