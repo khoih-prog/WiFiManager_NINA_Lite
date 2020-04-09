@@ -116,6 +116,20 @@ uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSiz
 
 ```
 
+- If you don't need to add dynamic parameters, use the following in sketch
+
+```
+/////////////// Start dynamic Credentials ///////////////
+
+MenuItem myMenuItems [] =
+{
+};
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+/////// // End dynamic Credentials ///////////
+
+```
+
 - When you want to open a config portal, just add
 
 ```cpp
