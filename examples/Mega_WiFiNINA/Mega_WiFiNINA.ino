@@ -8,12 +8,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WIFININA_WM_Lite
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
    1.0.0   K Hoang      26/03/2020  Initial coding
    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
+   1.0.2   K Hoang      15/04/2020  Fix bug
  *****************************************************************************************************************************/
 
 /* Comment this out to disable prints and save space */
@@ -36,27 +37,61 @@
 
 #include <WiFiManager_NINA_Lite.h>
 
-#define MAX_BLYNK_SERVER_LEN      34
-char Blynk_Server [MAX_BLYNK_SERVER_LEN]  = "";
+// Mega might have not enough memory to run dynamic params
+#define USE_DYNAMIC_PARAMETERS      false //true
 
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <WiFiManager_NINA_Lite.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
+#define MAX_BLYNK_SERVER_LEN      34
 #define MAX_BLYNK_TOKEN_LEN       34
-char Blynk_Token  [MAX_BLYNK_TOKEN_LEN]   = "";
+
+char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
+
+char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
 
 #define MAX_BLYNK_PORT_LEN        6
-char Blynk_Port   [MAX_BLYNK_PORT_LEN]  = "";
+char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
-MenuItem myMenuItems [] = 
+MenuItem myMenuItems [] =
 {
-  { "sv", "Blynk Server", Blynk_Server, MAX_BLYNK_SERVER_LEN },
-  { "tk", "Token",        Blynk_Token,  MAX_BLYNK_TOKEN_LEN },
-  { "pt", "Port",         Blynk_Port,   MAX_BLYNK_PORT_LEN },
-  { "mq", "MQTT Server",  MQTT_Server,  MAX_MQTT_SERVER_LEN },
+  { "sv1", "Blynk Server1", Blynk_Server1,  MAX_BLYNK_SERVER_LEN },
+  { "tk1", "Token1",        Blynk_Token1,   MAX_BLYNK_TOKEN_LEN },
+  { "sv2", "Blynk Server2", Blynk_Server2,  MAX_BLYNK_SERVER_LEN },
+  { "tk2", "Token2",        Blynk_Token2,   MAX_BLYNK_TOKEN_LEN },
+  { "pt", "Port",           Blynk_Port,     MAX_BLYNK_PORT_LEN },
+  { "mq", "MQTT Server",    MQTT_Server,    MAX_MQTT_SERVER_LEN },
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+
+#endif    //USE_DYNAMIC_PARAMETERS
 
 void heartBeatPrint(void)
 {
@@ -111,6 +146,7 @@ void setup()
   WiFiManager_NINA->begin();
 }
 
+#if USE_DYNAMIC_PARAMETERS
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -120,11 +156,14 @@ void displayCredentials(void)
     Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
   }
 }
+#endif
 
 void loop()
 {
   WiFiManager_NINA->run();
+  check_status();
 
+#if USE_DYNAMIC_PARAMETERS
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -143,6 +182,5 @@ void loop()
       }
     }
   }
-
-  check_status();
+#endif
 }

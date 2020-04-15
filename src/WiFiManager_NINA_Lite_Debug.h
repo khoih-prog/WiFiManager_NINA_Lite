@@ -8,12 +8,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WIFININA_WM_Lite
    Licensed under MIT license
-   Version: 1.0.1
+   Version: 1.0.2
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
-    1.0.0   K Hoang      26/03/2020  Initial coding
-    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
+   1.0.0   K Hoang      26/03/2020  Initial coding
+   1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
+   1.0.2   K Hoang      15/04/2020  Fix bug
  *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h

@@ -2,9 +2,13 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiManager_NINA_Lite.svg?)](https://www.ardu-badge.com/WiFiManager_NINA_Lite)
 
+#### New in v1.0.2
+
+1. Fix bug
+
 #### New in v1.0.1
 
-1. Use new  [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic) to provide support to many more boards (Teensy, AVR Mega, SAM DUE, SAMD51, STM32, etc.) running WiFiNINA. The original WiFiNINA library only supports Nano-33 IoT, Arduino MKR WiFi 1010, Arduino MKR VIDOR 4000 and Arduino UNO WiFi Rev.2.
+1. Use new [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic) to provide support to many more boards (Teensy, AVR Mega, SAM DUE, SAMD51, STM32, etc.) running WiFiNINA. The original WiFiNINA library only supports Nano-33 IoT, Arduino MKR WiFi 1010, Arduino MKR VIDOR 4000 and Arduino UNO WiFi Rev.2.
 2. Use new [`FlashStorage_SAMD library`](https://github.com/khoih-prog/FlashStorage_SAMD) to provide EEPROM/FlashStorage support to SAMD51 boards (Itsy-Bitsy M4, etc).
 
 #### New in v1.0.0
@@ -87,20 +91,40 @@ WiFiManager_NINA_Lite* WiFiManager_NINA;
 - To add custom parameters, just add
 
 ```
+#define USE_DYNAMIC_PARAMETERS      true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <WiFiManager_NINA_Lite_Teensy.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
 #define MAX_BLYNK_SERVER_LEN      34
 #define MAX_BLYNK_TOKEN_LEN       34
 
-char Blynk_Server1 [MAX_BLYNK_SERVER_LEN]  = "";
-char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN]   = "";
+char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
 
-char Blynk_Server2 [MAX_BLYNK_SERVER_LEN]  = "";
-char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN]   = "";
+char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
 
 #define MAX_BLYNK_PORT_LEN        6
-char Blynk_Port   [MAX_BLYNK_PORT_LEN]  = "";
+char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
 MenuItem myMenuItems [] =
 {
@@ -114,20 +138,20 @@ MenuItem myMenuItems [] =
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
 
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+
+#endif    //USE_DYNAMIC_PARAMETERS
+
 ```
 
 - If you don't need to add dynamic parameters, use the following in sketch
 
 ```
-/////////////// Start dynamic Credentials ///////////////
-
-MenuItem myMenuItems [] =
-{
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-/////// // End dynamic Credentials ///////////
-
+#define USE_DYNAMIC_PARAMETERS      false
 ```
 
 - When you want to open a config portal, just add
@@ -201,12 +225,14 @@ Sample Code
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) /*|| defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__)*/  )
+      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
+      || defined(__SAMD51G19A__)  )
 #if defined(WIFININA_USE_SAMD)
 #undef WIFININA_USE_SAMD
+#undef WIFI_USE_SAMD
 #endif
 #define WIFININA_USE_SAMD      true
+#define WIFI_USE_SAMD          true
 #else
 #error This code is intended to run only on the SAMD boards ! Please check your Tools->Board setting.
 #endif
@@ -247,22 +273,44 @@ Sample Code
 // Config data Size currently is 128 bytes)
 #define EEPROM_START      0
 
+#include "WiFiNINA_Pinout_Generic.h"
+
 #include <WiFiManager_NINA_Lite_SAMD.h>
+
+#define USE_DYNAMIC_PARAMETERS      true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <WiFiManager_NINA_Lite_SAMD.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
 
 #define MAX_BLYNK_SERVER_LEN      34
 #define MAX_BLYNK_TOKEN_LEN       34
 
-char Blynk_Server1 [MAX_BLYNK_SERVER_LEN]  = "";
-char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN]   = "";
+char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
 
-char Blynk_Server2 [MAX_BLYNK_SERVER_LEN]  = "";
-char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN]   = "";
+char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "";
+char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
 
 #define MAX_BLYNK_PORT_LEN        6
-char Blynk_Port   [MAX_BLYNK_PORT_LEN]  = "";
+char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
 MenuItem myMenuItems [] =
 {
@@ -275,6 +323,14 @@ MenuItem myMenuItems [] =
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+
+#endif    //USE_DYNAMIC_PARAMETERS
 
 void heartBeatPrint(void)
 {
@@ -330,6 +386,7 @@ void setup()
   WiFiManager_NINA->begin();
 }
 
+#if USE_DYNAMIC_PARAMETERS
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -339,11 +396,14 @@ void displayCredentials(void)
     Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
   }
 }
+#endif
 
 void loop()
 {
   WiFiManager_NINA->run();
+  check_status();
 
+#if USE_DYNAMIC_PARAMETERS
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -362,8 +422,7 @@ void loop()
       }
     }
   }
-
-  check_status();
+#endif
 }
 ```
 
@@ -450,6 +509,8 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 1. Too many things to list, EEPROM, SPIFFS/FS/FAT FS (if available)
 2. Find better and easier way to add more parameters.
 
+#### New in v1.0.2
+1. Fix bug
 
 #### New in v1.0.1
 
