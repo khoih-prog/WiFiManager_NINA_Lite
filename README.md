@@ -5,6 +5,7 @@
 #### New in v1.0.2
 
 1. Fix bug
+2. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
 
 #### New in v1.0.1
 
@@ -226,7 +227,7 @@ Sample Code
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__)  )
+      || defined(__SAMD51G19A__) || defined(SAMD21G18A) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )
 #if defined(WIFININA_USE_SAMD)
 #undef WIFININA_USE_SAMD
 #undef WIFI_USE_SAMD
@@ -261,13 +262,29 @@ Sample Code
 #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
 #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
 #define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-#elif ( defined(__SAMD21G18A__) || (__SAM3X8E__) || (__CPU_ARC__) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) )
-#define BOARD_TYPE      "SAMD Board"
+#elif defined(__SAMD21E18A__)
+#define BOARD_TYPE      "SAMD21E18A"
+#elif defined(__SAMD21G18A__)
+#define BOARD_TYPE      "SAMD21G18A"
+#elif defined(__SAMD51G19A__)
+#define BOARD_TYPE      "SAMD51G19A"
+#elif defined(__SAMD51J19A__)
+#define BOARD_TYPE      "SAMD51J19A"
+#elif defined(__SAMD51J20A__)
+#define BOARD_TYPE      "SAMD51J20A"
+#elif defined(__SAM3X8E__)
+#define BOARD_TYPE      "SAM3X8E"
+#elif defined(__CPU_ARC__)
+#define BOARD_TYPE      "CPU_ARC"
+#elif defined(__SAMD51__)
+#define BOARD_TYPE      "SAMD51"
 #else
 #define BOARD_TYPE      "SAMD Unknown"
 #endif
+#else
+#define BOARD_TYPE      "SAMD Unknown"
 #endif
+
 
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
@@ -510,7 +527,9 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 2. Find better and easier way to add more parameters.
 
 #### New in v1.0.2
+
 1. Fix bug
+2. Add support to ***SAM51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.)***.
 
 #### New in v1.0.1
 
