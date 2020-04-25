@@ -6,6 +6,15 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
+#### Major Release v1.0.3
+
+1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the available WiFi AP. It will then autoreconnect to the remaining WiFi AP if the current connection is lost.
+2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc.***
+3. WiFi Password max length is 63, according to WPA2 standard
+4. Permit to input special chars such as ***%*** and ***#*** into data fields.
+5. Add option to have built-in, yet configurable RFC-952-conformed DHCP hostname.
+6. Fix bug
+
 #### New in v1.0.2
 
 1. Fix bug
@@ -23,18 +32,20 @@
 
 ## Features
 
-This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD (Nano-33 IoT, etc), STM32, etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
+This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD (Nano-33 IoT, etc), STM32, nRF52, etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
 
 The AVR-family boards (UNO, Nano, etc.) are ***not supported*** as they don't have enough memory to run Config Portal WebServer.
 
 This is a Credentials / WiFi Connection Manager, permitting the addition of custom parameters to be configured in Config Portal. The parameters then will be saved automatically, ***without the complicated callback functions*** to handle data saving / retrieving.
+
+You can also specify DHCP HostName, static AP and STA IP. Use much less memory compared to full-fledge WiFiManager. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Credentials are saved in EEPROM, FlashStorage or DueFlashStorage.
 
 If you have used the full-fledge WiFiManager such as :
 1. [`Tzapu WiFiManager`](https://github.com/tzapu/WiFiManager)
 2. [`Ken Taylor WiFiManager`](https://github.com/kentaylor/WiFiManager)
 3. [`ESP_WiFiManager`](https://github.com/khoih-prog/ESP_WiFiManager)
 
-and have to write complicated callback functions to save custom parameters in SPIFFS, you'd appreciate the simplicity of this Light-Weight Credentials / WiFiManager
+and have to write complicated callback functions to save custom parameters in SPIFFS, you'd appreciate the simplicity of this Light-Weight Credentials / WiFiManager.
 
 The web configuration portal, served from the `WiFiNINA modules/shields` is operating as an access point (AP) with configurable static IP address or use default IP Address of 192.168.4.1
 
@@ -47,7 +58,7 @@ The web configuration portal, served from the `WiFiNINA modules/shields` is oper
  6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
  7. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
  8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
- 9. [`WiFiNINA_Generic library v1.5.0 or later`](https://github.com/khoih-prog/WiFiNINA_Generic)
+ 9. [`WiFiNINA_Generic library v1.5.1-final or later`](https://github.com/khoih-prog/WiFiNINA_Generic)
 10. [`WiFiWebServer library v1.0.1 or later`](https://github.com/khoih-prog/WiFiWebServer)
 11. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
 12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
@@ -56,14 +67,16 @@ The web configuration portal, served from the `WiFiNINA modules/shields` is oper
 ## How It Works
 
 - The [SAMD_WiFiNINA](examples/SAMD_WiFiNINA) example shows how it works and should be used as the basis for a sketch that uses this library.
-- The concept of [SAMD_WiFiNINA](examples/SAMD_WiFiNINA) is that a new `WiFiNINA module/shield` will start a WiFi configuration portal when powered up, but has no valid stored Credentials. 
+- The concept of [SAMD_WiFiNINA](examples/SAMD_WiFiNINA) is that a new `WiFiNINA module/shield` will start a WiFi configuration portal when powered up, but has no valid stored Credentials or can't connect to WiFi APs after a pre-determined time.
 - There are 6 more custom parameters added in the sketch which you can use in your program later. In the example, they are: 2 sets of Blynk Servers and Tokens, Blynk Port and MQTT Server.
 - Using any WiFi enabled device with a browser (computer, phone, tablet) connect to the newly created AP and type in the configurable AP IP address (default 192.168.4.1). The Config Portal AP channel (default 10) is also configurable to avoid conflict with other APs.
-- The Config Portal is auto-adjusted to fix the 2 static parameters (WiFi SSID/PWD) as well as 6 more dynamic custom parameters.
-- After the custom data entered, and `Save` button pressed, the configuration data will be saved in host's non-volatile memory, then the board reboots.
-- If there is valid stored Credentials, it'll go directly to connect to WiFi without starting / using the Config Portal.
-- `WiFiNINA module/shield` will try to connect. If successful, the dynamic DHCP or configured static IP address will be displayed in the configuration portal. 
+- The Config Portal is ***auto-adjusted*** to fix the 4 static parameters (WiFi SSIDs/PWDs) as well as 6 more dynamic custom parameters.
+- After the custom data entered, and ***Save*** button pressed, the configuration data will be saved in host's non-volatile memory, then the board reboots.
+- If there is valid stored Credentials, it'll go directly to connect to one of the ***MultiWiFi APs*** without starting / using the Config Portal.
+- `WiFiNINA module/shield` will try to connect. If successful, the dynamic DHCP and/or configured static IP address will be displayed in the configuration portal. 
 - The `WiFiNINA module/shield` WiFi Config Portal network and Web Server will shutdown to return control to the sketch code.
+- In the operation, if the current WiFi connection is lost because of any reason, the system will ***auto(Re)connect*** to the remaining WiFi AP.
+- ***If system can't connect to any of the 2 WiFi APs, the Config Portal will start***, after some pre-determined time, to permit user to update the Credentials.
 
 ## Quick Start
 
@@ -176,6 +189,20 @@ WiFiManager_NINA->setConfigPortalChannel(newChannel);
 WiFiManager_NINA->setConfigPortalIP(IPAddress(xxx,xxx,xxx,xxx));
 ```
 
+- To set custom DHCP HostName, cal
+ 
+```
+  // Set customized DHCP HostName
+  WiFiManager_NINA->begin("SAMD-WiFiNINA-ABCDEF");
+```
+ 
+or just use the default Hostname, for example "SAMD-WiFiNINA-XXXXXX" for SAMD
+
+```
+  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
+  //WiFiManager_NINA->begin();
+```
+
 While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` ("MyWIFININA_XXXXXX"), then open a browser to the Portal AP IP, default `192.168.4.1`, configure wifi then save. The Credentials / WiFi connection information will be saved in non-volatile memory. It will then autoconnect.
 
 
@@ -188,6 +215,7 @@ Also see examples:
 3. [STM32_WiFiNINA](examples/STM32_WiFiNINA)
 4. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
 5. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
+6. [nRF52840_WiFiNINA](examples/nRF52840_WiFiNINA)
 
 
 ## So, how it works?
@@ -231,7 +259,7 @@ Sample Code
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
       || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
       || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(SAMD21G18A) || defined(__SAM3X8E__) || defined(__CPU_ARC__) )
+      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
 #if defined(WIFININA_USE_SAMD)
 #undef WIFININA_USE_SAMD
 #undef WIFI_USE_SAMD
@@ -285,10 +313,8 @@ Sample Code
 #else
 #define BOARD_TYPE      "SAMD Unknown"
 #endif
-#else
-#define BOARD_TYPE      "SAMD Unknown"
-#endif
 
+#endif
 
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
@@ -378,8 +404,8 @@ void check_status()
   static unsigned long checkstatus_timeout = 0;
 
   //KH
-#define HEARTBEAT_INTERVAL    600000L
-  // Print hearbeat every HEARTBEAT_INTERVAL (600) seconds.
+#define HEARTBEAT_INTERVAL    20000L
+  // Print hearbeat every HEARTBEAT_INTERVAL (20) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
     heartBeatPrint();
@@ -394,7 +420,7 @@ void setup()
   // Debug console
   Serial.begin(115200);
   while (!Serial);
-  
+
   Serial.println("\nStart SAMD_WiFiNINA on " + String(BOARD_TYPE));
 
 
@@ -404,13 +430,17 @@ void setup()
   //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
   //WiFiManager_NINA->setConfigPortalChannel(1);
 
-  WiFiManager_NINA->begin();
+  // Set customized DHCP HostName
+  WiFiManager_NINA->begin("SAMD-WiFiNINA-ABCDEF");
+  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
+  //WiFiManager_NINA->begin();
+  
 }
 
 #if USE_DYNAMIC_PARAMETERS
 void displayCredentials(void)
 {
-  Serial.println("Your stored Credentials :");
+  Serial.println("\nYour stored Credentials :");
 
   for (int i = 0; i < NUM_MENU_ITEMS; i++)
   {
@@ -452,11 +482,11 @@ This is the terminal output when running [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
 1. Open Config Portal
 
 ```
-
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-*NN: CrCCsum=6217,CrRCsum=825255525
-*NN: CCSum=1983,RCSum=1752461166
-*NN: InitEEPROM,sz=1080,Datasz=264
+*NN: Hostname=SAMD-WIFININA51F485
+*NN: CrCCSum=44880,CrRCSum=-1
+*NN: CCSum=53040,RCSum=-1
+*NN: InitEEPROM,sz=1024,Datasz=392
 *NN: pdata=blank,len=34
 *NN: pdata=blank,len=34
 *NN: pdata=blank,len=34
@@ -465,49 +495,173 @@ Start SAMD_WiFiNINA on SAMD NANO_33_IOT
 *NN: pdata=blank,len=34
 *NN: CrCCSum=3120
 *NN: b:OpenPortal
-*NN: SSID=WIFININA_E50AB22C,PW=MyWIFININA_E50AB22C
-*NN: IP=192.168.4.1,CH=1
-Your stored Credentials :
+*NN: SSID=WIFININA_B18D0F,PW=MyWIFININA_B18D0F
+*NN: IP=192.168.4.1,CH=10
+WiFi-beginAP3: return1 = 7
+WiFi-beginAP3: return2 = 7
+FYour stored Credentials :
 Blynk Server1 = blank
 Token1 = blank
 Blynk Server2 = blank
 Token2 = blank
 Port = blank
 MQTT Server = blank
-FFF
+FFFFFFFFF 
 ```
 
-2. Got valid Credential from Config Portal, then connected to WiFi
+2. Received data from Config Portal
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-*NN: CrCCSum=7558,CrRCSum=7558
-*NN: CCSum=2104,RCSum=2104
-*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
-*NN: i=0,id=sv1,data=blynk1.duckdns.org
-*NN: i=1,id=tk1,data=your-token1
-*NN: i=2,id=sv2,data=blynk2.duckdns.org
-*NN: i=3,id=tk2,data=your-token2
-*NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=mqtt.duckdns.org
-*NN: con2WF:start
-*NN: con2WF:spentMsec=0
-*NN: Con2:HueNet1
-*NN: IP=192.168.2.139
-*NN: WOK
-*NN: con2WF:OK
-*NN: IP=192.168.2.139
-*NN: b:WOK
-Your stored Credentials :
-Blynk Server1 = blynk1.duckdns.org
-Token1 = your-token1
-Blynk Server2 = blynk2.duckdns.org
-Token2 = your-token2
-Port = 8080
-MQTT Server = mqtt.duckdns.org
-HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
-HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
+*NN: Hostname=SAMD-WIFININA51F485
+*NN: CrCCSum=44880,CrRCSum=-1
+*NN: CCSum=53040,RCSum=-1
+*NN: InitEEPROM,sz=1024,Datasz=392
+*NN: pdata=blank,len=34
+*NN: pdata=blank,len=34
+*NN: pdata=blank,len=34
+*NN: pdata=blank,len=34
+*NN: pdata=blank,len=6
+*NN: pdata=blank,len=34
+*NN: CrCCSum=3120
+*NN: b:OpenPortal
+*NN: SSID=WIFININA_B18D0F,PW=MyWIFININA_B18D0F
+*NN: IP=192.168.4.1,CH=10
+WiFi-beginAP3: return1 = 7
+WiFi-beginAP3: return2 = 7
+FYour stored Credentials :
+Blynk Server1 = blank
+Token1 = blank
+Blynk Server2 = blank
+Token2 = blank
+Port = blank
+MQTT Server = blank
+FFFFFFFFF 
+*NN: h:sv1=BlynkServer1
+*NN: h:tk1=Token1
+*NN: h:sv2=BlynkServer2
+*NN: h:tk2=Token2
+*NN: h:pt=8080
+*NN: h:mq=mqtt-server
+*NN: h:UpdEEPROM
+*NN: SaveEEPROM,sz=1024,Datasz=392,CSum=3612
+*NN: pdata=BlynkServer1,len=34
+*NN: pdata=Token1,len=34
+*NN: pdata=BlynkServer2,len=34
+*NN: pdata=Token2,len=34
+*NN: pdata=8080,len=6
+*NN: pdata=mqtt-server,len=34
+*NN: CrCCSum=4880
+*NN: h:Rst
+```
 
+3. Got valid Credential from Config Portal, then connected to WiFi
+
+```
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-WIFININA51F485
+*NN: CrCCSum=4880,CrRCSum=4880
+*NN: CCSum=3612,RCSum=3612
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: i=0,id=sv1,data=BlynkServer1
+*NN: i=1,id=tk1,data=Token1
+*NN: i=2,id=sv2,data=BlynkServer2
+*NN: i=3,id=tk2,data=Token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt-server
+*NN: Connecting MultiWifi...
+*NN: con2WF:spentMsec=0
+WiFi-begin: return1 = 3
+WiFi-begin: return2 = 3
+*NN: con2WF:OK
+*NN: SSID=HueNet1,RSSI=-27
+*NN: IP=192.168.2.92
+*NN: b:WOK
+HYour stored Credentials :
+Blynk Server1 = BlynkServer1
+Token1 = Token1
+Blynk Server2 = BlynkServer2
+Token2 = Token2
+Port = 8080
+MQTT Server = mqtt-server
+HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
+HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
+```
+
+4. Lost a WiFi and autoconnect to another WiFi AP
+
+```
+*NN: r:Wlost.ReconW           <=== Lost primary WiFi
+*NN: Connecting MultiWifi...  <=== Reconnect primary WiFi
+*NN: con2WF:spentMsec=0
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: con2WF:spentMsec=2366
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: con2WF:spentMsec=4731
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: con2WF:spentMsec=7096
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: con2WF:spentMsec=9460
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4      <=== Fail primary WiFi after 10s
+*NN: con2WF:spentMsec=0      <=== Connect secondary WiFi
+WiFi-begin: return1 = 6
+WiFi-begin: return2 = 6
+*NN: con2WF:spentMsec=5573
+WiFi-begin: return1 = 3
+WiFi-begin: return2 = 3
+*NN: con2WF:OK              <=== Success
+*NN: IP=192.168.2.92
+*NN: r:WOK
+HHHHHHHHHH HHHHHHHHHH
+```
+
+5. Reopen Config Portal if can't connect to any of the 2 WiFi APs
+
+```
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-WiFiNINA-ABCDEF
+*NN: CrCCSum=4879,CrRCSum=4879
+*NN: CCSum=2202,RCSum=2202
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****  <== Input wrong WiFi Password
+*NN: SSID1=HueNet2,PW1=****             <== Input wrong WiFi Password
+*NN: i=0,id=sv1,data=BlynkServer1
+*NN: i=1,id=tk1,data=Token1
+*NN: i=2,id=sv2,data=BlynkServer1
+*NN: i=3,id=tk2,data=Token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt-server
+*NN: Connecting MultiWifi...
+*NN: con2WF:spentMsec=1
+WiFi-begin: return1 = 6
+WiFi-begin: return2 = 6
+*NN: con2WF:spentMsec=1
+WiFi-begin: return1 = 6
+WiFi-begin: return2 = 6
+*NN: con2WF:spentMsec=5574
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: con2WF:spentMsec=7940
+WiFi-begin: return1 = 6
+WiFi-begin: return2 = 6
+*NN: con2WF:failed                <=== Fail to connect to both APs
+*NN: b:NoW                        <=== To open Config Portal next
+*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
+*NN: IP=192.168.4.1,CH=10
+WiFi-beginAP3: return1 = 7
+WiFi-beginAP3: return2 = 7
+FYour stored Credentials :
+Blynk Server1 = BlynkServer1
+Token1 = Token1
+Blynk Server2 = BlynkServer1
+Token2 = Token2
+Port = 8080
+MQTT Server = mqtt-server
 ```
 
 #### Debug
@@ -528,7 +682,23 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ### TO DO
 
 1. Too many things to list, EEPROM, SPIFFS/FS/FAT FS (if available)
-2. Find better and easier way to add more parameters.
+2. Support more boards
+
+### DONE
+
+1. Adding dynamic custom parameters
+2. Add MultiWiFi and Auto(Re)Connect feature
+3. Add support to SAMD21, SAMD51, nRF52, etc.
+4. Many more to list ( DHCP Hostname, WPA2 password length, special chars, etc.)
+
+#### Major Release v1.0.3
+
+1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the available WiFi AP. It will then autoreconnect to the remaining WiFi AP if the current connection is lost.
+2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc.***
+3. WiFi Password max length is 63, according to WPA2 standard
+4. Permit to input special chars such as ***%*** and ***#*** into data fields.
+5. Add option to have built-in, yet configurable RFC-952-conformed DHCP hostname.
+6. Fix bug
 
 #### New in v1.0.2
 

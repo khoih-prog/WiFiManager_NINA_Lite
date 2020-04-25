@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-   WiFiManager_NINA_Lite_STM32.h
-   For STM32 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+   WiFiManager_NINA_Lite_NRF52840.h
+   For SAMD boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards (https://github.com/khoih-prog/WiFiManager_NINA_Lite)
    to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
@@ -17,24 +17,27 @@
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
- *****************************************************************************************************************************/
+  *****************************************************************************************************************************/
 
-#ifndef WiFiManager_NINA_Lite_STM32_h
-#define WiFiManager_NINA_Lite_STM32_h
+#ifndef WiFiManager_NINA_Lite_NRF52840_h
+#define WiFiManager_NINA_Lite_NRF52840_h
 
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
-#if defined(WIFININA_USE_STM32)
-#undef WIFININA_USE_STM32
+#if    ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) )
+#if defined(WIFININA_USE_NRF528XX)
+#undef WIFININA_USE_NRF528XX
 #endif
-#define WIFININA_USE_STM32      true
+#define WIFININA_USE_NRF528XX      true
 #endif
 
-#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || defined(CORE_TEENSY) || !(WIFININA_USE_STM32) )
-#error This code is intended to run on STM32 platform! Please check your Tools->Board setting.
+#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || \
+      defined(CORE_TEENSY) || WIFININA_USE_SAMD || !(WIFININA_USE_NRF528XX) )
+#error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.
 #endif
 
 #include <WiFiWebServer.h>
-#include <EEPROM.h>
+// Include EEPROM-like API for FlashStorage
+//#include <FlashAsEEPROM.h>                //https://github.com/cmaglie/FlashStorage
+//#include <FlashAsEEPROM_SAMD.h>                //https://github.com/khoih-prog/FlashStorage_SAMD
 #include <WiFiManager_NINA_Lite_Debug.h>
 
 //NEW
@@ -83,7 +86,7 @@ typedef struct Configuration
 uint16_t CONFIG_DATA_SIZE = sizeof(WiFiNINA_Configuration);
 
 // -- HTML page fragments
-const char WIFININA_HTML_HEAD[]     /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>STM32_WM_NINA_Lite</title><style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style></head><div style=\"text-align:left;display:inline-block;min-width:260px;\">\
+const char WIFININA_HTML_HEAD[]     /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>nRF52_WM_NINA_Lite</title><style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style></head><div style=\"text-align:left;display:inline-block;min-width:260px;\">\
 <fieldset><div><label>WiFi SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
 <div><label>PWD</label><input value=\"[[pw]]\"id=\"pw\"><div></div></div>\
 <div><label>WiFi SSID1</label><input value=\"[[id1]]\"id=\"id1\"><div></div></div>\
@@ -102,6 +105,7 @@ const char WIFININA_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getE
 const char WIFININA_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
 const char WIFININA_HTML_END[]          /*PROGMEM*/ = "</html>";
 ///
+
 String IPAddressToString(IPAddress _address)
 {
   String str = String(_address[0]);
@@ -121,16 +125,16 @@ class WiFiManager_NINA_Lite
     WiFiManager_NINA_Lite()
     {     
       // check for the presence of the shield
-      if (WiFi.status() == WL_NO_SHIELD) 
+      if (WiFi.status() == WL_NO_MODULE) 
       {
         DEBUG_WM1(F("NoNINA"));
-      }
+      }     
     }
 
     ~WiFiManager_NINA_Lite()
     {
       if (server)
-        delete server;    
+        delete server;
     }
         
     bool connectWiFi(const char* ssid, const char* pass)
@@ -141,7 +145,7 @@ class WiFiManager_NINA_Lite
       setHostname();
       ///
 
-      if ( WiFi.begin(ssid, pass) == WL_CONNECTED )
+      if ( WiFi.begin(ssid, pass) == WL_CONNECTED ) 
       {
         displayWiFiData();
       }
@@ -176,7 +180,7 @@ class WiFiManager_NINA_Lite
         String randomNum = String(random(0xFFFFFF), HEX);
         randomNum.toUpperCase();
         
-        String _hostname = "STM32-WiFiNINA-" + randomNum;
+        String _hostname = "NRF52-WiFiNINA-" + randomNum;
         _hostname.toUpperCase();
 
         getRFC952_hostname(_hostname.c_str());
@@ -405,22 +409,19 @@ class WiFiManager_NINA_Lite
 
       EEPROM_put();
     }
-    
-    bool isConfigDataValid(void)
-    {
-      return hadConfigData;
-    }
 
     void resetFunc()
-    {
-      void(*resetFunc)(void) = 0;
-      resetFunc();
+    {    
+#if    ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) )
+      // To add reset function
+#endif      
     }
 
   private:
     String ipAddress = "0.0.0.0";
 
     WiFiWebServer* server = NULL;
+    
     bool configuration_mode = false;
 
     unsigned long configTimeout;
@@ -488,29 +489,6 @@ class WiFiManager_NINA_Lite
 #define WIFININA_BOARD_TYPE   "WIFININA"
 #define NO_CONFIG             "blank"
 
-#ifndef EEPROM_SIZE
-#define EEPROM_SIZE     4096
-#else
-#if (EEPROM_SIZE > 4096)
-#warning EEPROM_SIZE must be <= 4096. Reset to 4096
-#undef EEPROM_SIZE
-#define EEPROM_SIZE     4096
-#endif
-#if (EEPROM_SIZE < CONFIG_DATA_SIZE)
-#warning EEPROM_SIZE must be > CONFIG_DATA_SIZE. Reset to 512
-#undef EEPROM_SIZE
-#define EEPROM_SIZE     512
-#endif
-#endif
-
-#ifndef EEPROM_START
-#define EEPROM_START     0
-#else
-#if (EEPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE)
-#error EPROM_START + CONFIG_DATA_SIZE > EEPROM_SIZE. Please adjust.
-#endif
-#endif
-
     int calcChecksum()
     {
       int checkSum = 0;
@@ -521,15 +499,22 @@ class WiFiManager_NINA_Lite
 
       return checkSum;
     }
-   
+    
     bool EEPROM_get()
     {
+#if 0    
+      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
+      // Have to read/write each byte. To rewrite the library
+      
       uint16_t offset = EEPROM_START;
+                
+      uint8_t* _pointer = (uint8_t *) &WiFiNINA_config;
       
-      EEPROM.get(offset, WiFiNINA_config);
-      
-      offset += sizeof(WiFiNINA_config);
-      
+      for (int i = 0; i < sizeof(WiFiNINA_config); i++, _pointer++, offset++)
+      {              
+        *_pointer = EEPROM.read(offset);
+      }
+           
       int checkSum = 0;
       int readCheckSum;
       
@@ -537,45 +522,56 @@ class WiFiManager_NINA_Lite
    
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {       
-        char* _pointer = myMenuItems[i].pdata;
+        _pointer = (uint8_t *) myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
         
         // Actual size of pdata is [maxlen + 1]
         memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
                
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++, _pointer++, offset++)
         {
-          *_pointer = EEPROM.read(offset);
-          
+          *_pointer = EEPROM.read(offset);          
           checkSum += *_pointer;  
          }       
       }
       
-      EEPROM.get(offset, readCheckSum);
+      _pointer = (uint8_t *) &readCheckSum;
       
-      DEBUG_WM4(F("CrCCsum="), checkSum, F(",CrRCsum="), readCheckSum);
+      for (int i = 0; i < sizeof(readCheckSum); i++, _pointer++, offset++)
+      {                  
+        *_pointer = EEPROM.read(offset);
+      }
+         
+      DEBUG_WM4(F("CrCCSum="), checkSum, F(",CrRCSum="), readCheckSum);
       
       if ( checkSum != readCheckSum)
       {
         return false;
       }
-      
+#endif      
       return true;
     }    
     
     void EEPROM_put()
     {
+#if 0    
+      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
+      // Have to read/write each byte. To rewrite the library
+      
       uint16_t offset = EEPROM_START;
+           
+      uint8_t* _pointer = (uint8_t *) &WiFiNINA_config;
       
-      EEPROM.put(offset, WiFiNINA_config);
-      
-      offset += sizeof(WiFiNINA_config);
-      
+      for (int i = 0; i < sizeof(WiFiNINA_config); i++, _pointer++, offset++)
+      {              
+        EEPROM.write(offset, *_pointer);
+      }
+           
       int checkSum = 0;
     
       for (int i = 0; i < NUM_MENU_ITEMS; i++)
       {       
-        char* _pointer = myMenuItems[i].pdata;
+        _pointer = (uint8_t *) myMenuItems[i].pdata;
         
         DEBUG_WM4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
                      
@@ -587,34 +583,42 @@ class WiFiManager_NINA_Lite
          }
       }
       
-      EEPROM.put(offset, checkSum);
+      _pointer = (uint8_t *) &checkSum;
+      
+      for (int i = 0; i < sizeof(checkSum); i++, _pointer++, offset++)
+      {              
+        EEPROM.write(offset, *_pointer);
+      }
+      
+      EEPROM.commit();
       
       DEBUG_WM2(F("CrCCSum="), checkSum);
-    }  
+#endif      
+    }   
     
     bool getConfigData()
     {
       bool credDataValid;   
       
-      hadConfigData = false;       
-
+      hadConfigData = false;     
+      
       credDataValid = EEPROM_get();
 
       int calChecksum = calcChecksum();
 
-      DEBUG_WM4(F("CCsum="), calChecksum, F(",RCsum="), WiFiNINA_config.checkSum);
+      DEBUG_WM4(F("CCSum="), calChecksum, F(",RCSum="), WiFiNINA_config.checkSum);
 
       if ( (strncmp(WiFiNINA_config.header, WIFININA_BOARD_TYPE, strlen(WIFININA_BOARD_TYPE)) != 0) ||
            (calChecksum != WiFiNINA_config.checkSum) || !credDataValid )
       {
         memset(&WiFiNINA_config, 0, sizeof(WiFiNINA_config));
-
+        
         for (int i = 0; i < NUM_MENU_ITEMS; i++)
         {
           // Actual size of pdata is [maxlen + 1]
         memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
         }
-        
+
         // Including Credentials CSum
         DEBUG_WM4(F("InitEEPROM,sz="), EEPROM.length(), F(",Datasz="), totalDataSize);
         
@@ -883,13 +887,12 @@ class WiFiManager_NINA_Lite
 
       // start access point, AP only,default channel 10
       WiFi.beginAP(portal_ssid.c_str(), portal_pass.c_str(), AP_channel);
+      
 
       if (!server)
       {
         server = new WiFiWebServer;
       }
-
-      // Don't know if it's working or not. Can we use ESP8266_Lib wifi TCP server for this ??
 
       //See https://stackoverflow.com/questions/39803135/c-unresolved-overloaded-function-type?rq=1
 
@@ -910,4 +913,5 @@ class WiFiManager_NINA_Lite
     }
 };
 
-#endif    //WiFiManager_NINA_Lite_STM32_h
+
+#endif    //WiFiManager_NINA_Lite_NRF52840_h

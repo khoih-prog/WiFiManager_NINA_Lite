@@ -6,15 +6,17 @@
    to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
    without Hardcoding.
 
-   Built by Khoi Hoang https://github.com/khoih-prog/WIFININA_WM_Lite
+   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
    1.0.0   K Hoang      26/03/2020  Initial coding
    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
+   1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
+                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
  *****************************************************************************************************************************/
 
 /* Comment this out to disable prints and save space */
@@ -143,13 +145,16 @@ void setup()
   //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
   //WiFiManager_NINA->setConfigPortalChannel(1);
 
-  WiFiManager_NINA->begin();
+  // Set customized DHCP HostName
+  WiFiManager_NINA->begin("Mega-WiFiNINA-ABCDEF");
+  //Or use default Hostname "Mega-WiFiNINA-XXXXXX"
+  //WiFiManager_NINA->begin();
 }
 
 #if USE_DYNAMIC_PARAMETERS
 void displayCredentials(void)
 {
-  Serial.println("Your stored Credentials :");
+  Serial.println("\nYour stored Credentials :");
 
   for (int i = 0; i < NUM_MENU_ITEMS; i++)
   {

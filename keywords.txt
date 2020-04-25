@@ -16,10 +16,13 @@ WiFiNINA_Configuration KEYWORD1
 connectWiFi KEYWORD2
 begin KEYWORD2
 run KEYWORD2
+setHostname
 setConfigPortalIP KEYWORD2
 setConfigPortalChannel KEYWORD2
 setConfigPortal KEYWORD2
 setSTAStaticIPConfig	KEYWORD2
+getWiFiSSID
+getWiFiPW
 getFullConfigData KEYWORD2
 localIP KEYWORD2
 clearConfigData KEYWORD2

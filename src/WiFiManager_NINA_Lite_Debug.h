@@ -6,15 +6,17 @@
    to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
    without Hardcoding.
 
-   Built by Khoi Hoang https://github.com/khoih-prog/WIFININA_WM_Lite
+   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
    1.0.0   K Hoang      26/03/2020  Initial coding
    1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
+   1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
+                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
  *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h
