@@ -717,6 +717,10 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 3. This is a Light-Weight Credentials / WiFi Connection Manager with fallback web configuration portal. Completely new to support ***Teensy, SAM DUE, SAMD, STM32, etc. boards running WiFiNINA modules/shields.*** with small memory (64+K bytes)
 4. Config Portal AP SSID and Password will use 4 bytes of hardware unique macAddress, only for Teensy.
 
+### Contributions and thanks
+
+1. Thanks to [Darvesh7](https://github.com/Darvesh7) to report [When Saved Network is unavailable or credential changed bug](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/1) leading to the major release v1.0.3
+
 ### Contributing
 
 If you want to contribute to this project:
