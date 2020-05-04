@@ -2,13 +2,13 @@
    WiFiManager_NINA_Lite_Debug.h
    For Mega, Teensy, SAM DUE, SAMD and STM32 boards using WiFiNINA modules/shields
 
-   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards (https://github.com/khoih-prog/WiFiManager_NINA_Lite)
-   to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
-   without Hardcoding.
+   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
+   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
+   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
@@ -17,6 +17,7 @@
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
+   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.  
  *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h

@@ -2,13 +2,13 @@
    Mega_WiFiNINA.ino
    For AVR or Generic boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
 
-   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards (https://github.com/khoih-prog/WiFiManager_NINA_Lite)
-   to enable store Credentials in EEPROM to easy configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services
-   without Hardcoding.
+  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
+   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
+   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
@@ -17,83 +17,11 @@
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
+   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.      
  *****************************************************************************************************************************/
-
-/* Comment this out to disable prints and save space */
-#define DEBUG_WIFI_WEBSERVER_PORT Serial
-#define WIFININA_DEBUG_OUTPUT     Serial
-
-#if !( defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) )
-#error This code is intended to run only on the Arduino Mega 1280/2560 boards ! Please check your Tools->Board setting.
-#endif
-
-#if defined(ARDUINO_AVR_MEGA2560)
-#define BOARD_TYPE      "AVR Mega2560"
-#else
-#define BOARD_TYPE      "AVR Mega"
-#endif
-
-// Start location in EEPROM to store config data. Default 0
-// Config data Size currently is 128 bytes)
-#define EEPROM_START      0
-
-#include <WiFiManager_NINA_Lite.h>
-
-// Mega might have not enough memory to run dynamic params
-#define USE_DYNAMIC_PARAMETERS      false //true
-
-/////////////// Start dynamic Credentials ///////////////
-
-//Defined in <WiFiManager_NINA_Lite.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
-  {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
-
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_BLYNK_SERVER_LEN      34
-#define MAX_BLYNK_TOKEN_LEN       34
-
-char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "";
-char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
-
-char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "";
-char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
-
-#define MAX_BLYNK_PORT_LEN        6
-char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "";
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
-
-MenuItem myMenuItems [] =
-{
-  { "sv1", "Blynk Server1", Blynk_Server1,  MAX_BLYNK_SERVER_LEN },
-  { "tk1", "Token1",        Blynk_Token1,   MAX_BLYNK_TOKEN_LEN },
-  { "sv2", "Blynk Server2", Blynk_Server2,  MAX_BLYNK_SERVER_LEN },
-  { "tk2", "Token2",        Blynk_Token2,   MAX_BLYNK_TOKEN_LEN },
-  { "pt", "Port",           Blynk_Port,     MAX_BLYNK_PORT_LEN },
-  { "mq", "MQTT Server",    MQTT_Server,    MAX_MQTT_SERVER_LEN },
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-
-#else
-
-MenuItem myMenuItems [] = {};
-
-uint16_t NUM_MENU_ITEMS = 0;
-
-#endif    //USE_DYNAMIC_PARAMETERS
+#include "defines.h"
+#include "Credentials.h"
+#include "dynamicParams.h"
 
 void heartBeatPrint(void)
 {
@@ -146,7 +74,7 @@ void setup()
   //WiFiManager_NINA->setConfigPortalChannel(1);
 
   // Set customized DHCP HostName
-  WiFiManager_NINA->begin("Mega-WiFiNINA-ABCDEF");
+  WiFiManager_NINA->begin(HOST_NAME);
   //Or use default Hostname "Mega-WiFiNINA-XXXXXX"
   //WiFiManager_NINA->begin();
 }

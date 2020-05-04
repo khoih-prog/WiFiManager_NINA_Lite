@@ -6,6 +6,16 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
+#### Major Release v1.0.4
+
+1. Configurable ***Config Portal Title*** to be either HostName, BoardName or default undistinguishable names.
+2. Optional default ***Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal*** to use or change instead of manually input.
+3. ***DoubleDetectDetector*** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
+4. Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+5. Add Board Name
+
+Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
+
 #### Major Release v1.0.3
 
 1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the available WiFi AP. It will then autoreconnect to the remaining WiFi AP if the current connection is lost.
@@ -32,7 +42,7 @@
 
 ## Features
 
-This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD (Nano-33 IoT, etc), STM32, nRF52, etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
+This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD21 (Nano-33 IoT, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32 (F1, F2, F3, F4, F7, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, etc.), etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
 
 The AVR-family boards (UNO, Nano, etc.) are ***not supported*** as they don't have enough memory to run Config Portal WebServer.
 
@@ -57,11 +67,14 @@ The web configuration portal, served from the `WiFiNINA modules/shields` is oper
  5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
  6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
  7. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
- 8. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
- 9. [`WiFiNINA_Generic library v1.5.1-final or later`](https://github.com/khoih-prog/WiFiNINA_Generic)
-10. [`WiFiWebServer library v1.0.1 or later`](https://github.com/khoih-prog/WiFiWebServer)
-11. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
-12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
+ 8. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox***, etc.
+ 9. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+10. [`WiFiNINA_Generic library v1.5.1-final or later`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
+11. [`WiFiWebServer library v1.0.1 or later`](https://github.com/khoih-prog/WiFiWebServer). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+12. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
+13. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
+14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com)) for nRF52
+15. [`DoubleResetDetector_Generic`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
 
 
 ## How It Works
@@ -244,16 +257,306 @@ The WiFi Credentials will be saved and the board connect to the selected WiFi AP
 If you're already connected to a listed WiFi AP and don't want to change anything, just select `Exit` from the `Main` page to reboot the board and connect to the previously-stored AP. The WiFi Credentials are still intact.
 
 
-#### On Demand Configuration Portal
+### Important notes
+1. Now you can use special chars such as ***~, !, @, #, $, %, ^, &, _, -, space,etc.*** thanks to [brondolin](https://github.com/brondolin) to provide the amazing fix in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM) to permit input special chars such as ***%*** and ***#*** into data fields. See [Issue 3](https://github.com/khoih-prog/Blynk_WM/issues/3).
+2. The SSIDs, Passwords must be input (or to make them different from ***blank***). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
+3. WiFi password max length now is 63 chars according to WPA2 standard.
 
-Sample Code
+### How to use default Credentials and have them pre-loaded onto Config Portal
+
+See this example and modify as necessary
+
+1. To load [Default Credentials](examples//Credentials.h)
+```
+bool LOAD_DEFAULT_CONFIG_DATA = true;
+```
+
+2. To use system default to load "blank" when there is no valid Credentials
+```
+bool LOAD_DEFAULT_CONFIG_DATA = false;
+```
+
+3. Example of [Default Credentials](examples/SAMD_WiFiNINA/Credentials.h)
 
 ```cpp
+/// Start Default Config Data //////////////////
+
+/*
+#define SSID_MAX_LEN      32
+//From v1.0.3, WPA2 passwords can be up to 63 characters long.
+#define PASS_MAX_LEN      64
+
+typedef struct
+{
+  char wifi_ssid[SSID_MAX_LEN];
+  char wifi_pw  [PASS_MAX_LEN];
+}  WiFi_Credentials;
+
+#define NUM_WIFI_CREDENTIALS      2
+
+// Configurable items besides fixed Header, just add board_name 
+#define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ) + 1 )
+////////////////
+
+typedef struct Configuration
+{
+  char header         [16];
+  WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+  char board_name     [24];
+  int  checkSum;
+} WiFiNINA_Configuration;
+*/
+
+#define TO_LOAD_DEFAULT_CONFIG_DATA      true
+
+#if TO_LOAD_DEFAULT_CONFIG_DATA
+
+bool LOAD_DEFAULT_CONFIG_DATA = true;
+
+WiFiNINA_Configuration defaultConfig =
+{
+  //char header[16], dummy, not used
+  "WIFININA",
+  // WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+  // WiFi_Credentials.wifi_ssid and WiFi_Credentials.wifi_pw
+  "SSID1",  "password1",
+  "SSID2",  "password2",
+  //char board_name     [24];
+  "Air-Control",
+  // terminate the list
+  //int  checkSum, dummy, not used
+  0
+  /////////// End Default Config Data /////////////
+};
+
+#else
+
+bool LOAD_DEFAULT_CONFIG_DATA = false;
+
+WiFiNINA_Configuration defaultConfig;
+
+#endif    // TO_LOAD_DEFAULT_CONFIG_DATA
+
+/////////// End Default Config Data /////////////
+```
+
+### How to add dynamic parameters from sketch
+
+Example of [Default dynamicParams](examples/SAMD_WiFiNINA/dynamicParams.h)
+
+- To add custom parameters, just modify the example below
+
+```
+#define USE_DYNAMIC_PARAMETERS      true
+
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <WiFiManager_NINA_Lite_SAMD.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#if USE_DYNAMIC_PARAMETERS
+
+#define MAX_BLYNK_SERVER_LEN      34
+#define MAX_BLYNK_TOKEN_LEN       34
+
+char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "account.duckdns.org";
+char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "token1";
+
+char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "account.ddns.net";
+char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "token2";
+
+#define MAX_BLYNK_PORT_LEN        6
+char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "8080";
+
+#define MAX_MQTT_SERVER_LEN      34
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.duckdns.org";
+
+MenuItem myMenuItems [] =
+{
+  { "sv1", "Blynk Server1", Blynk_Server1,  MAX_BLYNK_SERVER_LEN },
+  { "tk1", "Token1",        Blynk_Token1,   MAX_BLYNK_TOKEN_LEN },
+  { "sv2", "Blynk Server2", Blynk_Server2,  MAX_BLYNK_SERVER_LEN },
+  { "tk2", "Token2",        Blynk_Token2,   MAX_BLYNK_TOKEN_LEN },
+  { "pt", "Port",           Blynk_Port,     MAX_BLYNK_PORT_LEN },
+  { "mq", "MQTT Server",    MQTT_Server,    MAX_MQTT_SERVER_LEN },
+};
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+
+#endif    //USE_DYNAMIC_PARAMETERS
+
+```
+- If you don't need to add dynamic parameters, use the following in sketch
+
+```
+#define USE_DYNAMIC_PARAMETERS     false
+```
+
+or
+
+```
+/////////////// Start dynamic Credentials ///////////////
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+/////// // End dynamic Credentials ///////////
+
+```
+
+### Important Notes for using Dynamic Parameters' ids
+
+1. These ids (such as "mqtt" in example) must be ***unique***.
+
+Please be noted that the following ***reserved names are already used in library***:
+
+```
+"id"    for WiFi SSID
+"pw"    for WiFi PW
+"id1"   for WiFi1 SSID
+"pw1"   for WiFi1 PW
+"nm"    for Board Name
+```
+
+## Example [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
+
+Please take a look at other examples, as well.
+
+1. File [SAMD_WiFiNINA.ino](examples/SAMD_WiFiNINA/SAMD_WiFiNINA.ino)
+
+```cpp
+#include "defines.h"
+#include "Credentials.h"
+#include "dynamicParams.h"
+
+void heartBeatPrint(void)
+{
+  static int num = 1;
+
+  if (WiFi.status() == WL_CONNECTED)
+    Serial.print("H");        // H means connected to WiFi
+  else
+    Serial.print("F");        // F means not connected to WiFi
+
+  if (num == 80)
+  {
+    Serial.println();
+    num = 1;
+  }
+  else if (num++ % 10 == 0)
+  {
+    Serial.print(" ");
+  }
+}
+
+void check_status()
+{
+  static unsigned long checkstatus_timeout = 0;
+
+  //KH
+#define HEARTBEAT_INTERVAL    20000L
+  // Print hearbeat every HEARTBEAT_INTERVAL (20) seconds.
+  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
+  {
+    heartBeatPrint();
+    checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
+  }
+}
+
+WiFiManager_NINA_Lite* WiFiManager_NINA;
+
+void setup()
+{
+  // Debug console
+  Serial.begin(115200);
+  while (!Serial);
+
+  Serial.println("\nStart SAMD_WiFiNINA on " + String(BOARD_TYPE));
+
+
+  WiFiManager_NINA = new WiFiManager_NINA_Lite();
+
+  // Optional to change default AP IP(192.168.4.1) and channel(10)
+  //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
+  //WiFiManager_NINA->setConfigPortalChannel(1);
+
+  // Set customized DHCP HostName
+  WiFiManager_NINA->begin(HOST_NAME);
+  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
+  //WiFiManager_NINA->begin();
+  
+}
+
+#if USE_DYNAMIC_PARAMETERS
+void displayCredentials(void)
+{
+  Serial.println("\nYour stored Credentials :");
+
+  for (int i = 0; i < NUM_MENU_ITEMS; i++)
+  {
+    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+  }
+}
+#endif
+
+void loop()
+{
+  WiFiManager_NINA->run();
+  check_status();
+
+#if USE_DYNAMIC_PARAMETERS
+  static bool displayedCredentials = false;
+
+  if (!displayedCredentials)
+  {
+    for (int i = 0; i < NUM_MENU_ITEMS; i++)
+    {
+      if (!strlen(myMenuItems[i].pdata))
+      {
+        break;
+      }
+
+      if ( i == (NUM_MENU_ITEMS - 1) )
+      {
+        displayedCredentials = true;
+        displayCredentials();
+      }
+    }
+  }
+#endif
+}
+```
+
+2. File [defines.h](examples/SAMD_WiFiNINA/defines.h)
+
+```cpp
+#ifndef defines_h
+#define defines_h
+
 /* Comment this out to disable prints and save space */
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 #define WIFININA_DEBUG_OUTPUT     Serial
 
-#define WIFININA_DEBUG    true
+#define WIFININA_DEBUG            false //true
+
+#define DRD_GENERIC_DEBUG         false //true
 
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -319,16 +622,103 @@ Sample Code
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
 #define EEPROM_START      0
+#define EEPROM_SIZE       (2 * 1024)
 
 #include "WiFiNINA_Pinout_Generic.h"
 
 #include <WiFiManager_NINA_Lite_SAMD.h>
 
+#define HOST_NAME   "SAMD-Master-Controller"
+
+#endif      //defines_h
+```
+
+3. File [Credentials.h](examples/SAMD_WiFiNINA/Credentials.h)
+
+```cpp
+#ifndef Credentials_h
+#define Credentials_h
+
+#include "defines.h"
+
+/// Start Default Config Data //////////////////
+
+/*
+#define SSID_MAX_LEN      32
+//From v1.0.3, WPA2 passwords can be up to 63 characters long.
+#define PASS_MAX_LEN      64
+
+typedef struct
+{
+  char wifi_ssid[SSID_MAX_LEN];
+  char wifi_pw  [PASS_MAX_LEN];
+}  WiFi_Credentials;
+
+#define NUM_WIFI_CREDENTIALS      2
+
+// Configurable items besides fixed Header, just add board_name 
+#define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ) + 1 )
+////////////////
+
+typedef struct Configuration
+{
+  char header         [16];
+  WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+  char board_name     [24];
+  int  checkSum;
+} WiFiNINA_Configuration;
+*/
+
+#define TO_LOAD_DEFAULT_CONFIG_DATA      true
+
+#if TO_LOAD_DEFAULT_CONFIG_DATA
+
+bool LOAD_DEFAULT_CONFIG_DATA = true;
+
+WiFiNINA_Configuration defaultConfig =
+{
+  //char header[16], dummy, not used
+  "WIFININA",
+  // WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+  // WiFi_Credentials.wifi_ssid and WiFi_Credentials.wifi_pw
+  "SSID1",  "password1",
+  "SSID2",  "password2",
+  //char board_name     [24];
+  "Air-Control",
+  // terminate the list
+  //int  checkSum, dummy, not used
+  0
+  /////////// End Default Config Data /////////////
+};
+
+#else
+
+bool LOAD_DEFAULT_CONFIG_DATA = false;
+
+WiFiNINA_Configuration defaultConfig;
+
+#endif    // TO_LOAD_DEFAULT_CONFIG_DATA
+
+/////////// End Default Config Data /////////////
+
+
+#endif    //Credentials_h
+```
+
+
+4. File [dynamicParams.h](examples/SAMD_WiFiNINA/dynamicParams.h)
+
+```cpp
+#ifndef dynamicParams_h
+#define dynamicParams_h
+
+#include "defines.h"
+
 #define USE_DYNAMIC_PARAMETERS      true
 
 /////////////// Start dynamic Credentials ///////////////
 
-//Defined in <WiFiManager_NINA_Lite_SAMD.h>
+//Defined in <WiFiManager_NINA_Lite_NRF52840.h>
 /**************************************
   #define MAX_ID_LEN                5
   #define MAX_DISPLAY_NAME_LEN      16
@@ -347,17 +737,17 @@ Sample Code
 #define MAX_BLYNK_SERVER_LEN      34
 #define MAX_BLYNK_TOKEN_LEN       34
 
-char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "";
-char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
+char Blynk_Server1 [MAX_BLYNK_SERVER_LEN + 1]  = "account.duckdns.org";
+char Blynk_Token1  [MAX_BLYNK_TOKEN_LEN + 1]   = "token1";
 
-char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "";
-char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "";
+char Blynk_Server2 [MAX_BLYNK_SERVER_LEN + 1]  = "account.ddns.net";
+char Blynk_Token2  [MAX_BLYNK_TOKEN_LEN + 1]   = "token2";
 
 #define MAX_BLYNK_PORT_LEN        6
-char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "";
+char Blynk_Port   [MAX_BLYNK_PORT_LEN + 1]  = "8080";
 
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.duckdns.org";
 
 MenuItem myMenuItems [] =
 {
@@ -379,102 +769,8 @@ uint16_t NUM_MENU_ITEMS = 0;
 
 #endif    //USE_DYNAMIC_PARAMETERS
 
-void heartBeatPrint(void)
-{
-  static int num = 1;
 
-  if (WiFi.status() == WL_CONNECTED)
-    Serial.print("H");        // H means connected to WiFi
-  else
-    Serial.print("F");        // F means not connected to WiFi
-
-  if (num == 80)
-  {
-    Serial.println();
-    num = 1;
-  }
-  else if (num++ % 10 == 0)
-  {
-    Serial.print(" ");
-  }
-}
-
-void check_status()
-{
-  static unsigned long checkstatus_timeout = 0;
-
-  //KH
-#define HEARTBEAT_INTERVAL    20000L
-  // Print hearbeat every HEARTBEAT_INTERVAL (20) seconds.
-  if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-  {
-    heartBeatPrint();
-    checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
-  }
-}
-
-WiFiManager_NINA_Lite* WiFiManager_NINA;
-
-void setup()
-{
-  // Debug console
-  Serial.begin(115200);
-  while (!Serial);
-
-  Serial.println("\nStart SAMD_WiFiNINA on " + String(BOARD_TYPE));
-
-
-  WiFiManager_NINA = new WiFiManager_NINA_Lite();
-
-  // Optional to change default AP IP(192.168.4.1) and channel(10)
-  //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
-  //WiFiManager_NINA->setConfigPortalChannel(1);
-
-  // Set customized DHCP HostName
-  WiFiManager_NINA->begin("SAMD-WiFiNINA-ABCDEF");
-  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
-  //WiFiManager_NINA->begin();
-  
-}
-
-#if USE_DYNAMIC_PARAMETERS
-void displayCredentials(void)
-{
-  Serial.println("\nYour stored Credentials :");
-
-  for (int i = 0; i < NUM_MENU_ITEMS; i++)
-  {
-    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
-  }
-}
-#endif
-
-void loop()
-{
-  WiFiManager_NINA->run();
-  check_status();
-
-#if USE_DYNAMIC_PARAMETERS
-  static bool displayedCredentials = false;
-
-  if (!displayedCredentials)
-  {
-    for (int i = 0; i < NUM_MENU_ITEMS; i++)
-    {
-      if (!strlen(myMenuItems[i].pdata))
-      {
-        break;
-      }
-
-      if ( i == (NUM_MENU_ITEMS - 1) )
-      {
-        displayedCredentials = true;
-        displayCredentials();
-      }
-    }
-  }
-#endif
-}
+#endif      //dynamicParams_h
 ```
 
 This is the terminal output when running [SAMD_WiFiNINA](examples/SAMD_WiFiNINA) example on ***Nano-33 IoT***:
@@ -664,6 +960,129 @@ Port = 8080
 MQTT Server = mqtt-server
 ```
 
+6. DRD Not Detected:
+
+```
+
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d04321
+No doubleResetDetected            <==== DRD not detected, run normally
+SetFlag write = 0xd0d01234
+*NN: ======= Start Default Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: ChkCrR:CrCCsum=20d4,CrRCsum=20d4
+*NN: Valid Stored Dynamic Data
+*NN: CrCCSum=8404,CrRCSum=8404
+*NN: ======= Start Stored Config Data =======
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: BName=Air-Control-Nano33IoT
+*NN: i=0,id=sv1,data=new-account.duckdns.org
+*NN: i=1,id=tk1,data=new-token1
+*NN: i=2,id=sv2,data=new-account.ddns.net
+*NN: i=3,id=tk2,data=new-token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=new-mqtt.duckdns.org
+*NN: CCSum=0x1571,RCSum=0x1571
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: BName=Air-Control-Nano33IoT
+*NN: i=0,id=sv1,data=new-account.duckdns.org
+*NN: i=1,id=tk1,data=new-token1
+*NN: i=2,id=sv2,data=new-account.ddns.net
+*NN: i=3,id=tk2,data=new-token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=new-mqtt.duckdns.org
+*NN: bg: noConfigPortal = true
+*NN: Connecting MultiWifi...
+*NN: con2WF:spentMsec=0
+WiFi-begin: return1 = 3
+WiFi-begin: return2 = 3
+*NN: con2WF:OK
+*NN: SSID=HueNet1,RSSI=-26
+*NN: IP=192.168.2.93
+*NN: b:WOK
+H
+Your stored Credentials :
+Blynk Server1 = new-account.duckdns.org
+Token1 = new-token1
+Blynk Server2 = new-account.ddns.net
+Token2 = new-token2
+Port = 8080
+MQTT Server = new-mqtt.duckdns.org
+Stop doubleResetDetecting
+ClearFlag write = 0xd0d04321
+
+```
+
+7.DRD detected and Config Portal is forcefully opened
+
+```
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d01234
+doubleResetDetected              <==== DRD detected, to open Config Portal
+ClearFlag write = 0xd0d04321
+*NN: Double Reset Detected
+*NN: ======= Start Default Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: ChkCrR:CrCCsum=20d4,CrRCsum=20d4
+*NN: Valid Stored Dynamic Data
+*NN: CrCCSum=8404,CrRCSum=8404
+*NN: ======= Start Stored Config Data =======
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: BName=Air-Control-Nano33IoT
+*NN: i=0,id=sv1,data=new-account.duckdns.org
+*NN: i=1,id=tk1,data=new-token1
+*NN: i=2,id=sv2,data=new-account.ddns.net
+*NN: i=3,id=tk2,data=new-token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=new-mqtt.duckdns.org
+*NN: CCSum=0x1571,RCSum=0x1571
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: BName=Air-Control-Nano33IoT
+*NN: i=0,id=sv1,data=new-account.duckdns.org
+*NN: i=1,id=tk1,data=new-token1
+*NN: i=2,id=sv2,data=new-account.ddns.net
+*NN: i=3,id=tk2,data=new-token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=new-mqtt.duckdns.org
+*NN: bg: noConfigPortal = false
+*NN: b:OpenPortal                               <==== Config Portal opened
+*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
+*NN: IP=192.168.4.1,CH=10
+WiFi-beginAP3: return1 = 7
+WiFi-beginAP3: return2 = 7
+F
+Your stored Credentials :
+Blynk Server1 = new-account.duckdns.org
+Token1 = new-token1
+Blynk Server2 = new-account.ddns.net
+Token2 = new-token2
+Port = 8080
+MQTT Server = new-mqtt.duckdns.org
+
+```
+
 #### Debug
 Debug is enabled by default on Serial. To disable, add at the beginning of sketch
 
@@ -672,6 +1091,10 @@ Debug is enabled by default on Serial. To disable, add at the beginning of sketc
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 
 #define WIFININA_DEBUG_OUTPUT    false
+
+#define WIFININA_DEBUG           false //true
+
+#define DRD_GENERIC_DEBUG        false //true
 ```
 
 ## Troubleshooting
@@ -681,15 +1104,29 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 
 ### TO DO
 
-1. Too many things to list, EEPROM, SPIFFS/FS/FAT FS (if available)
-2. Support more boards
+1. Support more boards
 
 ### DONE
 
-1. Adding dynamic custom parameters
-2. Add MultiWiFi and Auto(Re)Connect feature
-3. Add support to SAMD21, SAMD51, nRF52, etc.
-4. Many more to list ( DHCP Hostname, WPA2 password length, special chars, etc.)
+ 1. Adding dynamic custom parameters
+ 2. Add MultiWiFi and Auto(Re)Connect feature
+ 3. Add support to SAMD21, SAMD51, nRF52, etc.
+ 4. Many more to list ( DHCP Hostname, WPA2 password length, special chars, etc.)
+ 5. Add DRD
+ 6. Add default Credentials
+ 7. Add Dynamic parameters
+ 8. Add Configurable Config Portal Title
+ 9. Spilt each example into several manageable files.
+
+#### Major Release v1.0.4
+
+1. Configurable ***Config Portal Title*** to be either HostName, BoardName or default undistinguishable names.
+2. Optional default ***Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal*** to use or change instead of manually input.
+3. ***DoubleDetectDetector*** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
+4. Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+5. Add Board Name
+
+Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
 
 #### Major Release v1.0.3
 
@@ -720,6 +1157,7 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ### Contributions and thanks
 
 1. Thanks to [Darvesh7](https://github.com/Darvesh7) to report [When Saved Network is unavailable or credential changed bug](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/1) leading to the major release v1.0.3
+2. Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
 
 ### Contributing
 
