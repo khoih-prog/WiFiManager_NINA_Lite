@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-   defines.h for ESP32WM_Config.ino
-   For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+   defines.h for STM32_WiFiNINA.ino
+   For STM32 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
    (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
@@ -8,7 +8,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
@@ -17,7 +17,8 @@
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
-   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.        
+   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
+   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.      
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -27,9 +28,9 @@
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 #define WIFININA_DEBUG_OUTPUT     Serial
 
-#define WIFININA_DEBUG            false //true
+#define WIFININA_DEBUG            true
 
-#define DRD_GENERIC_DEBUG         false //true
+#define DRD_GENERIC_DEBUG         true
 
 #if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) )
 #if defined(WIFININA_USE_STM32)

@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-   Credentials.h for SAM_DUE_WiFiNINA.ino
+   Credentials.h for SAM_DUE_WiFiNINA_MQTT.ino
    For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
@@ -78,7 +78,7 @@ WiFiNINA_Configuration defaultConfig =
   "SSID1",  "password1",
   "SSID2",  "password2",
   //char board_name     [24];
-  "DUE-Control",
+  "DUE-MQTT",
   // terminate the list
   //int  checkSum, dummy, not used
   0

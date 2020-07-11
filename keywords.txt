@@ -8,6 +8,8 @@
 
 WiFiManager_NINA_Lite	KEYWORD1
 WiFiNINA_Configuration KEYWORD1
+MenuItem  KEYWORD1
+WiFi_Credentials  KEYWORD1
 
 
 #######################################
@@ -21,14 +23,14 @@ setConfigPortalIP KEYWORD2
 setConfigPortalChannel KEYWORD2
 setConfigPortal KEYWORD2
 setSTAStaticIPConfig	KEYWORD2
-getWiFiSSID
-getWiFiPW
+getWiFiSSID KEYWORD2
+getWiFiPW KEYWORD2
+getWiFiStatus KEYWORD2
 getFullConfigData KEYWORD2
 localIP KEYWORD2
 clearConfigData KEYWORD2
 isConfigDataValid KEYWORD2
 resetFunc	KEYWORD2
-
 IPAddressToString KEYWORD2
 
 #######################################

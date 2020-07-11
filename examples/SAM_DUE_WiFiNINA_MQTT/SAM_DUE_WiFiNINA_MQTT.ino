@@ -1,9 +1,9 @@
 /****************************************************************************************************************************
-   nRF52840_WiFiNINA_MQTT.ino
-   For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+   SAM_DUE_WiFiNINA_MQTT.ino
+   For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
 
-   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards
-   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy
+   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
+   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
    configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
@@ -18,9 +18,8 @@
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
    1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
-   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.  
+   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.     
   *****************************************************************************************************************************/
-
 /****************************************************************************************************************************
   You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp  as follows to avoid dtostrf error
    
@@ -36,7 +35,7 @@
   }
   #endif
  *****************************************************************************************************************************/
-
+   
 #include "defines.h"
 #include "Credentials.h"
 #include "dynamicParams.h"
@@ -293,7 +292,7 @@ void setup()
 
   pinMode(LED_PIN, OUTPUT);
 
-  Serial.println("\nStart nRF52_WiFiNINA_MQTT on " + String(BOARD_TYPE));
+  Serial.println("\nStart DUE_WiFiNINA_MQTT on " + String(BOARD_TYPE));
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
 
@@ -303,7 +302,7 @@ void setup()
 
   // Set customized DHCP HostName
   WiFiManager_NINA->begin(HOST_NAME);
-  //Or use default Hostname "NRF52-WiFiNINA-XXXXXX"
+  //Or use default Hostname "DUE-WiFiNINA-XXXXXX"
   //WiFiManager_NINA->begin();
 }
 

@@ -6,6 +6,21 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
+---
+
+New recent features:
+
+- ***MultiWiFi*** feature for configuring/auto(re)connecting ***WiFiNINA*** shields to the available MultiWiFi APs at runtime.
+- ***DoubleDetectDetector*** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
+- Configurable ***Config Portal Title*** to be either BoardName or default undistinguishable names.
+- Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+
+### New Release v1.0.5
+
+1. Modify LOAD_DEFAULT_CONFIG_DATA logic.
+4. Enhance MultiWiFi connection logic. 
+5. Add Adafruit MQTT examples.
+
 #### Major Release v1.0.4
 
 1. Configurable ***Config Portal Title*** to be either HostName, BoardName or default undistinguishable names.
@@ -40,6 +55,8 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
 2. Dynamic custom parameters to be saved ***automatically in EEPROM, SAMD EEPROM-emulated FlashStorage or SAM DUE DueFlashStorage***.
 
+---
+
 ## Features
 
 This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD21 (Nano-33 IoT, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32 (F1, F2, F3, F4, F7, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, etc.), etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
@@ -59,23 +76,25 @@ and have to write complicated callback functions to save custom parameters in SP
 
 The web configuration portal, served from the `WiFiNINA modules/shields` is operating as an access point (AP) with configurable static IP address or use default IP Address of 192.168.4.1
 
+---
+
 ## Prerequisite
  1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
- 3. [`Teensy core 1.51 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+ 2. [`Arduino Core for STM32 v1.9.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 3. [`Teensy core 1.53 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.5 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
- 6. [`Adafruit SAMD core 1.5.11 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
- 7. [`Arduino Core for STM32 v1.8.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
- 8. [`Adafruit nRF52 v0.20.1 or later`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox***, etc.
- 9. [`Functional-VLPP library`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
-10. [`WiFiNINA_Generic library v1.5.1-final or later`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
-11. [`WiFiWebServer library v1.0.1 or later`](https://github.com/khoih-prog/WiFiWebServer). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-12. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
-13. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
-14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com)) for nRF52
-15. [`DoubleResetDetector_Generic`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
+ 5. [`Arduino SAMD core 1.8.6 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
+ 6. [`Adafruit SAMD core 1.5.14 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
+ 7. [`Adafruit nRF52 v0.20.5 or later`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox***, etc.
+ 8. [`Functional-VLPP library v1.0.1 or later`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+ 9. [`WiFiNINA_Generic library v1.5.2 or later`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
+10. [`WiFiWebServer library v1.0.4 or later`](https://github.com/khoih-prog/WiFiWebServer). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+11. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
+12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
+13. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com)) for nRF52
+14. [`DoubleResetDetector_Generic v1.0.2 or later`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
 
+---
 
 ## How It Works
 
@@ -104,6 +123,8 @@ Another way to install is to:
 2. Download the latest release `WiFiManager_NINA_Lite-master.zip`.
 3. Extract the zip file to `WiFiManager_NINA_Lite-master` directory 
 4. Copy whole `WiFiManager_NINA_Lite-master/src` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+
+--
 
 ### Using
 - Include in your sketch
@@ -223,13 +244,19 @@ OnceCredentials / WiFi network information is saved in the host non-volatile mem
 
 
 Also see examples: 
-1. [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
-2. [Teensy40_WiFiNINA](examples/Teensy40_WiFiNINA)
-3. [STM32_WiFiNINA](examples/STM32_WiFiNINA)
-4. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
-5. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
-6. [nRF52840_WiFiNINA](examples/nRF52840_WiFiNINA)
+ 1. [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
+ 2. [SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
+ 3. [nRF52840_WiFiNINA](examples/nRF52840_WiFiNINA)
+ 4. [nRF52840_WiFiNINA_MQTT](examples/nRF52840_WiFiNINA_MQTT)
+ 5. [Teensy40_WiFiNINA](examples/Teensy40_WiFiNINA)
+ 6. [Teensy40_WiFiNINA_MQTT](examples/Teensy40_WiFiNINA_MQTT)
+ 7. [STM32_WiFiNINA](examples/STM32_WiFiNINA)
+ 8. [STM32_WiFiNINA_MQTT](examples/STM32_WiFiNINA_MQTT)
+ 9. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
+10. [SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
+11. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
 
+---
 
 ## So, how it works?
 In `Configuration Portal Mode`, it starts an AP called `WIFININA_XXXXXX`. Connect to it using the `configurable password` you can define in the code. For example, `MyWIFININA_XXXXXX` (see examples):
@@ -256,8 +283,10 @@ The WiFi Credentials will be saved and the board connect to the selected WiFi AP
 
 If you're already connected to a listed WiFi AP and don't want to change anything, just select `Exit` from the `Main` page to reboot the board and connect to the previously-stored AP. The WiFi Credentials are still intact.
 
+---
 
 ### Important notes
+
 1. Now you can use special chars such as ***~, !, @, #, $, %, ^, &, _, -, space,etc.*** thanks to [brondolin](https://github.com/brondolin) to provide the amazing fix in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM) to permit input special chars such as ***%*** and ***#*** into data fields. See [Issue 3](https://github.com/khoih-prog/Blynk_WM/issues/3).
 2. The SSIDs, Passwords must be input (or to make them different from ***blank***). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
 3. WiFi password max length now is 63 chars according to WPA2 standard.
@@ -311,7 +340,16 @@ typedef struct Configuration
 
 #if TO_LOAD_DEFAULT_CONFIG_DATA
 
-bool LOAD_DEFAULT_CONFIG_DATA = true;
+// This feature is primarily used in development to force a known set of values as Config Data
+// It will NOT force the Config Portal to activate. Use DRD or erase Config Data with Blynk.clearConfigData()
+
+// Used mostly for development and debugging. FORCES default values to be loaded each run.
+// Config Portal data input will be ignored and overridden by DEFAULT_CONFIG_DATA
+//bool LOAD_DEFAULT_CONFIG_DATA = true;
+
+// Used mostly once debugged. Assumes good data already saved in device.
+// Config Portal data input will be override DEFAULT_CONFIG_DATA
+bool LOAD_DEFAULT_CONFIG_DATA = false;
 
 WiFiNINA_Configuration defaultConfig =
 {
@@ -434,6 +472,7 @@ Please be noted that the following ***reserved names are already used in library
 "pw1"   for WiFi1 PW
 "nm"    for Board Name
 ```
+---
 
 ## Example [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
 
@@ -554,9 +593,9 @@ void loop()
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 #define WIFININA_DEBUG_OUTPUT     Serial
 
-#define WIFININA_DEBUG            false //true
+#define WIFININA_DEBUG            true
 
-#define DRD_GENERIC_DEBUG         false //true
+#define DRD_GENERIC_DEBUG         true
 
 #if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
       || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
@@ -673,7 +712,16 @@ typedef struct Configuration
 
 #if TO_LOAD_DEFAULT_CONFIG_DATA
 
-bool LOAD_DEFAULT_CONFIG_DATA = true;
+// This feature is primarily used in development to force a known set of values as Config Data
+// It will NOT force the Config Portal to activate. Use DRD or erase Config Data with Blynk.clearConfigData()
+
+// Used mostly for development and debugging. FORCES default values to be loaded each run.
+// Config Portal data input will be ignored and overridden by DEFAULT_CONFIG_DATA
+//bool LOAD_DEFAULT_CONFIG_DATA = true;
+
+// Used mostly once debugged. Assumes good data already saved in device.
+// Config Portal data input will be override DEFAULT_CONFIG_DATA
+bool LOAD_DEFAULT_CONFIG_DATA = false;
 
 WiFiNINA_Configuration defaultConfig =
 {
@@ -684,7 +732,7 @@ WiFiNINA_Configuration defaultConfig =
   "SSID1",  "password1",
   "SSID2",  "password2",
   //char board_name     [24];
-  "Air-Control",
+  "SAMD-Control",
   // terminate the list
   //int  checkSum, dummy, not used
   0
@@ -718,7 +766,7 @@ WiFiNINA_Configuration defaultConfig;
 
 /////////////// Start dynamic Credentials ///////////////
 
-//Defined in <WiFiManager_NINA_Lite_NRF52840.h>
+//Defined in <WiFiManager_NINA_Lite_SAMD.h>
 /**************************************
   #define MAX_ID_LEN                5
   #define MAX_DISPLAY_NAME_LEN      16
@@ -779,29 +827,50 @@ This is the terminal output when running [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-*NN: Hostname=SAMD-WIFININA51F485
-*NN: CrCCSum=44880,CrRCSum=-1
-*NN: CCSum=53040,RCSum=-1
-*NN: InitEEPROM,sz=1024,Datasz=392
-*NN: pdata=blank,len=34
-*NN: pdata=blank,len=34
-*NN: pdata=blank,len=34
-*NN: pdata=blank,len=34
-*NN: pdata=blank,len=6
-*NN: pdata=blank,len=34
-*NN: CrCCSum=3120
-*NN: b:OpenPortal
-*NN: SSID=WIFININA_B18D0F,PW=MyWIFININA_B18D0F
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xffffffff
+No doubleResetDetected
+SetFlag write = 0xd0d01234
+*NN: ======= Start Default Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=SAMD-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: ChkCrR:CrCCsum=0xaf50,CrRCsum=0xffffffff
+*NN: CCSum=0x1360,RCSum=0x0
+*NN: Invalid Stored Dynamic Data. Load default from Sketch
+*NN: SaveEEPROM,sz=1024,Datasz=0,CSum=0x109a
+*NN: CrCCSum=0x1981
+*NN: ======= Start Loaded Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=SAMD-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: b:StayInCfgPortal:NoCfgDat
+*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
 *NN: IP=192.168.4.1,CH=10
 WiFi-beginAP3: return1 = 7
 WiFi-beginAP3: return2 = 7
-FYour stored Credentials :
-Blynk Server1 = blank
-Token1 = blank
-Blynk Server2 = blank
-Token2 = blank
-Port = blank
-MQTT Server = blank
+F
+Your stored Credentials :
+Blynk Server1 = account.duckdns.org
+Token1 = token1
+Blynk Server2 = account.ddns.net
+Token2 = token2
+Port = 8080
+MQTT Server = mqtt.duckdns.org
+Stop doubleResetDetecting
+ClearFlag write = 0xd0d04321
 FFFFFFFFF 
 ```
 
@@ -855,32 +924,55 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-*NN: Hostname=SAMD-WIFININA51F485
-*NN: CrCCSum=4880,CrRCSum=4880
-*NN: CCSum=3612,RCSum=3612
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d04321
+No doubleResetDetected
+SetFlag write = 0xd0d01234
+*NN: ======= Start Default Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=SAMD-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: ChkCrR:CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: CCSum=0x1246,RCSum=0x1246
+*NN: CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: Valid Stored Dynamic Data
+*NN: ======= Start Stored Config Data =======
 *NN: Hdr=WIFININA,SSID=HueNet1,PW=****
 *NN: SSID1=HueNet2,PW1=****
-*NN: i=0,id=sv1,data=BlynkServer1
-*NN: i=1,id=tk1,data=Token1
-*NN: i=2,id=sv2,data=BlynkServer2
-*NN: i=3,id=tk2,data=Token2
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=new_account.duckdns.org
+*NN: i=1,id=tk1,data=new_token1
+*NN: i=2,id=sv2,data=new_account.ddns.net
+*NN: i=3,id=tk2,data=new_token2
 *NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=mqtt-server
-*NN: Connecting MultiWifi...
-*NN: con2WF:spentMsec=0
+*NN: i=5,id=mq,data=new_mqtt.duckdns.org
+*NN: ConMultiWifi
+*NN: con2WF:SSID=HueNet1,PW=****
+*NN: Remaining retry_time=3
 WiFi-begin: return1 = 3
 WiFi-begin: return2 = 3
+*NN: WOK, lastConnectedIndex=0
 *NN: con2WF:OK
-*NN: SSID=HueNet1,RSSI=-27
-*NN: IP=192.168.2.92
+*NN: SSID=HueNet1,RSSI=-21
+*NN: IP=192.168.2.105
 *NN: b:WOK
-HYour stored Credentials :
-Blynk Server1 = BlynkServer1
-Token1 = Token1
-Blynk Server2 = BlynkServer2
-Token2 = Token2
+Stop doubleResetDetecting
+ClearFlag write = 0xd0d04321
+H
+Your stored Credentials :
+Blynk Server1 = new_account.duckdns.org
+Token1 = new_token1
+Blynk Server2 = new_account.ddns.net
+Token2 = new_token2
 Port = 8080
-MQTT Server = mqtt-server
+MQTT Server = new_mqtt.duckdns.org
+
 HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 ```
@@ -888,31 +980,18 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHH
 4. Lost a WiFi and autoconnect to another WiFi AP
 
 ```
-*NN: r:Wlost.ReconW           <=== Lost primary WiFi
-*NN: Connecting MultiWifi...  <=== Reconnect primary WiFi
-*NN: con2WF:spentMsec=0
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4
-*NN: con2WF:spentMsec=2366
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4
-*NN: con2WF:spentMsec=4731
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4
-*NN: con2WF:spentMsec=7096
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4
-*NN: con2WF:spentMsec=9460
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4      <=== Fail primary WiFi after 10s
-*NN: con2WF:spentMsec=0      <=== Connect secondary WiFi
-WiFi-begin: return1 = 6
-WiFi-begin: return2 = 6
-*NN: con2WF:spentMsec=5573
+*NN: r:Check&WLost                      <=== Lost primary WiFi
+*NN: r:WLost.ReconW
+*NN: ConMultiWifi
+*NN: Using index=1, lastConnectedIndex=0
+*NN: con2WF:SSID=HueNet2,PW=****        <=== Connect secondary WiFi
+*NN: Remaining retry_time=2
 WiFi-begin: return1 = 3
 WiFi-begin: return2 = 3
-*NN: con2WF:OK              <=== Success
-*NN: IP=192.168.2.92
+*NN: WOK, lastConnectedIndex=1
+*NN: con2WF:OK                          <=== Success
+*NN: SSID=HueNet2,RSSI=-48
+*NN: IP=192.168.2.105
 *NN: r:WOK
 HHHHHHHHHH HHHHHHHHHH
 ```
@@ -921,107 +1000,118 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-*NN: Hostname=SAMD-WiFiNINA-ABCDEF
-*NN: CrCCSum=4879,CrRCSum=4879
-*NN: CCSum=2202,RCSum=2202
-*NN: Hdr=WIFININA,SSID=HueNet1,PW=****  <== Input wrong WiFi Password
-*NN: SSID1=HueNet2,PW1=****             <== Input wrong WiFi Password
-*NN: i=0,id=sv1,data=BlynkServer1
-*NN: i=1,id=tk1,data=Token1
-*NN: i=2,id=sv2,data=BlynkServer1
-*NN: i=3,id=tk2,data=Token2
-*NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=mqtt-server
-*NN: Connecting MultiWifi...
-*NN: con2WF:spentMsec=1
-WiFi-begin: return1 = 6
-WiFi-begin: return2 = 6
-*NN: con2WF:spentMsec=1
-WiFi-begin: return1 = 6
-WiFi-begin: return2 = 6
-*NN: con2WF:spentMsec=5574
-WiFi-begin: return1 = 4
-WiFi-begin: return2 = 4
-*NN: con2WF:spentMsec=7940
-WiFi-begin: return1 = 6
-WiFi-begin: return2 = 6
-*NN: con2WF:failed                <=== Fail to connect to both APs
-*NN: b:NoW                        <=== To open Config Portal next
-*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
-*NN: IP=192.168.4.1,CH=10
-WiFi-beginAP3: return1 = 7
-WiFi-beginAP3: return2 = 7
-FYour stored Credentials :
-Blynk Server1 = BlynkServer1
-Token1 = Token1
-Blynk Server2 = BlynkServer1
-Token2 = Token2
-Port = 8080
-MQTT Server = mqtt-server
-```
-
-6. DRD Not Detected:
-
-```
-
-Start SAMD_WiFiNINA on SAMD NANO_33_IOT
 *NN: Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
-No doubleResetDetected            <==== DRD not detected, run normally
+No doubleResetDetected
 SetFlag write = 0xd0d01234
 *NN: ======= Start Default Config Data =======
 *NN: Hdr=WIFININA,SSID=SSID1,PW=password1
 *NN: SSID1=SSID2,PW1=password2
-*NN: BName=Air-Control
+*NN: BName=SAMD-Control
 *NN: i=0,id=sv1,data=account.duckdns.org
 *NN: i=1,id=tk1,data=token1
 *NN: i=2,id=sv2,data=account.ddns.net
 *NN: i=3,id=tk2,data=token2
 *NN: i=4,id=pt,data=8080
 *NN: i=5,id=mq,data=mqtt.duckdns.org
-*NN: ChkCrR:CrCCsum=20d4,CrRCsum=20d4
+*NN: ChkCrR:CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: CCSum=0x1246,RCSum=0x1246
+*NN: CrCCsum=0x21ce,CrRCsum=0x21ce
 *NN: Valid Stored Dynamic Data
-*NN: CrCCSum=8404,CrRCSum=8404
 *NN: ======= Start Stored Config Data =======
 *NN: Hdr=WIFININA,SSID=HueNet1,PW=****
 *NN: SSID1=HueNet2,PW1=****
-*NN: BName=Air-Control-Nano33IoT
-*NN: i=0,id=sv1,data=new-account.duckdns.org
-*NN: i=1,id=tk1,data=new-token1
-*NN: i=2,id=sv2,data=new-account.ddns.net
-*NN: i=3,id=tk2,data=new-token2
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=new_account.duckdns.org
+*NN: i=1,id=tk1,data=new_token1
+*NN: i=2,id=sv2,data=new_account.ddns.net
+*NN: i=3,id=tk2,data=new_token2
 *NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=new-mqtt.duckdns.org
-*NN: CCSum=0x1571,RCSum=0x1571
-*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
-*NN: SSID1=HueNet2,PW1=****
-*NN: BName=Air-Control-Nano33IoT
-*NN: i=0,id=sv1,data=new-account.duckdns.org
-*NN: i=1,id=tk1,data=new-token1
-*NN: i=2,id=sv2,data=new-account.ddns.net
-*NN: i=3,id=tk2,data=new-token2
-*NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=new-mqtt.duckdns.org
-*NN: bg: noConfigPortal = true
-*NN: Connecting MultiWifi...
-*NN: con2WF:spentMsec=0
-WiFi-begin: return1 = 3
-WiFi-begin: return2 = 3
-*NN: con2WF:OK
-*NN: SSID=HueNet1,RSSI=-26
-*NN: IP=192.168.2.93
-*NN: b:WOK
-H
-Your stored Credentials :
-Blynk Server1 = new-account.duckdns.org
-Token1 = new-token1
-Blynk Server2 = new-account.ddns.net
-Token2 = new-token2
-Port = 8080
-MQTT Server = new-mqtt.duckdns.org
+*NN: i=5,id=mq,data=new_mqtt.duckdns.org
+*NN: ConMultiWifi
+*NN: con2WF:SSID=SSID,PW=password
+*NN: Remaining retry_time=3
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: Remaining retry_time=2
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: Remaining retry_time=1
+WiFi-begin: return1 = 4
+WiFi-begin: return2 = 4
+*NN: Failed using index=0, retry_time=0
+*NN: con2WF:failed
+*NN: b:NoW
+*NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
+*NN: IP=192.168.4.1,CH=10
+WiFi-beginAP3: return1 = 7
+WiFi-beginAP3: return2 = 7
 Stop doubleResetDetecting
 ClearFlag write = 0xd0d04321
+F
+Your stored Credentials :
+Blynk Server1 = new_account.duckdns.org
+Token1 = new_token1
+Blynk Server2 = new_account.ddns.net
+Token2 = new_token2
+Port = 8080
+MQTT Server = new_mqtt.duckdns.org
+FF
+```
 
+6. DRD Not Detected:
+
+```
+Start SAMD_WiFiNINA on SAMD NANO_33_IOT
+*NN: Hostname=SAMD-Master-Controller
+Flag read = 0xd0d04321
+No doubleResetDetected
+SetFlag write = 0xd0d01234
+*NN: ======= Start Default Config Data =======
+*NN: Hdr=WIFININA,SSID=SSID1,PW=password1
+*NN: SSID1=SSID2,PW1=password2
+*NN: BName=SAMD-Control
+*NN: i=0,id=sv1,data=account.duckdns.org
+*NN: i=1,id=tk1,data=token1
+*NN: i=2,id=sv2,data=account.ddns.net
+*NN: i=3,id=tk2,data=token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=mqtt.duckdns.org
+*NN: ChkCrR:CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: CCSum=0x1246,RCSum=0x1246
+*NN: CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: Valid Stored Dynamic Data
+*NN: ======= Start Stored Config Data =======
+*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
+*NN: SSID1=HueNet2,PW1=****
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=new_account.duckdns.org
+*NN: i=1,id=tk1,data=new_token1
+*NN: i=2,id=sv2,data=new_account.ddns.net
+*NN: i=3,id=tk2,data=new_token2
+*NN: i=4,id=pt,data=8080
+*NN: i=5,id=mq,data=new_mqtt.duckdns.org
+*NN: ConMultiWifi
+*NN: con2WF:SSID=HueNet1,PW=****
+*NN: Remaining retry_time=3
+WiFi-begin: return1 = 3
+WiFi-begin: return2 = 3
+*NN: WOK, lastConnectedIndex=0
+*NN: con2WF:OK
+*NN: SSID=HueNet1,RSSI=-21
+*NN: IP=192.168.2.105
+*NN: b:WOK
+Stop doubleResetDetecting
+ClearFlag write = 0xd0d04321
+H
+Your stored Credentials :
+Blynk Server1 = new_account.duckdns.org
+Token1 = new_token1
+Blynk Server2 = new_account.ddns.net
+Token2 = new_token2
+Port = 8080
+MQTT Server = new_mqtt.duckdns.org
+HHHHHHHHH HHHHHHHHHH
 ```
 
 7.DRD detected and Config Portal is forcefully opened
@@ -1030,58 +1120,49 @@ ClearFlag write = 0xd0d04321
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
 *NN: Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
-doubleResetDetected              <==== DRD detected, to open Config Portal
+doubleResetDetected
 ClearFlag write = 0xd0d04321
 *NN: Double Reset Detected
 *NN: ======= Start Default Config Data =======
 *NN: Hdr=WIFININA,SSID=SSID1,PW=password1
 *NN: SSID1=SSID2,PW1=password2
-*NN: BName=Air-Control
+*NN: BName=SAMD-Control
 *NN: i=0,id=sv1,data=account.duckdns.org
 *NN: i=1,id=tk1,data=token1
 *NN: i=2,id=sv2,data=account.ddns.net
 *NN: i=3,id=tk2,data=token2
 *NN: i=4,id=pt,data=8080
 *NN: i=5,id=mq,data=mqtt.duckdns.org
-*NN: ChkCrR:CrCCsum=20d4,CrRCsum=20d4
+*NN: ChkCrR:CrCCsum=0x21ce,CrRCsum=0x21ce
+*NN: CCSum=0x1246,RCSum=0x1246
+*NN: CrCCsum=0x21ce,CrRCsum=0x21ce
 *NN: Valid Stored Dynamic Data
-*NN: CrCCSum=8404,CrRCSum=8404
 *NN: ======= Start Stored Config Data =======
 *NN: Hdr=WIFININA,SSID=HueNet1,PW=****
 *NN: SSID1=HueNet2,PW1=****
-*NN: BName=Air-Control-Nano33IoT
-*NN: i=0,id=sv1,data=new-account.duckdns.org
-*NN: i=1,id=tk1,data=new-token1
-*NN: i=2,id=sv2,data=new-account.ddns.net
-*NN: i=3,id=tk2,data=new-token2
+*NN: BName=Air-Control
+*NN: i=0,id=sv1,data=new_account.duckdns.org
+*NN: i=1,id=tk1,data=new_token1
+*NN: i=2,id=sv2,data=new_account.ddns.net
+*NN: i=3,id=tk2,data=new_token2
 *NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=new-mqtt.duckdns.org
-*NN: CCSum=0x1571,RCSum=0x1571
-*NN: Hdr=WIFININA,SSID=HueNet1,PW=****
-*NN: SSID1=HueNet2,PW1=****
-*NN: BName=Air-Control-Nano33IoT
-*NN: i=0,id=sv1,data=new-account.duckdns.org
-*NN: i=1,id=tk1,data=new-token1
-*NN: i=2,id=sv2,data=new-account.ddns.net
-*NN: i=3,id=tk2,data=new-token2
-*NN: i=4,id=pt,data=8080
-*NN: i=5,id=mq,data=new-mqtt.duckdns.org
-*NN: bg: noConfigPortal = false
-*NN: b:OpenPortal                               <==== Config Portal opened
+*NN: i=5,id=mq,data=new_mqtt.duckdns.org
+*NN: b:StayInCfgPortal:DRD
 *NN: SSID=WIFININA_51F485,PW=MyWIFININA_51F485
 *NN: IP=192.168.4.1,CH=10
 WiFi-beginAP3: return1 = 7
 WiFi-beginAP3: return2 = 7
 F
 Your stored Credentials :
-Blynk Server1 = new-account.duckdns.org
-Token1 = new-token1
-Blynk Server2 = new-account.ddns.net
-Token2 = new-token2
+Blynk Server1 = new_account.duckdns.org
+Token1 = new_token1
+Blynk Server2 = new_account.ddns.net
+Token2 = new_token2
 Port = 8080
-MQTT Server = new-mqtt.duckdns.org
+MQTT Server = new_mqtt.duckdns.org
 
 ```
+---
 
 #### Debug
 Debug is enabled by default on Serial. To disable, add at the beginning of sketch
@@ -1090,17 +1171,19 @@ Debug is enabled by default on Serial. To disable, add at the beginning of sketc
 /* Comment this out to disable prints and save space */
 #define DEBUG_WIFI_WEBSERVER_PORT Serial
 
-#define WIFININA_DEBUG_OUTPUT    false
+#define WIFININA_DEBUG_OUTPUT     Serial
 
-#define WIFININA_DEBUG           false //true
+#define WIFININA_DEBUG            true
 
-#define DRD_GENERIC_DEBUG        false //true
+#define DRD_GENERIC_DEBUG         true
 ```
 
 ## Troubleshooting
 If you get compilation errors, more often than not, you may need to install a newer version of the board's core, `WiFiNINA module/shield` or this library version.
 
 Sometimes, the library will only work if you update the `WiFiNINA module/shield` core to the newer or older version because some function compatibility.
+
+---
 
 ### TO DO
 
@@ -1117,6 +1200,14 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
  7. Add Dynamic parameters
  8. Add Configurable Config Portal Title
  9. Spilt each example into several manageable files.
+ 
+---
+ 
+#### New Release v1.0.5
+
+1. Modify LOAD_DEFAULT_CONFIG_DATA logic.
+4. Enhance MultiWiFi connection logic. 
+5. Add Adafruit MQTT examples.
 
 #### Major Release v1.0.4
 
@@ -1154,10 +1245,13 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 3. This is a Light-Weight Credentials / WiFi Connection Manager with fallback web configuration portal. Completely new to support ***Teensy, SAM DUE, SAMD, STM32, etc. boards running WiFiNINA modules/shields.*** with small memory (64+K bytes)
 4. Config Portal AP SSID and Password will use 4 bytes of hardware unique macAddress, only for Teensy.
 
+---
+
 ### Contributions and thanks
 
 1. Thanks to [Darvesh7](https://github.com/Darvesh7) to report [When Saved Network is unavailable or credential changed bug](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/1) leading to the major release v1.0.3
 2. Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
+3. Thanks to great work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Box B302, B112 running as nRF52840/nRF52832***, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
 
 ### Contributing
 

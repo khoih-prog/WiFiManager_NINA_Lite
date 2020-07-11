@@ -8,7 +8,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
@@ -18,13 +18,14 @@
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
    1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
+   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.  
   *****************************************************************************************************************************/
 /****************************************************************************************************************************
   You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp as follows to avoid dtostrf error, if exists
    
   //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) ||             \
   //    defined(ARDUINO_ARCH_SAMD)
-  #if !( ESP32 || ESP8266 )
+  #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) )
   static char *dtostrf(double val, signed char width, unsigned char prec, char *sout) 
   {
     char fmt[20];

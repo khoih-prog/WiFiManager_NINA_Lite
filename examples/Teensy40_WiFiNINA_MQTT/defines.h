@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-   defines.h for Teensy40_WiFiNINA.ino
+   defines.h for Teensy40_WiFiNINA_MQTT.ino
    For Teensy boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
 
    WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
@@ -70,5 +70,12 @@
 #include <WiFiManager_NINA_Lite_Teensy.h>
 
 #define HOST_NAME   "Teensy-Master-Controller"
+
+#ifdef LED_BUILTIN
+#define LED_PIN     LED_BUILTIN
+#else
+#define LED_PIN     13
+#endif
+
 
 #endif      //defines_h

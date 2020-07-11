@@ -8,7 +8,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Version Modified By   Date        Comments
    ------- -----------  ----------   -----------
@@ -17,7 +17,8 @@
    1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
    1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
                                     SSID password maxlen is 63 now. Permit special chars # and % in input data.
-   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.  
+   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
+   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.   
   *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -206,10 +207,10 @@ class WiFiManager_NINA_Lite
       connectWiFi(ssid, pass);
     }
 
-    // New in v1.0.3 
+    // New in v1.0.5
     void begin(const char *iHostname = "")
     {
-      #define TIMEOUT_CONNECT_WIFI			10000
+      #define RETRY_TIMES_CONNECT_WIFI			3
       
       // New in v1.0.3
       if (iHostname[0] == 0)
@@ -233,13 +234,13 @@ class WiFiManager_NINA_Lite
       
       //// New DRD ////
       drd = new DoubleResetDetector_Generic(DRD_TIMEOUT, DRD_ADDRESS);  
-      bool noConfigPortal = true;
+      bool useConfigPortal = false;
    
       if (drd->detectDoubleReset())
       {
         DEBUG_WM1(F("Double Reset Detected"));
      
-        noConfigPortal = false;
+        useConfigPortal = true;
       }
       //// New DRD ////
       DEBUG_WM1(F("======= Start Default Config Data ======="));
@@ -247,16 +248,14 @@ class WiFiManager_NINA_Lite
       
       hadConfigData = getConfigData();
         
-      DEBUG_WM1(noConfigPortal? F("bg: noConfigPortal = true") : F("bg: noConfigPortal = false"));
-
       //// New DRD ////
-      //  noConfigPortal when getConfigData() OK and no DRD'ed
-      if (hadConfigData && noConfigPortal)     
+      //  useConfigPortal when getConfigData() not OK or DRD'ed
+      if (hadConfigData && !useConfigPortal) 
       //// New DRD //// 
       {
-        hadConfigData = true;
+        //hadConfigData = true;
 
-        if (connectMultiWiFi(TIMEOUT_CONNECT_WIFI))
+        if (connectMultiWiFi(RETRY_TIMES_CONNECT_WIFI))
         {
           DEBUG_WM1(F("b:WOK"));
         }
@@ -269,26 +268,27 @@ class WiFiManager_NINA_Lite
       }
       else
       {
-        INFO_WM1(F("b:OpenPortal"));
+        INFO_WM2(F("b:StayInCfgPortal:"), useConfigPortal ? F("DRD") : F("NoCfgDat"));
+        
         // failed to connect to WiFi, will start configuration mode
         hadConfigData = false;
         startConfigurationMode();
       }
     }
 
-#ifndef TIMEOUT_RECONNECT_WIFI
-#define TIMEOUT_RECONNECT_WIFI   10000L
+#ifndef RETRY_TIMES_RECONNECT_WIFI
+  #define RETRY_TIMES_RECONNECT_WIFI   2
 #else
-    // Force range of user-defined TIMEOUT_RECONNECT_WIFI between 10-60s
-#if (TIMEOUT_RECONNECT_WIFI < 10000L)
-#warning TIMEOUT_RECONNECT_WIFI too low. Reseting to 10000
-#undef TIMEOUT_RECONNECT_WIFI
-#define TIMEOUT_RECONNECT_WIFI   10000L
-#elif (TIMEOUT_RECONNECT_WIFI > 60000L)
-#warning TIMEOUT_RECONNECT_WIFI too high. Reseting to 60000
-#undef TIMEOUT_RECONNECT_WIFI
-#define TIMEOUT_RECONNECT_WIFI   60000L
-#endif
+  // Force range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
+  #if (RETRY_TIMES_RECONNECT_WIFI < 2)
+    #warning RETRY_TIMES_RECONNECT_WIFI too low. Reseting to 2
+    #undef RETRY_TIMES_RECONNECT_WIFI
+    #define RETRY_TIMES_RECONNECT_WIFI   2
+  #elif (RETRY_TIMES_RECONNECT_WIFI > 5)
+    #warning RETRY_TIMES_RECONNECT_WIFI too high. Reseting to 5
+    #undef RETRY_TIMES_RECONNECT_WIFI
+    #define RETRY_TIMES_RECONNECT_WIFI   5
+  #endif
 #endif
 
 #ifndef RESET_IF_CONFIG_TIMEOUT
@@ -313,11 +313,13 @@ class WiFiManager_NINA_Lite
     void run()
     {
       static int retryTimes = 0;
-
+      static bool wifiDisconnectedOnce = false;
+      
       // Lost connection in running. Give chance to reconfig.
-      // Check WiFi status every 2s and update status
+      // Check WiFi status every 5s and update status
+      // Check twice to be sure wifi disconnected is real
       static unsigned long checkstatus_timeout = 0;
-      #define WIFI_STATUS_CHECK_INTERVAL    2000L
+      #define WIFI_STATUS_CHECK_INTERVAL    5000L
       
       //// New DRD ////
       // Call the double reset detector loop method every so often,
@@ -326,21 +328,31 @@ class WiFiManager_NINA_Lite
       // consider the next reset as a double reset.
       drd->loop();
       //// New DRD ////
-      
-      if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
-      {
+         
+      if ( !configuration_mode && (millis() > checkstatus_timeout) )
+      {       
         if (WiFi.status() == WL_CONNECTED)
         {
           wifi_connected = true;
         }
         else
         {
-          wifi_connected = false;
+          if (wifiDisconnectedOnce)
+          {
+            wifiDisconnectedOnce = false;
+            wifi_connected = false;
+            DEBUG_WM1(F("r:Check&WLost"));
+          }
+          else
+          {
+            wifiDisconnectedOnce = true;
+          }
         }
         
         checkstatus_timeout = millis() + WIFI_STATUS_CHECK_INTERVAL;
       }    
-      
+
+      // Lost connection in running. Give chance to reconfig.
       if ( !wifi_connected )
       {
         // If configTimeout but user hasn't connected to configWeb => try to reconnect WiFi
@@ -351,6 +363,7 @@ class WiFiManager_NINA_Lite
 
           if (server)
           {
+            //DEBUG_WM1(F("r:handleClient"));
             server->handleClient();
           }
            
@@ -365,7 +378,7 @@ class WiFiManager_NINA_Lite
           {
             if (++retryTimes <= CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET)
             {
-              DEBUG_WM2(F("r:Wlost&TOut.ConW.Retry#"), retryTimes);
+              DEBUG_WM2(F("r:WLost&TOut.ConW.Retry#"), retryTimes);
             }
             else
             {
@@ -377,9 +390,9 @@ class WiFiManager_NINA_Lite
           // Not in config mode, try reconnecting before forcing to config mode
           if ( !wifi_connected )
           {
-            DEBUG_WM1(F("r:Wlost.ReconW"));
+            DEBUG_WM1(F("r:WLost.ReconW"));
             
-            if (connectMultiWiFi(TIMEOUT_CONNECT_WIFI))
+            if (connectMultiWiFi(RETRY_TIMES_RECONNECT_WIFI))
             {
               DEBUG_WM1(F("r:WOK"));
             }
@@ -406,9 +419,20 @@ class WiFiManager_NINA_Lite
       portal_apIP = portalIP;
     }
 
-    void setConfigPortalChannel(int channel = 10)
+    #define MIN_WIFI_CHANNEL      1
+    #define MAX_WIFI_CHANNEL      12    // Channel 13 is flaky, because of bad number 13 ;-)
+
+    int setConfigPortalChannel(int channel = 1)
     {
-      AP_channel = channel;
+      // If channel < MIN_WIFI_CHANNEL - 1 or channel > MAX_WIFI_CHANNEL => channel = 1
+      // If channel == 0 => will use random channel from MIN_WIFI_CHANNEL to MAX_WIFI_CHANNEL
+      // If (MIN_WIFI_CHANNEL <= channel <= MAX_WIFI_CHANNEL) => use it
+      if ( (channel < MIN_WIFI_CHANNEL - 1) || (channel > MAX_WIFI_CHANNEL) )
+        AP_channel = 1;
+      else if ( (channel >= MIN_WIFI_CHANNEL - 1) && (channel <= MAX_WIFI_CHANNEL) )
+        AP_channel = channel;
+
+      return AP_channel;
     }
     
     void setConfigPortal(String ssid = "", String pass = "")
@@ -444,6 +468,11 @@ class WiFiManager_NINA_Lite
       return (String(WiFiNINA_config.WiFi_Creds[index].wifi_pw));
     }
     
+    bool getWiFiStatus(void)
+    {
+      return wifi_connected;
+    }
+    
     WiFiNINA_Configuration* getFullConfigData(WiFiNINA_Configuration *configData)
     {
       if (!hadConfigData)
@@ -473,12 +502,19 @@ class WiFiManager_NINA_Lite
         memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
       }
 
-      //EEPROM_put();
       saveConfigData();
+    }
+    
+    bool isConfigDataValid(void)
+    {
+      return hadConfigData;
     }
 
     void resetFunc()
     {    
+      // Best one. Possibly don't need the WDT
+      NVIC_SystemReset();
+      
 #if ( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__)  )
       // For SAMD51
       // see Table 17-5 Timeout Period (valid values 0-11)
@@ -634,7 +670,7 @@ class WiFiManager_NINA_Lite
         *_pointer = EEPROM.read(offset);
       }  
                   
-      DEBUG_WM4(F("ChkCrR:CrCCsum="), String(checkSum, HEX), F(",CrRCsum="), String(readCheckSum, HEX));
+      DEBUG_WM4(F("ChkCrR:CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
            
       if ( checkSum != readCheckSum)
       {
@@ -685,7 +721,7 @@ class WiFiManager_NINA_Lite
         *_pointer = EEPROM.read(offset);
       }
          
-      DEBUG_WM4(F("CrCCSum="), checkSum, F(",CrRCSum="), readCheckSum);
+      DEBUG_WM4(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
       
       if ( checkSum != readCheckSum)
       {
@@ -734,43 +770,74 @@ class WiFiManager_NINA_Lite
       
       EEPROM.commit();
       
-      DEBUG_WM2(F("CrCCSum="), checkSum);
-    }    
+      DEBUG_WM2(F("CrCCSum=0x"), String(checkSum, HEX));
+    }
+    
+    // New from v1.0.5
+    void loadAndSaveDefaultConfigData(void)
+    {
+      // Load Default Config Data from Sketch
+      memcpy(&WiFiNINA_config, &defaultConfig, sizeof(WiFiNINA_config));
+      strcpy(WiFiNINA_config.header, WIFININA_BOARD_TYPE);
+      
+      // Including config and dynamic data, and assume valid
+      saveConfigData();
+          
+      DEBUG_WM1(F("======= Start Loaded Config Data ======="));
+      displayConfigData(WiFiNINA_config);    
+    }
     
     bool getConfigData()
     {
-      bool dynamicDataValid;   
+      bool dynamicDataValid;
+      int calChecksum;
       
       hadConfigData = false;  
       
+      // Use new LOAD_DEFAULT_CONFIG_DATA logic
       if (LOAD_DEFAULT_CONFIG_DATA)
-      {
-        // Load default dynamicData, if checkSum OK => valid data => load
-        // otherwise, use default in sketch and just assume it's OK
-        if (checkDynamicData())
+      {     
+        // Load Config Data from Sketch
+        loadAndSaveDefaultConfigData();
+        
+        // Don't need Config Portal anymore
+        return true; 
+      }
+      else
+      {   
+        // Load stored config / dynamic data from dueFlashStorage
+        // Verify ChkSum
+        dynamicDataValid = checkDynamicData();
+        
+        calChecksum = calcChecksum();
+
+        DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX), F(",RCSum=0x"), String(WiFiNINA_config.checkSum, HEX));
+                   
+        if (dynamicDataValid)
         {
-          DEBUG_WM1(F("Valid Stored Dynamic Data"));
+          // CkSum verified, Now get valid config/ dynamic data
           EEPROM_get();
+             
+          DEBUG_WM1(F("Valid Stored Dynamic Data"));        
+          DEBUG_WM1(F("======= Start Stored Config Data ======="));
+          displayConfigData(WiFiNINA_config);
+          
+          // Don't need Config Portal anymore
+          return true;
         }
         else
         {
-          DEBUG_WM1(F("Ignore invalid Stored Dynamic Data"));
-        }
+          // Invalid Stored config data => Config Portal
+          DEBUG_WM1(F("Invalid Stored Dynamic Data. Load default from Sketch"));
           
-        dynamicDataValid = true;
+          // Load Default Config Data from Sketch, better than just "blank"
+          loadAndSaveDefaultConfigData();
+                           
+          // Need Config Portal here as data can be just dummy
+          // Even if you don't open CP, you're OK on next boot if your default config data is valid 
+          return false;
+        }      
       }
-      else
-      {           
-        dynamicDataValid = EEPROM_get();
-      }    
-      
-      DEBUG_WM1(F("======= Start Stored Config Data ======="));
-      displayConfigData(WiFiNINA_config);
-
-      int calChecksum = calcChecksum();
-
-      DEBUG_WM4(F("CCSum=0x"), String(calChecksum, HEX),
-                 F(",RCSum=0x"), String(WiFiNINA_config.checkSum, HEX));
 
       if ( (strncmp(WiFiNINA_config.header, WIFININA_BOARD_TYPE, strlen(WIFININA_BOARD_TYPE)) != 0) ||
            (calChecksum != WiFiNINA_config.checkSum) || !dynamicDataValid )
@@ -844,51 +911,63 @@ class WiFiManager_NINA_Lite
       int calChecksum = calcChecksum();
       WiFiNINA_config.checkSum = calChecksum;
       
-      DEBUG_WM6(F("SaveEEPROM,sz="), EEPROM.length(), F(",Datasz="), totalDataSize, F(",CSum="), calChecksum);
+      DEBUG_WM6(F("SaveEEPROM,sz="), EEPROM.length(), F(",Datasz="), totalDataSize, F(",CSum=0x"), String(calChecksum, HEX));
 
       EEPROM_put();
     }
     
-    bool connectMultiWiFi(int timeout)
+    // New connection logic from v1.0.5
+    bool connectMultiWiFi(int retry_time)
     {
-      int sleep_time = 250;
+      int sleep_time  = 250;
+      int index       = 0;
       uint8_t status;
-      
-      unsigned long currMillis;
+                       
+      static int lastConnectedIndex = 255;
 
-      DEBUG_WM1(F("Connecting MultiWifi..."));
+      DEBUG_WM1(F("ConMultiWifi"));
 
       if (static_IP != IPAddress(0, 0, 0, 0))
       {
         DEBUG_WM1(F("UseStatIP"));
         WiFi.config(static_IP);
       }
-      
-      for (int i = 0; i < NUM_WIFI_CREDENTIALS; i++)
+    
+      if (lastConnectedIndex != 255)
       {
-        currMillis = millis();
+        index = (lastConnectedIndex + 1) % NUM_WIFI_CREDENTIALS;                       
+        DEBUG_WM4(F("Using index="), index, F(", lastConnectedIndex="), lastConnectedIndex);
+      }
+      
+      DEBUG_WM4(F("con2WF:SSID="), WiFiNINA_config.WiFi_Creds[index].wifi_ssid,
+                F(",PW="), WiFiNINA_config.WiFi_Creds[index].wifi_pw);
+             
+      while ( !wifi_connected && ( 0 < retry_time ) )
+      {      
+        DEBUG_WM2(F("Remaining retry_time="), retry_time);
         
-        setHostname();
-        
-        while ( !wifi_connected && ( 0 < timeout ) && ( (millis() - currMillis) < (unsigned long) timeout )  )
+        status = WiFi.begin(WiFiNINA_config.WiFi_Creds[index].wifi_ssid, WiFiNINA_config.WiFi_Creds[index].wifi_pw); 
+            
+        // Need restart WiFi at beginning of each cycle 
+        if (status == WL_CONNECTED)
         {
-          DEBUG_WM2(F("con2WF:spentMsec="), millis() - currMillis);
+          wifi_connected = true;          
+          lastConnectedIndex = index;                                     
+          DEBUG_WM2(F("WOK, lastConnectedIndex="), lastConnectedIndex);
           
-          status = WiFi.begin(WiFiNINA_config.WiFi_Creds[i].wifi_ssid, WiFiNINA_config.WiFi_Creds[i].wifi_pw);
-
-          if (status == WL_CONNECTED)
-          {
-            wifi_connected = true;
-            // To exit for loop
-            i = NUM_WIFI_CREDENTIALS;
-            break;
-          }
-          else
-          {
-            delay(sleep_time);
-          }
+          break;
         }
-      }       
+        else
+        {
+          delay(sleep_time);
+          retry_time--;
+        }         
+      }
+          
+      if (retry_time <= 0)
+      {      
+        DEBUG_WM4(F("Failed using index="), index, F(", retry_time="), retry_time);             
+      }  
 
       if (wifi_connected)
       {
@@ -897,7 +976,9 @@ class WiFiManager_NINA_Lite
       }
       else
       {
-        DEBUG_WM1(F("con2WF:failed"));
+        DEBUG_WM1(F("con2WF:failed"));  
+        // Can't connect, so try another index next time. Faking this index is OK and lost
+        lastConnectedIndex = index;  
       }
 
       return wifi_connected;  
@@ -1079,12 +1160,25 @@ class WiFiManager_NINA_Lite
         portal_ssid = "WIFININA_" + randomNum;
         portal_pass = "MyWIFININA_" + randomNum;
       }
+      
+      // start access point, AP only, channel 10
+           
+      uint16_t channel;
+     
+      // Use random channel if  AP_channel == 0
+      //srand(MAX_WIFI_CHANNEL);   
+      srand((uint16_t) millis());
+      
+      if (AP_channel == 0)
+        channel = (rand() % MAX_WIFI_CHANNEL) + 1;     //random(MAX_WIFI_CHANNEL) + 1;
+      else
+        channel = AP_channel;
 
       INFO_WM4(F("SSID="), portal_ssid, F(",PW="), portal_pass);
-      INFO_WM4(F("IP="), portal_apIP, F(",CH="), AP_channel);
+      INFO_WM4(F("IP="), portal_apIP, F(",CH="), channel);
 
       // start access point, AP only,default channel 10
-      WiFi.beginAP(portal_ssid.c_str(), portal_pass.c_str(), AP_channel);
+      WiFi.beginAP(portal_ssid.c_str(), portal_pass.c_str(), channel);
       
 
       if (!server)
