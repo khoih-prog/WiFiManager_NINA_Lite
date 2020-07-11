@@ -34,7 +34,7 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 #### Major Release v1.0.3
 
 1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the available WiFi AP. It will then autoreconnect to the remaining WiFi AP if the current connection is lost.
-2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc.***
+2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.***
 3. WiFi Password max length is 63, according to WPA2 standard
 4. Permit to input special chars such as ***%*** and ***#*** into data fields.
 5. Add option to have built-in, yet configurable RFC-952-conformed DHCP hostname.
@@ -59,7 +59,7 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 
 ## Features
 
-This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD21 (Nano-33 IoT, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32 (F1, F2, F3, F4, F7, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, etc.), etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
+This library is a Light Weight Credentials / WiFi Manager for WiFiNINA modules/shields, specially designed to support ***Teensy, SAM DUE, SAMD21 (Nano-33 IoT, Itsy-Bitsy M0, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32F (F1, F2, F3, F4, F7, Nucleo-144, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, NINA_B112_ublox, etc.), etc. boards running WiFiNINA modules/shields.*** with smaller memory (64+K bytes)
 
 The AVR-family boards (UNO, Nano, etc.) are ***not supported*** as they don't have enough memory to run Config Portal WebServer.
 
@@ -237,10 +237,10 @@ or just use the default Hostname, for example "SAMD-WiFiNINA-XXXXXX" for SAMD
   //WiFiManager_NINA->begin();
 ```
 
-While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` ("MyWIFININA_XXXXXX"), then open a browser to the Portal AP IP, default `192.168.4.1`, configure wifi then save. The Credentials / WiFi connection information will be saved in non-volatile memory. It will then autoconnect.
+While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` ("MyWIFININA_XXXXXX"), then open a browser to the Portal AP IP, default `192.168.4.1`, configure wifi then click ***Save***. The Credentials / WiFi connection information will be saved in non-volatile memory. It will then autoconnect.
 
 
-OnceCredentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
+Once Credentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
 
 
 Also see examples: 
@@ -259,6 +259,7 @@ Also see examples:
 ---
 
 ## So, how it works?
+
 In `Configuration Portal Mode`, it starts an AP called `WIFININA_XXXXXX`. Connect to it using the `configurable password` you can define in the code. For example, `MyWIFININA_XXXXXX` (see examples):
 
 After you connected, please, go to http://192.168.4.1 or newly configured AP IP, you'll see this `Main` page:
@@ -285,7 +286,7 @@ If you're already connected to a listed WiFi AP and don't want to change anythin
 
 ---
 
-### Important notes
+### Important Notes
 
 1. Now you can use special chars such as ***~, !, @, #, $, %, ^, &, _, -, space,etc.*** thanks to [brondolin](https://github.com/brondolin) to provide the amazing fix in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM) to permit input special chars such as ***%*** and ***#*** into data fields. See [Issue 3](https://github.com/khoih-prog/Blynk_WM/issues/3).
 2. The SSIDs, Passwords must be input (or to make them different from ***blank***). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
@@ -295,13 +296,19 @@ If you're already connected to a listed WiFi AP and don't want to change anythin
 
 See this example and modify as necessary
 
-1. To load [Default Credentials](examples//Credentials.h)
+1. To always load [Default Credentials](examples//Credentials.h) and override Config Portal data
+
 ```
+// Used mostly for development and debugging. FORCES default values to be loaded each run.
+// Config Portal data input will be ignored and overridden by DEFAULT_CONFIG_DATA
 bool LOAD_DEFAULT_CONFIG_DATA = true;
 ```
 
-2. To use system default to load "blank" when there is no valid Credentials
+2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA
+
 ```
+// Used mostly once debugged. Assumes good data already saved in device.
+// Config Portal data input will be override DEFAULT_CONFIG_DATA
 bool LOAD_DEFAULT_CONFIG_DATA = false;
 ```
 
@@ -1222,7 +1229,7 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 #### Major Release v1.0.3
 
 1. ***Multiple WiFi Credentials (SSID, Password)*** and system will autoconnect to the available WiFi AP. It will then autoreconnect to the remaining WiFi AP if the current connection is lost.
-2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B30_ublox, etc.***
+2. Add support to ***nRF52*** boards, such as ***AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.***
 3. WiFi Password max length is 63, according to WPA2 standard
 4. Permit to input special chars such as ***%*** and ***#*** into data fields.
 5. Add option to have built-in, yet configurable RFC-952-conformed DHCP hostname.
