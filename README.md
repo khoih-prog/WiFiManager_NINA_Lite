@@ -77,22 +77,151 @@ and have to write complicated callback functions to save custom parameters in SP
 The web configuration portal, served from the `WiFiNINA modules/shields` is operating as an access point (AP) with configurable static IP address or use default IP Address of 192.168.4.1
 
 ---
+---
 
 ## Prerequisite
- 1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino Core for STM32 v1.9.0 or later`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
- 3. [`Teensy core 1.53 or later`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
- 4. [`Arduino SAM DUE core 1.6.12 or later`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.6 or later`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
- 6. [`Adafruit SAMD core 1.5.14 or later`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
- 7. [`Adafruit nRF52 v0.20.5 or later`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox***, etc.
- 8. [`Functional-VLPP library v1.0.1 or later`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
- 9. [`WiFiNINA_Generic library v1.5.2 or later`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
-10. [`WiFiWebServer library v1.0.4 or later`](https://github.com/khoih-prog/WiFiWebServer). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-11. [`FlashStorage_SAMD library v1.0.0`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
-12. [`DueFlashStorage library`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
-13. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com)) for nRF52
-14. [`DoubleResetDetector_Generic v1.0.2 or later`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
+ 1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+ 2. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
+ 3. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
+ 4. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
+ 5. [`Arduino SAMD core 1.8.8+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
+ 6. [`Adafruit SAMD core 1.6.0+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
+ 7. [`Seeeduino SAMD core 1.7.8+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
+ 8. [`Adafruit nRF52 v0.20.5+`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, ***NINA_B302_ublox***, etc.
+ 9. [`Functional-VLPP library v1.0.1+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+10. [`WiFiNINA_Generic library v1.7.1+`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
+11. [`WiFiWebServer library v1.0.6+`](https://github.com/khoih-prog/WiFiWebServer). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+12. [`FlashStorage_SAMD library v1.0.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.)
+13. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE
+14. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com)) for nRF52
+15. [`DoubleResetDetector_Generic v1.0.2+`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
+
+---
+
+## Installation
+
+### Use Arduino Library Manager
+The best and easiest way is to use `Arduino Library Manager`. Search for `WiFiManager_NINA_Lite`, then select / install the latest version.
+You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiManager_NINA_Lite.svg?)](https://www.ardu-badge.com/WiFiManager_NINA_Lite) for more detailed instructions.
+
+### Manual Install
+
+1. Navigate to [WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite) page.
+2. Download the latest release `WiFiManager_NINA_Lite-master.zip`.
+3. Extract the zip file to `WiFiManager_NINA_Lite-master` directory 
+4. Copy whole 
+  - `WiFiManager_NINA_Lite-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+
+### VS Code & PlatformIO:
+1. Install [VS Code](https://code.visualstudio.com/)
+2. Install [PlatformIO](https://platformio.org/platformio-ide)
+3. Install **WiFiManager_NINA_Lite** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ***WiFiManager_NINA_Lite*** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
+
+---
+
+### Packages' Patches
+
+ 1. ***To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards***, you have to copy the whole [nRF52 0.20.5](Packages_Patches/adafruit/hardware/nrf52/0.20.5) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5). 
+
+Supposing the Adafruit nRF52 version is 0.20.5. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/variants/NINA_B112_ublox/variant.cpp`
+- ***`~/.arduino15/packages/adafruit/hardware/nrf52/0.20.5/cores/nRF5/Udp.h`***
+
+Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
+These files must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
+- ***`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`***
+
+ 2. ***To be able to compile and run on Teensy boards***, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+
+Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
+
+- `./arduino-1.8.12/hardware/teensy/avr/boards.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
+
+ 3. ***To be able to compile and run on SAM DUE boards***, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+
+Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/sam/1.6.12/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
+
+ 4. ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.8](Packages_Patches/arduino/hardware/samd/1.8.8) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.8).
+ 
+Supposing the Arduino SAMD version is 1.8.8. These files must be copied into the directory:
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.8/platform.txt`
+- ***`~/.arduino15/packages/arduino/hardware/samd/1.8.8/cores/arduino/Arduino.h`***
+
+Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
+
+These files must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/samd/x.yy.z/platform.txt`
+- ***`~/.arduino15/packages/arduino/hardware/samd/x.yy.z/cores/arduino/Arduino.h`***
+ 
+ This is mandatory to fix the ***notorious Arduino SAMD compiler error***. See [Improve Arduino compatibility with the STL (min and max macro)](https://github.com/arduino/ArduinoCore-samd/pull/399)
+ 
+```
+ ...\arm-none-eabi\include\c++\7.2.1\bits\stl_algobase.h:243:56: error: macro "min" passed 3 arguments, but takes just 2
+     min(const _Tp& __a, const _Tp& __b, _Compare __comp)
+```
+
+Whenever the above-mentioned compiler error issue is fixed with the new Arduino SAMD release, you don't need to copy the `Arduino.h` file anymore.
+
+ 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.0) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.0). 
+
+Supposing the Adafruit SAMD core version is 1.6.0. This file must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.0/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
+
+ 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.7.8) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.7.8). 
+
+Supposing the Seeeduino SAMD core version is 1.7.8. This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/1.7.8/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
+
+7. ***To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards***, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
 ---
 
@@ -110,23 +239,10 @@ The web configuration portal, served from the `WiFiNINA modules/shields` is oper
 - In the operation, if the current WiFi connection is lost because of any reason, the system will ***auto(Re)connect*** to the remaining WiFi AP.
 - ***If system can't connect to any of the 2 WiFi APs, the Config Portal will start***, after some pre-determined time, to permit user to update the Credentials.
 
-## Quick Start
+---
 
-The best and easiest way is to use `Arduino Library Manager`. Search for `WiFiManager_NINA_Lite`, then select / install the latest version.
-You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiManager_NINA_Lite.svg?)](https://www.ardu-badge.com/WiFiManager_NINA_Lite) for more detailed instructions.
+### How to use
 
-### Manual Install
-
-Another way to install is to:
-
-1. Navigate to [WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite) page.
-2. Download the latest release `WiFiManager_NINA_Lite-master.zip`.
-3. Extract the zip file to `WiFiManager_NINA_Lite-master` directory 
-4. Copy whole `WiFiManager_NINA_Lite-master/src` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
-
---
-
-### Using
 - Include in your sketch
 
 ```cpp
@@ -257,6 +373,7 @@ Also see examples:
 11. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
 
 ---
+---
 
 ## So, how it works?
 
@@ -292,11 +409,13 @@ If you're already connected to a listed WiFi AP and don't want to change anythin
 2. The SSIDs, Passwords must be input (or to make them different from ***blank***). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
 3. WiFi password max length now is 63 chars according to WPA2 standard.
 
+---
+
 ### How to use default Credentials and have them pre-loaded onto Config Portal
 
 See this example and modify as necessary
 
-1. To always load [Default Credentials](examples//Credentials.h) and override Config Portal data
+#### 1. To always load [Default Credentials](examples//Credentials.h) and override Config Portal data
 
 ```
 // Used mostly for development and debugging. FORCES default values to be loaded each run.
@@ -304,7 +423,7 @@ See this example and modify as necessary
 bool LOAD_DEFAULT_CONFIG_DATA = true;
 ```
 
-2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA
+#### 2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA
 
 ```
 // Used mostly once debugged. Assumes good data already saved in device.
@@ -312,7 +431,7 @@ bool LOAD_DEFAULT_CONFIG_DATA = true;
 bool LOAD_DEFAULT_CONFIG_DATA = false;
 ```
 
-3. Example of [Default Credentials](examples/SAMD_WiFiNINA/Credentials.h)
+#### 3. Example of [Default Credentials](examples/SAMD_WiFiNINA/Credentials.h)
 
 ```cpp
 /// Start Default Config Data //////////////////
@@ -465,6 +584,7 @@ uint16_t NUM_MENU_ITEMS = 0;
 /////// // End dynamic Credentials ///////////
 
 ```
+---
 
 ### Important Notes for using Dynamic Parameters' ids
 
@@ -481,11 +601,11 @@ Please be noted that the following ***reserved names are already used in library
 ```
 ---
 
-## Example [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
+### Example [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
 
 Please take a look at other examples, as well.
 
-1. File [SAMD_WiFiNINA.ino](examples/SAMD_WiFiNINA/SAMD_WiFiNINA.ino)
+#### 1. File [SAMD_WiFiNINA.ino](examples/SAMD_WiFiNINA/SAMD_WiFiNINA.ino)
 
 ```cpp
 #include "defines.h"
@@ -589,8 +709,9 @@ void loop()
 #endif
 }
 ```
+---
 
-2. File [defines.h](examples/SAMD_WiFiNINA/defines.h)
+#### 2. File [defines.h](examples/SAMD_WiFiNINA/defines.h)
 
 ```cpp
 #ifndef defines_h
@@ -678,8 +799,9 @@ void loop()
 
 #endif      //defines_h
 ```
+---
 
-3. File [Credentials.h](examples/SAMD_WiFiNINA/Credentials.h)
+#### 3. File [Credentials.h](examples/SAMD_WiFiNINA/Credentials.h)
 
 ```cpp
 #ifndef Credentials_h
@@ -759,9 +881,9 @@ WiFiNINA_Configuration defaultConfig;
 
 #endif    //Credentials_h
 ```
+---
 
-
-4. File [dynamicParams.h](examples/SAMD_WiFiNINA/dynamicParams.h)
+#### 4. File [dynamicParams.h](examples/SAMD_WiFiNINA/dynamicParams.h)
 
 ```cpp
 #ifndef dynamicParams_h
@@ -827,10 +949,15 @@ uint16_t NUM_MENU_ITEMS = 0;
 
 #endif      //dynamicParams_h
 ```
+---
+---
+
+
+### Debug Terminal output Samples
 
 This is the terminal output when running [SAMD_WiFiNINA](examples/SAMD_WiFiNINA) example on ***Nano-33 IoT***:
 
-1. Open Config Portal
+#### 1. Open Config Portal
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -881,7 +1008,7 @@ ClearFlag write = 0xd0d04321
 FFFFFFFFF 
 ```
 
-2. Received data from Config Portal
+#### 2. Received data from Config Portal
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -927,7 +1054,7 @@ FFFFFFFFF
 *NN: h:Rst
 ```
 
-3. Got valid Credential from Config Portal, then connected to WiFi
+#### 3. Got valid Credential from Config Portal, then connected to WiFi
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -984,7 +1111,7 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHH
 HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 ```
 
-4. Lost a WiFi and autoconnect to another WiFi AP
+#### 4. Lost a WiFi and autoconnect to another WiFi AP
 
 ```
 *NN: r:Check&WLost                      <=== Lost primary WiFi
@@ -1003,7 +1130,7 @@ WiFi-begin: return2 = 3
 HHHHHHHHHH HHHHHHHHHH
 ```
 
-5. Reopen Config Portal if can't connect to any of the 2 WiFi APs
+#### 5. Reopen Config Portal if can't connect to any of the 2 WiFi APs
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -1066,7 +1193,7 @@ MQTT Server = new_mqtt.duckdns.org
 FF
 ```
 
-6. DRD Not Detected:
+#### 6. DRD Not Detected:
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -1121,7 +1248,7 @@ MQTT Server = new_mqtt.duckdns.org
 HHHHHHHHH HHHHHHHHHH
 ```
 
-7.DRD detected and Config Portal is forcefully opened
+#### 7.DRD detected and Config Portal is forcefully opened
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
@@ -1170,6 +1297,7 @@ MQTT Server = new_mqtt.duckdns.org
 
 ```
 ---
+---
 
 #### Debug
 Debug is enabled by default on Serial. To disable, add at the beginning of sketch
@@ -1208,6 +1336,7 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
  8. Add Configurable Config Portal Title
  9. Spilt each example into several manageable files.
  
+---
 ---
  
 #### New Release v1.0.5
@@ -1253,12 +1382,23 @@ Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest
 4. Config Portal AP SSID and Password will use 4 bytes of hardware unique macAddress, only for Teensy.
 
 ---
+---
 
 ### Contributions and thanks
 
 1. Thanks to [Darvesh7](https://github.com/Darvesh7) to report [When Saved Network is unavailable or credential changed bug](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/1) leading to the major release v1.0.3
 2. Thanks to [thorathome in GitHub](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
 3. Thanks to great work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially ***U-Box B302, B112 running as nRF52840/nRF52832***, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/thorathome"><img src="https://github.com/thorathome.png" width="100px;" alt="thorathome"/><br /><sub><b>⭐️ thorathome</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ tcpipchip</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/Darvesh7"><img src="https://github.com/Darvesh7.png" width="100px;" alt="Darvesh7"/><br /><sub><b>Darvesh7</b></sub></a><br /></td>
+  </tr> 
+</table>
+
+---
 
 ### Contributing
 
@@ -1267,6 +1407,8 @@ If you want to contribute to this project:
 - Ask for enhancements
 - Create issues and pull requests
 - Tell other people about this library
+
+---
 
 ### Copyright
 
