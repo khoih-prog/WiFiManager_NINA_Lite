@@ -22,6 +22,45 @@
       "tests"
     ]
   },
+  "dependencies": 
+  [
+    {
+      "owner": "khoih.prog",
+      "name": "WiFiNINA_Generic",
+      "version": "^1.8.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "DoubleResetDetector_Generic",
+      "version": "^1.0.2",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "FlashStorage_SAMD",
+      "version": "^1.0.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "sebnil",
+      "name": "DueFlashStorage",
+      "version": "^1.0.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "WiFiWebServer",
+      "version": "^1.1.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "Functional-Vlpp",
+      "version": "^1.0.1",
+      "platforms": ["*"]
+    }
+  ],
   "frameworks": "*",
   "platforms": "*",
   "examples": "examples/*/*/*.ino"
