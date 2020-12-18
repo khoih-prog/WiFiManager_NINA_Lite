@@ -9,6 +9,69 @@
 ---
 ---
 
+## Table of Contents
+
+* [Why do we need this WiFiManager_NINA_Lite library](#why-do-we-need-this-wifimanager_nina_lite-library)
+* [Changelog](#changelog)
+* [Prerequisites](#prerequisites)
+* [Installation](#installation)
+  * [Use Arduino Library Manager](#use-arduino-library-manager)
+  * [Manual Install](#manual-install)
+  * [VS Code & PlatformIO](#vs-code--platformio)
+* [Packages' Patches](#packages-patches)
+  * [1. For Adafruit nRF52840 and nRF52832 boards](#1-for-adafruit-nRF52840-and-nRF52832-boards)
+  * [2. For Teensy boards](#2-for-teensy-boards)
+  * [3. For Arduino SAM DUE boards](#3-for-arduino-sam-due-boards)
+  * [4. For Arduino SAMD boards](#4-for-arduino-samd-boards)
+      * [For core version v1.8.10+](#for-core-version-v1810+)
+      * [For core version v1.8.9-](#for-core-version-v189-)
+  * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
+  * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
+  * [7. For STM32 boards](#7-for-stm32-boards) 
+* [How It Works](#how-it-works)
+* [How to use](#how-to-use)
+* [Examples](#examples)
+* [So, how it works?](#so-how-it-works)
+* [Important Notes](#important-notes)
+* [How to use default Credentials and have them pre-loaded onto Config Portal](#how-to-use-default-credentials-and-have-them-pre-loaded-onto-config-portal)
+  * [1. To always load Default Credentials and override Config Portal data](#1-to-always-load-default-credentials-and-override-config-portal-data)
+  * [2. To load Default Credentials when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA](2-to-load-default-credentials-when-there-is-no-valid-credentials-config-portal-data-input-will-be-override-default_config_data)
+  * [3. Example of Default Credentials](#3-example-of-default-credentials)
+* [How to add dynamic parameters from sketch](#how-to-add-dynamic-parameters-from-sketch)
+* [Important Notes for using Dynamic Parameters' ids](#important-notes-for-using-dynamic-parameters-ids)
+* [Example SAMD_WiFiNINA](#example-samd_wifinina)
+  * [1. File SAMD_WiFiNINA.ino](#1-file-samd_wifininaino)
+  * [2. File defines.h](#2-file-definesh)
+  * [3. File Credentials.h](#3-file-credentialsh)
+  * [4. File dynamicParams.h](#4-file-dynamicparamsh)
+* [Debug Termimal Output Samples](#debug-terminal-output-samples)
+  * [1. Open Config Portal](#1-open-config-portal)
+  * [2. Received data from Config Portal](#2-received-data-from-config-portal)
+  * [3. Got valid Credential from Config Portal, then connected to WiFi](#3-got-valid-credential-from-config-portal-then-connected-to-wifi)
+  * [4. Lost a WiFi and autoconnect to another WiFi AP](#4-lost-a-wifi-and-autoconnect-to-another-wifi-ap)
+  * [5. Reopen Config Portal if can't connect to any of the 2 WiFi APs](#5-reopen-config-portal-if-cant-connect-to-any-of-the-2-wifi-aps)
+  * [6. DRD Not Detected](#6-drd-not-detected) 
+  * [7. DRD detected and Config Portal is forcefully opened](#7drd-detected-and-config-portal-is-forcefully-opened)
+* [Debug](#debug)
+* [Troubleshooting](#troubleshooting)
+* [TO DO](#to-do)
+* [DONE](#done)
+* [Releases](#releases)
+  * [New Release v1.0.5](new-release-v105-1)
+  * [Major Release v1.0.4](#major-release-v104-1)
+  * [Major Release v1.0.3](#major-release-v103-1)
+  * [New in v1.0.2](#new-in-v102-1)
+  * [New in v1.0.1](#new-in-v101-1)
+  * [New in v1.0.0](#new-in-v100-1)
+* [Issues](#issues)
+* [Contributions and Thanks](#contributions-and-thanks)
+* [Contributing](#contributing)
+* [License](#license)
+* [Copyright](#copyright)
+
+---
+---
+
 ### Why do we need this [WiFiManager_NINA_Lite library](https://github.com/khoih-prog/WiFiManager_NINA_Lite)
 
 If you have used the full-fledge WiFiManager such as :
@@ -37,6 +100,9 @@ New recent features:
 - Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
 
 ---
+---
+
+## Changelog
 
 ### New Release v1.0.5
 
@@ -87,7 +153,7 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  2. [`Arduino Core for STM32 v1.9.0+`](https://github.com/khoih-prog/Arduino_Core_STM32) for STM32 boards
  3. [`Teensy core 1.53+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://www.arduino.cc/en/Guide/ArduinoDue) for SAM DUE ARM Cortex-M3 boards
- 5. [`Arduino SAMD core 1.8.9+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
+ 5. [`Arduino SAMD core 1.8.10+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards
  6. [`Adafruit SAMD core 1.6.4+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.)
  7. [`Seeeduino SAMD core 1.8.1+`](https://www.seeedstudio.com/) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.) 
  8. [`Adafruit nRF52 v0.21.0+`](www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc.
@@ -127,7 +193,9 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 ### Packages' Patches
 
- 1. **To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
+#### 1. For Adafruit nRF52840 and nRF52832 boards
+
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
 
 Supposing the Adafruit nRF52 version is 0.21.0. These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/platform.txt`
@@ -149,7 +217,9 @@ These files must be copied into the directory:
 - `~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/variants/NINA_B112_ublox/variant.cpp`
 - **`~/.arduino15/packages/adafruit/hardware/nrf52/x.yy.z/cores/nRF5/Udp.h`**
 
- 2. **To be able to compile and run on Teensy boards**, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
+#### 2. For Teensy boards
+ 
+ **To be able to compile and run on Teensy boards**, you have to copy the file [Teensy boards.txt](Packages_Patches/hardware/teensy/avr/boards.txt) into Teensy hardware directory (./arduino-1.8.12/hardware/teensy/avr/boards.txt). 
 
 Supposing the Arduino version is 1.8.12. This file must be copied into the directory:
 
@@ -160,7 +230,9 @@ This file must be copied into the directory:
 
 - `./arduino-x.yy.zz/hardware/teensy/avr/boards.txt`
 
- 3. **To be able to compile and run on SAM DUE boards**, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
+#### 3. For Arduino SAM DUE boards
+ 
+ **To be able to compile and run on SAM DUE boards**, you have to copy the whole [SAM DUE](Packages_Patches/arduino/hardware/sam/1.6.12) directory into Arduino sam directory (~/.arduino15/packages/arduino/hardware/sam/1.6.12). 
 
 Supposing the Arduino SAM core version is 1.6.12. This file must be copied into the directory:
 
@@ -171,9 +243,26 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/arduino/hardware/sam/x.yy.zz/platform.txt`
 
- 4. ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.9](Packages_Patches/arduino/hardware/samd/1.8.9) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.9).
+#### 4. For Arduino SAMD boards
  
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
+ 
+#### For core version v1.8.10+
+
+Supposing the Arduino SAMD version is 1.8.10. Now only one file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/samd/1.8.10/platform.txt`
+
+Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
+
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/arduino/hardware/samd/x.yy.zz/platform.txt`
+ 
+#### For core version v1.8.9-
+
 Supposing the Arduino SAMD version is 1.8.9. These files must be copied into the directory:
+
 - `~/.arduino15/packages/arduino/hardware/samd/1.8.9/platform.txt`
 - ***`~/.arduino15/packages/arduino/hardware/samd/1.8.9/cores/arduino/Arduino.h`***
 
@@ -193,7 +282,9 @@ These files must be copied into the directory:
 
 Whenever the above-mentioned compiler error issue is fixed with the new Arduino SAMD release, you don't need to copy the `Arduino.h` file anymore.
 
- 5. ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
+#### 5. For Adafruit SAMD boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.4) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.4). 
 
 Supposing the Adafruit SAMD core version is 1.6.4. This file must be copied into the directory:
 
@@ -204,7 +295,9 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/adafruit/hardware/samd/x.yy.zz/platform.txt`
 
- 6. ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.8.1) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1). 
+#### 6. For Seeeduino SAMD boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (XIAO M0, Wio Terminal, etc) boards***, you have to copy the file [Seeeduino SAMD platform.txt](Packages_Patches/Seeeduino/hardware/samd/1.8.1) into Adafruit samd directory (~/.arduino15/packages/Seeeduino/hardware/samd/1.8.1). 
 
 Supposing the Seeeduino SAMD core version is 1.8.1. This file must be copied into the directory:
 
@@ -215,7 +308,9 @@ This file must be copied into the directory:
 
 - `~/.arduino15/packages/Seeeduino/hardware/samd/x.yy.zz/platform.txt`
 
-7. **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+#### 7. For STM32 boards
+
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
 Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
 
@@ -367,8 +462,10 @@ While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` 
 
 Once Credentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
 
+---
+---
 
-Also see examples:
+### Examples
 
  1. [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
  2. [SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
@@ -1395,6 +1492,12 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 2. Dynamic custom parameters to be saved **automatically in EEPROM, SAMD EEPROM-emulated FlashStorage or SAM DUE DueFlashStorage**.
 3. This is a Light-Weight Credentials / WiFi Connection Manager with fallback web configuration portal. Completely new to support **Teensy, SAM DUE, SAMD, STM32, etc. boards running WiFiNINA modules/shields.** with small memory (64+K bytes)
 4. Config Portal AP SSID and Password will use 4 bytes of hardware unique macAddress, only for Teensy.
+
+---
+
+### Issues ###
+
+Submit issues to: [WebSockets2_Generic issues](https://github.com/khoih-prog/WebSockets2_Generic/issues)
 
 ---
 ---
