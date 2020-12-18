@@ -1497,7 +1497,7 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 
 ### Issues ###
 
-Submit issues to: [WebSockets2_Generic issues](https://github.com/khoih-prog/WebSockets2_Generic/issues)
+Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
 ---
 ---
