@@ -35,7 +35,7 @@
 * [Important Notes](#important-notes)
 * [How to use default Credentials and have them pre-loaded onto Config Portal](#how-to-use-default-credentials-and-have-them-pre-loaded-onto-config-portal)
   * [1. To always load Default Credentials and override Config Portal data](#1-to-always-load-default-credentials-and-override-config-portal-data)
-  * [2. To load Default Credentials when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA](2-to-load-default-credentials-when-there-is-no-valid-credentials-config-portal-data-input-will-be-override-default_config_data)
+  * [2. To load Default Credentials when there is no valid Credentials](#2-to-load-default-credentials-when-there-is-no-valid-credentials)
   * [3. Example of Default Credentials](#3-example-of-default-credentials)
 * [How to add dynamic parameters from sketch](#how-to-add-dynamic-parameters-from-sketch)
 * [Important Notes for using Dynamic Parameters' ids](#important-notes-for-using-dynamic-parameters-ids)
@@ -530,7 +530,9 @@ See this example and modify as necessary
 bool LOAD_DEFAULT_CONFIG_DATA = true;
 ```
 
-#### 2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials. Config Portal data input will be override DEFAULT_CONFIG_DATA
+#### 2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials.
+
+Config Portal data input will be override DEFAULT_CONFIG_DATA
 
 ```
 // Used mostly once debugged. Assumes good data already saved in device.
