@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  defines.h for SAMD_WiFiNINA_MQTT.ino
-  For SAMD boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+  defines.h for nRF52840_WiFiNINA_MQTT.ino
+  For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license      
+  Licensed under MIT license       
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -21,71 +21,55 @@
 
 #define DRD_GENERIC_DEBUG               true
 
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD21G18A__) )
-  #if defined(WIFININA_USE_SAMD)
-    #undef WIFININA_USE_SAMD
-    #undef WIFI_USE_SAMD
+#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+        defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
+        defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) )
+  #if defined(WIFININA_USE_NRF528XX)
+    #undef WIFININA_USE_NRF528XX
+    #undef WIFI_USE_NRF528XX
   #endif
-  #define WIFININA_USE_SAMD      true
-  #define WIFI_USE_SAMD          true
+  #define WIFININA_USE_NRF528XX      true
+  #define WIFI_USE_NRF528XX          true
 #else
-  #error This code is intended to run only on the SAMD boards ! Please check your Tools->Board setting.
+  #error This code is intended to run only on the NRF528XX boards ! Please check your Tools->Board setting.
 #endif
 
-#if defined(WIFININA_USE_SAMD)
 
-  #if defined(ARDUINO_SAMD_ZERO)
-    #define BOARD_TYPE      "SAMD Zero"
-  #elif defined(ARDUINO_SAMD_MKR1000)
-    #define BOARD_TYPE      "SAMD MKR1000"
-  #elif defined(ARDUINO_SAMD_MKRWIFI1010)
-    #define BOARD_TYPE      "SAMD MKRWIFI1010"
-  #elif defined(ARDUINO_SAMD_NANO_33_IOT)
-    #define BOARD_TYPE      "SAMD NANO_33_IOT"
-  #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
-  #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
-    #define BOARD_TYPE      "SAMD MKRWAN13X0"
-  #elif defined(ARDUINO_SAMD_MKRGSM1400)
-    #define BOARD_TYPE      "SAMD MKRGSM1400"
-  #elif defined(ARDUINO_SAMD_MKRNB1500)
-    #define BOARD_TYPE      "SAMD MKRNB1500"
-  #elif defined(ARDUINO_SAMD_MKRVIDOR4000)
-    #define BOARD_TYPE      "SAMD MKRVIDOR4000"
-  #elif defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS)
-    #define BOARD_TYPE      "SAMD ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS"
-  #elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS)
-    #define BOARD_TYPE      "SAMD ADAFRUIT_ITSYBITSY_M4_EXPRESS"
-  #elif defined(__SAMD21E18A__)
-    #define BOARD_TYPE      "SAMD21E18A"
-  #elif defined(__SAMD21G18A__)
-    #define BOARD_TYPE      "SAMD21G18A"
-  #elif defined(__SAMD51G19A__)
-    #define BOARD_TYPE      "SAMD51G19A"
-  #elif defined(__SAMD51J19A__)
-    #define BOARD_TYPE      "SAMD51J19A"
-  #elif defined(__SAMD51J20A__)
-    #define BOARD_TYPE      "SAMD51J20A"
-  #elif defined(__SAM3X8E__)
-    #define BOARD_TYPE      "SAM3X8E"
-  #elif defined(__CPU_ARC__)
-    #define BOARD_TYPE      "CPU_ARC"
-  #elif defined(__SAMD51__)
-    #define BOARD_TYPE      "SAMD51"
-  #else
-    #define BOARD_TYPE      "SAMD Unknown"
-  #endif
+#if defined(WIFININA_USE_NRF528XX)
+
+#if defined(NRF52840_FEATHER)
+#define BOARD_TYPE      "NRF52840_FEATHER"
+#elif defined(NRF52832_FEATHER)
+#define BOARD_TYPE      "NRF52832_FEATHER"
+#elif defined(NRF52840_FEATHER_SENSE)
+#define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
+#elif defined(NRF52840_ITSYBITSY)
+#define BOARD_TYPE      "NRF52840_ITSYBITSY"
+#elif defined(NRF52840_CIRCUITPLAY)
+#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+#elif defined(NRF52840_CLUE)
+#define BOARD_TYPE      "NRF52840_CLUE"
+#elif defined(NRF52840_METRO)
+#define BOARD_TYPE      "NRF52840_METRO"
+#elif defined(NRF52840_PCA10056)
+#define BOARD_TYPE      "NRF52840_PCA10056"
+#elif defined(PARTICLE_XENON)
+#define BOARD_TYPE      "PARTICLE_XENON"
+#elif defined(NINA_B302_ublox)
+#define BOARD_TYPE      "NINA_B302_ublox"
+#elif defined(ARDUINO_NRF52_ADAFRUIT)
+#define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
+#elif defined(NRF52_SERIES)
+#define BOARD_TYPE      "NRF52_SERIES"
+#else
+#define BOARD_TYPE      "NRF52 Unknown"
+#endif
 
 #endif
 
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
-#define EEPROM_START      0
-#define EEPROM_SIZE       (2 * 1024)
+#define EEPROM_START
 
 /////////////////////////////////////////////
 
@@ -156,9 +140,9 @@
 
 /////////////////////////////////////////////
 
-#include <WiFiManager_NINA_Lite_SAMD.h>
+#include <WiFiManager_NINA_Lite_nRF52.h>
 
-#define HOST_NAME   "SAMD-MQTT-Controller"
+#define HOST_NAME   "nRF52-MQTT-Controller"
 
 #ifdef LED_BUILTIN
 #define LED_PIN     LED_BUILTIN

@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  defines.h for SAM_DUE_WiFiNINA.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+  defines.h for Teensy40_WiFiNINA.ino
+  For Teensy boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license        
+  Licensed under MIT license      
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -21,33 +21,38 @@
 
 #define DRD_GENERIC_DEBUG               true
 
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(WIFININA_USE_SAM_DUE)
-    #undef WIFININA_USE_SAM_DUE
-  #endif
-  #define WIFININA_USE_SAM_DUE      true
-  #warning Use SAM_DUE architecture
+#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || !defined(CORE_TEENSY) )
+# error This code is intended to run on Teensy platform! Please check your Tools->Board setting.
 #endif
 
-#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || \
-      defined(CORE_TEENSY) || defined(CORE_TEENSY) || !(WIFININA_USE_SAM_DUE) )
-#error This code is intended to run on the SAM DUE platform! Please check your Tools->Board setting.
-#endif
+#ifdef CORE_TEENSY
 
-#if defined(WIFININA_USE_SAM_DUE)
-  // For SAM DUE
-  #if defined(ARDUINO_SAM_DUE)
-    #define BOARD_TYPE      "SAM DUE"
-  #elif defined(__SAM3X8E__)
-    #define BOARD_TYPE      "SAM SAM3X8E"
+  #if defined(__IMXRT1062__)
+    // For Teensy 4.0 / 4.1
+    #define BOARD_TYPE      "TEENSY 4.0"
+  #elif defined(__MK66FX1M0__)
+    #define BOARD_TYPE "Teensy 3.6"
+  #elif defined(__MK64FX512__)
+    #define BOARD_TYPE "Teensy 3.5"
+  #elif defined(__MKL26Z64__)
+    #define BOARD_TYPE "Teensy LC"
+  #elif defined(__MK20DX256__)
+    #define BOARD_TYPE "Teensy 3.2" // and Teensy 3.1 (obsolete)
+  #elif defined(__MK20DX128__)
+    #define BOARD_TYPE "Teensy 3.0"
+  #elif defined(__AVR_AT90USB1286__)
+    #error Teensy 2.0++ not supported yet
+  #elif defined(__AVR_ATmega32U4__)
+    #error Teensy 2.0 not supported yet
   #else
-    #define BOARD_TYPE      "SAM Unknown"
+    // For Other Boards
+    #define BOARD_TYPE      "Unknown Teensy Board"
   #endif
 #endif
 
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
-#define EEPROM_START      0
+#define EEPROM_START     0
 
 /////////////////////////////////////////////
 
@@ -118,8 +123,8 @@
 
 /////////////////////////////////////////////
 
-#include <WiFiManager_NINA_Lite_DUE.h>
+#include <WiFiManager_NINA_Lite_Teensy.h>
 
-#define HOST_NAME   "DUE-Master-Controller"
+#define HOST_NAME   "Teensy-Master-Controller"
 
 #endif      //defines_h

@@ -1,8 +1,8 @@
 {
   "name": "WiFiManager_NINA_Lite",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "keywords": "wifi, wi-fi, MutiWiFi, WiFiNINA, U-Blox, W101, W102, shield, Mega, Teensy, SAM DUE, SAMD21, SAMD51, STM32, nRF52, Credentials, Manager, Config Portal, Double, Reset, Detector",
-  "description": "Library to configure MultiWiFi/Credentials at runtime for AVR Mega, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52, etc. boards running WiFiNINA modules/shields. You can also specify DHCP HostName, static AP and STA IP. Use much less memory compared to full-fledge WiFiManager. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Credentials are saved in LittleFS/InternalFS, EEPROM, FlashStorage or DueFlashStorage. DoubleDetectDetector feature permits entering Config Portal as requested.",
+  "description": "Library to configure MultiWiFi/Credentials at runtime for AVR Mega, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52, etc. boards running WiFiNINA modules/shields. You can also specify DHCP HostName, static AP and STA IP. Use much less memory compared to full-fledge WiFiManager. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Credentials are saved in LittleFS/InternalFS, EEPROM, FlashStorage_SAMD, FlashStorage_STM32 or DueFlashStorage. DoubleDetectDetector feature permits entering Config Portal as requested.",
   "authors":
   {
     "name":  "Khoi Hoang",
@@ -27,18 +27,24 @@
     {
       "owner": "khoih.prog",
       "name": "WiFiNINA_Generic",
-      "version": "^1.8.0",
+      "version": "^1.8.2",
       "platforms": ["*"]
     },
     {
-      "owner": "khoih-prog",
+      "owner": "khoih.prog",
       "name": "DoubleResetDetector_Generic",
-      "version": "^1.0.2",
+      "version": "^1.0.3",
       "platforms": ["*"]
     },
     {
       "owner": "khoih.prog",
       "name": "FlashStorage_SAMD",
+      "version": "^1.1.0",
+      "platforms": ["*"]
+    },
+    {
+      "owner": "khoih.prog",
+      "name": "FlashStorage_STM32",
       "version": "^1.0.0",
       "platforms": ["*"]
     },
@@ -51,7 +57,7 @@
     {
       "owner": "khoih-prog",
       "name": "WiFiWebServer",
-      "version": "^1.1.0",
+      "version": "^1.1.1",
       "platforms": ["*"]
     },
     {

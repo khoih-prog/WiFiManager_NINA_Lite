@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  defines.h for SAM_DUE_WiFiNINA.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+  defines.h for nRF52840_WiFiNINA.ino
+  For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license        
+  Licensed under MIT license     
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -21,33 +21,55 @@
 
 #define DRD_GENERIC_DEBUG               true
 
-#if ( defined(ARDUINO_SAM_DUE) || defined(__SAM3X8E__) )
-  #if defined(WIFININA_USE_SAM_DUE)
-    #undef WIFININA_USE_SAM_DUE
+#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
+        defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
+        defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) )
+  #if defined(WIFININA_USE_NRF528XX)
+    #undef WIFININA_USE_NRF528XX
+    #undef WIFI_USE_NRF528XX
   #endif
-  #define WIFININA_USE_SAM_DUE      true
-  #warning Use SAM_DUE architecture
+  #define WIFININA_USE_NRF528XX      true
+  #define WIFI_USE_NRF528XX          true
+#else
+  #error This code is intended to run only on the NRF528XX boards ! Please check your Tools->Board setting.
 #endif
 
-#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA2560) || defined(ARDUINO_AVR_MEGA) || \
-      defined(CORE_TEENSY) || defined(CORE_TEENSY) || !(WIFININA_USE_SAM_DUE) )
-#error This code is intended to run on the SAM DUE platform! Please check your Tools->Board setting.
+
+#if defined(WIFININA_USE_NRF528XX)
+
+#if defined(NRF52840_FEATHER)
+#define BOARD_TYPE      "NRF52840_FEATHER"
+#elif defined(NRF52832_FEATHER)
+#define BOARD_TYPE      "NRF52832_FEATHER"
+#elif defined(NRF52840_FEATHER_SENSE)
+#define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
+#elif defined(NRF52840_ITSYBITSY)
+#define BOARD_TYPE      "NRF52840_ITSYBITSY"
+#elif defined(NRF52840_CIRCUITPLAY)
+#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+#elif defined(NRF52840_CLUE)
+#define BOARD_TYPE      "NRF52840_CLUE"
+#elif defined(NRF52840_METRO)
+#define BOARD_TYPE      "NRF52840_METRO"
+#elif defined(NRF52840_PCA10056)
+#define BOARD_TYPE      "NRF52840_PCA10056"
+#elif defined(PARTICLE_XENON)
+#define BOARD_TYPE      "PARTICLE_XENON"
+#elif defined(NINA_B302_ublox)
+#define BOARD_TYPE      "NINA_B302_ublox"
+#elif defined(ARDUINO_NRF52_ADAFRUIT)
+#define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
+#elif defined(NRF52_SERIES)
+#define BOARD_TYPE      "NRF52_SERIES"
+#else
+#define BOARD_TYPE      "NRF52 Unknown"
 #endif
 
-#if defined(WIFININA_USE_SAM_DUE)
-  // For SAM DUE
-  #if defined(ARDUINO_SAM_DUE)
-    #define BOARD_TYPE      "SAM DUE"
-  #elif defined(__SAM3X8E__)
-    #define BOARD_TYPE      "SAM SAM3X8E"
-  #else
-    #define BOARD_TYPE      "SAM Unknown"
-  #endif
 #endif
 
 // Start location in EEPROM to store config data. Default 0
 // Config data Size currently is 128 bytes)
-#define EEPROM_START      0
+#define EEPROM_START
 
 /////////////////////////////////////////////
 
@@ -118,8 +140,8 @@
 
 /////////////////////////////////////////////
 
-#include <WiFiManager_NINA_Lite_DUE.h>
+#include <WiFiManager_NINA_Lite_nRF52.h>
 
-#define HOST_NAME   "DUE-Master-Controller"
+#define HOST_NAME   "nRF52-Master-Controller"
 
 #endif      //defines_h

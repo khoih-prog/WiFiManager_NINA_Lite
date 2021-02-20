@@ -1,9 +1,9 @@
-/*********************************************************************************************************************************
-  SAMD_WiFiNINA_MQTT.ino
-  For SAMD boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+/****************************************************************************************************************************
+  Teensy40_WiFiNINA_MQTT.ino
+  For Teensy boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
   
-  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards
-  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy
+  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
+  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
@@ -23,7 +23,7 @@
                                    Add customs HTML header feature. Fix bug.
   **********************************************************************************************************************************/
 /****************************************************************************************************************************
-  You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp as follows to avoid dtostrf error, if exists
+  You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp  as follows to avoid dtostrf error
    
   //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) ||             \
   //    defined(ARDUINO_ARCH_SAMD)
@@ -37,7 +37,7 @@
   }
   #endif
  *****************************************************************************************************************************/
- 
+
 #include "defines.h"
 #include "Credentials.h"
 #include "dynamicParams.h"
@@ -82,7 +82,7 @@ void heartBeatPrint(void)
 void publishMQTT(void)
 {
   MQTT_connect();
-  
+
   if (Temperature->publish(measuredTemp))
   {
     //Serial.println(F("Failed to send value to Temperature feed!"));
@@ -135,7 +135,7 @@ void check_status()
       publishMQTT();
       subscribeMQTT();
     }
-    
+
     heartBeatPrint();
     checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
   }
@@ -162,8 +162,8 @@ void deleteOldInstances(void)
 #define USE_GLOBAL_TOPIC    true
 
 #if USE_GLOBAL_TOPIC
-  String completePubTopic;
-  String completeSubTopic;
+String completePubTopic;
+String completeSubTopic;
 #endif
 
 void createNewInstances(void)
@@ -204,7 +204,7 @@ void createNewInstances(void)
     // Must be static or global
     static String completePubTopic = String(AIO_USERNAME) + String(AIO_PUB_TOPIC);
 #endif
-    
+
     Temperature = new Adafruit_MQTT_Publish(mqtt, completePubTopic.c_str());
     Serial.println(String("Creating new MQTT_Pub_Topic,  Temperature = ") + completePubTopic);
 
@@ -226,7 +226,7 @@ void createNewInstances(void)
     // Must be static or global
     static String completeSubTopic = String(AIO_USERNAME) + String(AIO_SUB_TOPIC);
 #endif
-    
+
     LED_Control = new Adafruit_MQTT_Subscribe(mqtt, completeSubTopic.c_str());
 
     Serial.println(String("Creating new AIO_SUB_TOPIC, LED_Control = ") + completeSubTopic);
@@ -266,7 +266,7 @@ void MQTT_connect()
     // connect will return 0 for connected
     Serial.println(mqtt->connectErrorString(ret));
 
-#if LOCAL_DEBUG    
+#if LOCAL_DEBUG
     Serial.println("Another attemtpt to connect to MQTT in 5 seconds...");
 #endif
 
@@ -283,7 +283,7 @@ void MQTT_connect()
 
 #if LOCAL_DEBUG
   Serial.println("WiFi MQTT connection successful!");
-#endif  
+#endif
 }
 
 #if USING_CUSTOMS_STYLE
@@ -301,7 +301,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStarting SAMD_WiFiNINA_MQTT on ")); Serial.println(BOARD_TYPE);
+  Serial.print(F("\nStarting Teensy_WiFiNINA_MQTT on ")); Serial.println(BOARD_TYPE);
   Serial.println(WIFIMANAGER_NINA_LITE_VERSION);
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
@@ -310,7 +310,7 @@ void setup()
   //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
   WiFiManager_NINA->setConfigPortalChannel(0);
 
-#if USING_CUSTOMS_STYLE
+  #if USING_CUSTOMS_STYLE
   WiFiManager_NINA->setCustomsStyle(NewCustomsStyle);
 #endif
 

@@ -1,6 +1,6 @@
-/*********************************************************************************************************************************
-  SAM_DUE_WiFiNINA.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+/****************************************************************************************************************************
+  nRF52840_WiFiNINA.ino
+  For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
@@ -8,7 +8,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-Version: 1.1.0
+  Version: 1.1.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -52,8 +52,8 @@ void check_status()
   static unsigned long checkstatus_timeout = 0;
 
   //KH
-#define HEARTBEAT_INTERVAL    600000L
-  // Print hearbeat every HEARTBEAT_INTERVAL (600) seconds.
+#define HEARTBEAT_INTERVAL    20000L
+  // Print hearbeat every HEARTBEAT_INTERVAL (20) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
     heartBeatPrint();
@@ -76,7 +76,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStarting SAM_DUE_WiFiNINA on ")); Serial.println(BOARD_TYPE);
+  Serial.print(F("\nStarting nRF52_WiFiNINA on ")); Serial.println(BOARD_TYPE);
   Serial.println(WIFIMANAGER_NINA_LITE_VERSION);
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
@@ -99,7 +99,7 @@ void setup()
 
   // Set customized DHCP HostName
   WiFiManager_NINA->begin(HOST_NAME);
-  //Or use default Hostname "DUE-WiFiNINA-XXXXXX"
+  //Or use default Hostname "nRF52-WiFiNINA-XXXXXX"
   //WiFiManager_NINA->begin();
   
 }

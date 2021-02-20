@@ -1,6 +1,6 @@
-/*********************************************************************************************************************************
-  SAM_DUE_WiFiNINA.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+/****************************************************************************************************************************
+  Teensy40_WiFiNINA.ino
+  For Teensy boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
@@ -8,7 +8,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-Version: 1.1.0
+  Version: 1.1.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -76,7 +76,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStarting SAM_DUE_WiFiNINA on ")); Serial.println(BOARD_TYPE);
+  Serial.print(F("\nStarting Teensy_WiFiNINA on ")); Serial.println(BOARD_TYPE);
   Serial.println(WIFIMANAGER_NINA_LITE_VERSION);
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
@@ -99,7 +99,7 @@ void setup()
 
   // Set customized DHCP HostName
   WiFiManager_NINA->begin(HOST_NAME);
-  //Or use default Hostname "DUE-WiFiNINA-XXXXXX"
+  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
   //WiFiManager_NINA->begin();
   
 }

@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  dynamicParams.h for STM32_WiFiNINA.ino
-  For STM32 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+  dynamicParams.h for nRF52840_WiFiNINA.ino
+  For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license    
+  Licensed under MIT license       
  *****************************************************************************************************************************/
 
 #ifndef dynamicParams_h
@@ -15,11 +15,11 @@
 
 #include "defines.h"
 
-// USE_DYNAMIC_PARAMETERS defined in defined.h
+#define USE_DYNAMIC_PARAMETERS      true
 
 /////////////// Start dynamic Credentials ///////////////
 
-//Defined in <WiFiManager_NINA_Lite_STM32.h>
+//Defined in <WiFiManager_NINA_Lite_nRF52.h>
 /**************************************
   #define MAX_ID_LEN                5
   #define MAX_DISPLAY_NAME_LEN      16
@@ -56,8 +56,8 @@ MenuItem myMenuItems [] =
   { "tk1", "Token1",        Blynk_Token1,   MAX_BLYNK_TOKEN_LEN },
   { "sv2", "Blynk Server2", Blynk_Server2,  MAX_BLYNK_SERVER_LEN },
   { "tk2", "Token2",        Blynk_Token2,   MAX_BLYNK_TOKEN_LEN },
-  { "prt", "Port",          Blynk_Port,     MAX_BLYNK_PORT_LEN },
-  { "mqt", "MQTT Server",   MQTT_Server,    MAX_MQTT_SERVER_LEN },
+  { "pt", "Port",           Blynk_Port,     MAX_BLYNK_PORT_LEN },
+  { "mq", "MQTT Server",    MQTT_Server,    MAX_MQTT_SERVER_LEN },
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;

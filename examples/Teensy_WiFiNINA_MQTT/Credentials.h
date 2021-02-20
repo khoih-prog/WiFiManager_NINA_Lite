@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  Credentials.h for SAM_DUE_WiFiNINA_MQTT.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+  Credentials.h for Teensy40_WiFiNINA_MQTT.ino
+  For Teensy boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license         
+  Licensed under MIT license      
  *****************************************************************************************************************************/
 
 #ifndef Credentials_h
@@ -67,7 +67,7 @@ WiFiNINA_Configuration defaultConfig =
   "SSID1",  "password1",
   "SSID2",  "password2",
   //char board_name     [24];
-  "DUE-MQTT",
+  "Teensy-MQTT",
   // terminate the list
   //int  checkSum, dummy, not used
   0
