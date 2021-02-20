@@ -130,6 +130,8 @@ New recent features:
 - Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
 - Configurable **Customs HTML Headers**, including Customs Style, Customs Gead Elements, CORS Header.
 
+#### Currently supported Boards
+
 This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManager_NINA_Lite) currently supports these following boards:
 
  1. **nRF52 boards**, such as **AdaFruit Feather nRF52832, nRF52840 Express, BlueFruit Sense, Itsy-Bitsy nRF52840 Express, Metro nRF52840 Express, NINA_B302_ublox, NINA_B112_ublox, etc.**
