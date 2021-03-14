@@ -8,17 +8,20 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
    Licensed under MIT license
-   Version: 1.0.5
+   Version: 1.1.1
 
-   Version Modified By   Date        Comments
-   ------- -----------  ----------   -----------
-   1.0.0   K Hoang      26/03/2020  Initial coding
-   1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
-   1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
-   1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
-                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
-   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
-   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.   
+  Version Modified By   Date        Comments
+  ------- -----------  ----------   -----------
+  1.0.0   K Hoang      26/03/2020  Initial coding
+  1.0.1   K Hoang      27/03/2020  Fix SAMD soft-reset bug. Add support to remaining boards
+  1.0.2   K Hoang      15/04/2020  Fix bug. Add SAMD51 support.
+  1.0.3   K Hoang      24/04/2020  Fix bug. Add nRF5 (Adafruit, NINA_B302_ublox, etc.) support. Add MultiWiFi, HostName capability.
+                                   SSID password maxlen is 63 now. Permit special chars # and % in input data.
+  1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
+  1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.
+  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32. 
+                                   Add customs HTML header feature. Fix bug.
+  1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.  
   *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -37,7 +40,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.0"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.1"
 
 #include <WiFiWebServer.h>
 // Include EEPROM-like API for FlashStorage
@@ -1379,7 +1382,7 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
-
+    
     // NEW
     void createHTML(String& root_html_template)
     {
@@ -1403,7 +1406,8 @@ class WiFiManager_NINA_Lite
   #endif          
       
       root_html_template += String(WIFININA_HTML_HEAD_END) + WIFININA_FLDSET_START;
-      
+   
+#if USE_DYNAMIC_PARAMETERS      
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
         pitem = String(WIFININA_HTML_PARAM);
@@ -1414,9 +1418,11 @@ class WiFiManager_NINA_Lite
         
         root_html_template += pitem;
       }
+#endif
       
       root_html_template += String(WIFININA_FLDSET_END) + WIFININA_HTML_BUTTON + WIFININA_HTML_SCRIPT;     
-      
+
+#if USE_DYNAMIC_PARAMETERS      
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
         pitem = String(WIFININA_HTML_SCRIPT_ITEM);
@@ -1425,6 +1431,7 @@ class WiFiManager_NINA_Lite
         
         root_html_template += pitem;
       }
+#endif
       
       root_html_template += String(WIFININA_HTML_SCRIPT_END) + WIFININA_HTML_END;
       

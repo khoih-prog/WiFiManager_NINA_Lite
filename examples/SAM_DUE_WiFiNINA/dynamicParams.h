@@ -15,7 +15,6 @@
 
 #include "defines.h"
 
-#define USE_DYNAMIC_PARAMETERS      true
 
 /////////////// Start dynamic Credentials ///////////////
 
