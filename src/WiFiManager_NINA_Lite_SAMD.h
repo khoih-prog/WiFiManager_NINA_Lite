@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.1.1
+  Version: 1.1.2
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -22,6 +22,7 @@
   1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32. 
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
+  1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -40,7 +41,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.1"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.2"
 
 #include <WiFiWebServer.h>
 // Include EEPROM-like API for FlashStorage
@@ -1264,7 +1265,7 @@ class WiFiManager_NINA_Lite
       static int lastConnectedIndex = 255;
 
       WN_LOGDEBUG(F("ConMultiWifi"));
-
+      
       if (static_IP != IPAddress(0, 0, 0, 0))
       {
         WN_LOGDEBUG(F("UseStatIP"));
@@ -1279,37 +1280,56 @@ class WiFiManager_NINA_Lite
       
       WN_LOGERROR3(F("con2WF:SSID="), WIFININA_config.WiFi_Creds[index].wifi_ssid,
                 F(",PW="), WIFININA_config.WiFi_Creds[index].wifi_pw);
-             
-      while ( !wifi_connected && ( 0 < retry_time ) )
-      {      
-        WN_LOGDEBUG1(F("Remaining retry_time="), retry_time);
-        
-        status = WiFi.begin(WIFININA_config.WiFi_Creds[index].wifi_ssid, WIFININA_config.WiFi_Creds[index].wifi_pw); 
-            
-        // Need restart WiFi at beginning of each cycle 
-        if (status == WL_CONNECTED)
-        {
-          wifi_connected = true;          
-          lastConnectedIndex = index;                                     
-          WN_LOGDEBUG1(F("WOK, lastConnectedIndex="), lastConnectedIndex);
+      
+      uint8_t numIndexTried = 0;
+      
+      while ( !wifi_connected && (numIndexTried++ < NUM_WIFI_CREDENTIALS) )
+      {         
+        while ( 0 < retry_time )
+        {      
+          WN_LOGDEBUG1(F("Remaining retry_time="), retry_time);
           
+          status = WiFi.begin(WIFININA_config.WiFi_Creds[index].wifi_ssid, WIFININA_config.WiFi_Creds[index].wifi_pw); 
+              
+          // Need restart WiFi at beginning of each cycle 
+          if (status == WL_CONNECTED)
+          {
+            wifi_connected = true;          
+            lastConnectedIndex = index;                                     
+            WN_LOGDEBUG1(F("WOK, lastConnectedIndex="), lastConnectedIndex);
+            
+            break;
+          }
+          else
+          {
+            delay(sleep_time);
+            retry_time--;
+          }         
+        }
+        
+        if (status == WL_CONNECTED)
+        {         
           break;
         }
         else
         {
-          delay(sleep_time);
-          retry_time--;
-        }         
+          index = (index + 1) % NUM_WIFI_CREDENTIALS;
+          //WiFi.end();
+              
+          if (retry_time <= 0)
+          {      
+            WN_LOGERROR3(F("Failed using index="), index, F(", retry_time="), retry_time);
+            retry_time = RETRY_TIMES_CONNECT_WIFI;  
+          }
+        }
       }
-          
-      if (retry_time <= 0)
-      {      
-        WN_LOGERROR3(F("Failed using index="), index, F(", retry_time="), retry_time);             
-      }  
 
       if (wifi_connected)
       {
         WN_LOGERROR(F("con2WF:OK"));
+        
+        WN_LOGERROR1(F("IP="), WiFi.localIP() );
+        
         displayWiFiData();
       }
       else
