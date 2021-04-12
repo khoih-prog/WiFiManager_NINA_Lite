@@ -47,38 +47,38 @@ typedef struct Configuration
 
 #if TO_LOAD_DEFAULT_CONFIG_DATA
 
-// This feature is primarily used in development to force a known set of values as Config Data
-// It will NOT force the Config Portal to activate. Use DRD or erase Config Data with Blynk.clearConfigData()
-
-// Used mostly for development and debugging. FORCES default values to be loaded each run.
-// Config Portal data input will be ignored and overridden by DEFAULT_CONFIG_DATA
-//bool LOAD_DEFAULT_CONFIG_DATA = true;
-
-// Used mostly once debugged. Assumes good data already saved in device.
-// Config Portal data input will be override DEFAULT_CONFIG_DATA
-bool LOAD_DEFAULT_CONFIG_DATA = false;
-
-WiFiNINA_Configuration defaultConfig =
-{
-  //char header[16], dummy, not used
-  "WIFININA",
-  // WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
-  // WiFi_Credentials.wifi_ssid and WiFi_Credentials.wifi_pw
-  "SSID1",  "password1",
-  "SSID2",  "password2",
-  //char board_name     [24];
-  "nRF52-Control",
-  // terminate the list
-  //int  checkSum, dummy, not used
-  0
-  /////////// End Default Config Data /////////////
-};
+  // This feature is primarily used in development to force a known set of values as Config Data
+  // It will NOT force the Config Portal to activate. Use DRD or erase Config Data with Blynk.clearConfigData()
+  
+  // Used mostly for development and debugging. FORCES default values to be loaded each run.
+  // Config Portal data input will be ignored and overridden by DEFAULT_CONFIG_DATA
+  //bool LOAD_DEFAULT_CONFIG_DATA = true;
+  
+  // Used mostly once debugged. Assumes good data already saved in device.
+  // Config Portal data input will be override DEFAULT_CONFIG_DATA
+  bool LOAD_DEFAULT_CONFIG_DATA = false;
+  
+  WiFiNINA_Configuration defaultConfig =
+  {
+    //char header[16], dummy, not used
+    "WIFININA",
+    // WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+    // WiFi_Credentials.wifi_ssid and WiFi_Credentials.wifi_pw
+    "SSID1",  "password1",
+    "SSID2",  "password2",
+    //char board_name     [24];
+    "nRF52-Control",
+    // terminate the list
+    //int  checkSum, dummy, not used
+    0
+    /////////// End Default Config Data /////////////
+  };
 
 #else
 
-bool LOAD_DEFAULT_CONFIG_DATA = false;
-
-WiFiNINA_Configuration defaultConfig;
+  bool LOAD_DEFAULT_CONFIG_DATA = false;
+  
+  WiFiNINA_Configuration defaultConfig;
 
 #endif    // TO_LOAD_DEFAULT_CONFIG_DATA
 

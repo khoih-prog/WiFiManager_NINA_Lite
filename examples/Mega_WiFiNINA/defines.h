@@ -92,12 +92,18 @@
 
 /////////////////////////////////////////////
 
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
+// Permit running CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET times before reset hardware
+// to permit user another chance to config. Only if Config Data is valid.
+// If Config Data is invalid, this has no effect as Config Portal will persist
 #define RESET_IF_CONFIG_TIMEOUT                   true
+
+// Permitted range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
+#define RETRY_TIMES_RECONNECT_WIFI                3
+
+// Permitted range of user-defined CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET between 2-100
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
 
-// Config Timeout 120s (default 60s)
+// Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
 
 #define USE_DYNAMIC_PARAMETERS              false

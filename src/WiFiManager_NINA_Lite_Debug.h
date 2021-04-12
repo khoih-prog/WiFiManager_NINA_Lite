@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.1.2
+  Version: 1.1.3
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -23,6 +23,7 @@
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
+  1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h

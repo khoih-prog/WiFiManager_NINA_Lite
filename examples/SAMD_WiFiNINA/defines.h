@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
   defines.h for SAMD_WiFiNINA.ino
   For SAMD boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
-  
-  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
-  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
+
+  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards
+  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
-  
+
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license     
+  Licensed under MIT license
  *****************************************************************************************************************************/
 
 #ifndef defines_h
@@ -104,9 +104,9 @@
 
   #warning Using WIFININA_Generic Library
   #define SHIELD_TYPE     "WiFiNINA using WiFiNINA_Generic Library"
-
-  #include "WiFiNINA_Pinout_Generic.h"
   
+  #include "WiFiNINA_Pinout_Generic.h"
+
 #elif USE_WIFI101
 
   #if defined(USE_WIFI_NINA)
@@ -114,7 +114,7 @@
   #endif
   
   #define USE_WIFI_NINA           false
-
+  
   #define SHIELD_TYPE     "WINC1500 using WiFi101 Library"
   #warning Using WiFi101 Library
 
@@ -131,25 +131,31 @@
   #endif
   
   #define USE_WIFI101             false
-
+  
   #define SHIELD_TYPE     "Custom using Custom WiFi Library"
   #warning Using Custom WiFi Library. You must include here or compile error
-  
+
 #else
 
   #define SHIELD_TYPE     "Default WiFi using WiFi Library"
   #warning Using fallback WiFi.h Library defined in WiFiWebServer Library.
-  
+
 #endif
 
 /////////////////////////////////////////////
 
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
+// Permit running CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET times before reset hardware
+// to permit user another chance to config. Only if Config Data is valid.
+// If Config Data is invalid, this has no effect as Config Portal will persist
 #define RESET_IF_CONFIG_TIMEOUT                   true
+
+// Permitted range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
+#define RETRY_TIMES_RECONNECT_WIFI                3
+
+// Permitted range of user-defined CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET between 2-100
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
 
-// Config Timeout 120s (default 60s)
+// Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
 
 #define USE_DYNAMIC_PARAMETERS              true

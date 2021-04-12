@@ -37,33 +37,33 @@
 
 #if defined(WIFININA_USE_NRF528XX)
 
-#if defined(NRF52840_FEATHER)
-#define BOARD_TYPE      "NRF52840_FEATHER"
-#elif defined(NRF52832_FEATHER)
-#define BOARD_TYPE      "NRF52832_FEATHER"
-#elif defined(NRF52840_FEATHER_SENSE)
-#define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-#elif defined(NRF52840_ITSYBITSY)
-#define BOARD_TYPE      "NRF52840_ITSYBITSY"
-#elif defined(NRF52840_CIRCUITPLAY)
-#define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
-#elif defined(NRF52840_CLUE)
-#define BOARD_TYPE      "NRF52840_CLUE"
-#elif defined(NRF52840_METRO)
-#define BOARD_TYPE      "NRF52840_METRO"
-#elif defined(NRF52840_PCA10056)
-#define BOARD_TYPE      "NRF52840_PCA10056"
-#elif defined(PARTICLE_XENON)
-#define BOARD_TYPE      "PARTICLE_XENON"
-#elif defined(NINA_B302_ublox)
-#define BOARD_TYPE      "NINA_B302_ublox"
-#elif defined(ARDUINO_NRF52_ADAFRUIT)
-#define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-#elif defined(NRF52_SERIES)
-#define BOARD_TYPE      "NRF52_SERIES"
-#else
-#define BOARD_TYPE      "NRF52 Unknown"
-#endif
+  #if defined(NRF52840_FEATHER)
+    #define BOARD_TYPE      "NRF52840_FEATHER"
+  #elif defined(NRF52832_FEATHER)
+    #define BOARD_TYPE      "NRF52832_FEATHER"
+  #elif defined(NRF52840_FEATHER_SENSE)
+    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
+  #elif defined(NRF52840_ITSYBITSY)
+    #define BOARD_TYPE      "NRF52840_ITSYBITSY"
+  #elif defined(NRF52840_CIRCUITPLAY)
+    #define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
+  #elif defined(NRF52840_CLUE)
+    #define BOARD_TYPE      "NRF52840_CLUE"
+  #elif defined(NRF52840_METRO)
+    #define BOARD_TYPE      "NRF52840_METRO"
+  #elif defined(NRF52840_PCA10056)
+    #define BOARD_TYPE      "NRF52840_PCA10056"
+  #elif defined(PARTICLE_XENON)
+    #define BOARD_TYPE      "PARTICLE_XENON"
+  #elif defined(NINA_B302_ublox)
+    #define BOARD_TYPE      "NINA_B302_ublox"
+  #elif defined(ARDUINO_NRF52_ADAFRUIT)
+    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
+  #elif defined(NRF52_SERIES)
+    #define BOARD_TYPE      "NRF52_SERIES"
+  #else
+    #define BOARD_TYPE      "NRF52 Unknown"
+  #endif
 
 #endif
 
@@ -128,12 +128,18 @@
 
 /////////////////////////////////////////////
 
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
+// Permit running CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET times before reset hardware
+// to permit user another chance to config. Only if Config Data is valid.
+// If Config Data is invalid, this has no effect as Config Portal will persist
 #define RESET_IF_CONFIG_TIMEOUT                   true
+
+// Permitted range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
+#define RETRY_TIMES_RECONNECT_WIFI                3
+
+// Permitted range of user-defined CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET between 2-100
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
 
-// Config Timeout 120s (default 60s)
+// Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
 
 #define USE_DYNAMIC_PARAMETERS              true
@@ -145,9 +151,9 @@
 #define HOST_NAME   "nRF52-MQTT-Controller"
 
 #ifdef LED_BUILTIN
-#define LED_PIN     LED_BUILTIN
+  #define LED_PIN     LED_BUILTIN
 #else
-#define LED_PIN     13
+  #define LED_PIN     13
 #endif
 
 #endif      //defines_h

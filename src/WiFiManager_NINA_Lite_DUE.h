@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.1.2
+  Version: 1.1.3
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -23,6 +23,7 @@
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
+  1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_DUE_h
@@ -41,7 +42,7 @@
   #error This code is intended to run on the SAM DUE platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.2"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.3"
 
 #include <WiFiWebServer.h>
 #include <WiFiManager_NINA_Lite_Debug.h>
@@ -1089,6 +1090,31 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
     
+    // If SSID, PW ="blank" or NULL, return false
+    bool isWiFiConfigValid()
+    {
+      if ( !strncmp(WIFININA_config.WiFi_Creds[0].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[0].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strlen(WIFININA_config.WiFi_Creds[0].wifi_ssid) || 
+           !strlen(WIFININA_config.WiFi_Creds[1].wifi_ssid) ||
+           !strlen(WIFININA_config.WiFi_Creds[0].wifi_pw)   ||
+           !strlen(WIFININA_config.WiFi_Creds[1].wifi_pw)  )
+      {
+        // If SSID, PW ="blank" or NULL, set the flag
+        WN_LOGERROR(F("Invalid Stored WiFi Config Data"));
+        
+        hadConfigData = false;
+        
+        return false;
+      }
+      
+      return true;
+    }
+    
+    //////////////////////////////////////////////
+    
     bool dueFlashStorage_get()
     {
       uint16_t offset = CONFIG_EEPROM_START;
@@ -1099,7 +1125,7 @@ class WiFiManager_NINA_Lite
       
       NULLTerminateConfig();
       
-      return true;
+      return isWiFiConfigValid();
     }
     
     //////////////////////////////////////////////
@@ -1168,8 +1194,11 @@ class WiFiManager_NINA_Lite
       {   
         // Load stored config / dynamic data from dueFlashStorage
         // Verify ChkSum
-        dueFlashStorage_get();
-        
+        // Get config data. If "blank" or NULL, set false flag and exit
+        if (!dueFlashStorage_get())
+        {
+          return false;
+        }       
             
         calChecksum = calcChecksum();
 
@@ -1266,16 +1295,9 @@ class WiFiManager_NINA_Lite
 
         return false;
       }
-      else if ( !strncmp(WIFININA_config.WiFi_Creds[0].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-                !strncmp(WIFININA_config.WiFi_Creds[0].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-                !strncmp(WIFININA_config.WiFi_Creds[1].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-                !strncmp(WIFININA_config.WiFi_Creds[1].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-                !strlen(WIFININA_config.WiFi_Creds[0].wifi_ssid) || 
-                !strlen(WIFININA_config.WiFi_Creds[1].wifi_ssid) ||
-                !strlen(WIFININA_config.WiFi_Creds[0].wifi_pw)   ||
-                !strlen(WIFININA_config.WiFi_Creds[1].wifi_pw)  )
+      else if ( !isWiFiConfigValid() )
       {
-        // If SSID, PW ="nothing", stay in config mode forever until having config Data.
+        // If SSID, PW ="blank" or NULL, stay in config mode forever until having config Data.
         return false;
       }
       else
@@ -1293,7 +1315,7 @@ class WiFiManager_NINA_Lite
     {
       int sleep_time  = 250;
       int index       = 0;
-      uint8_t status;
+      uint8_t status  = WL_IDLE_STATUS;
                        
       static int lastConnectedIndex = 255;
 
