@@ -78,7 +78,7 @@
   * [2. File defines.h](#2-file-definesh)
   * [3. File Credentials.h](#3-file-credentialsh)
   * [4. File dynamicParams.h](#4-file-dynamicparamsh)
-* [Debug Termimal Output Samples](#debug-terminal-output-samples)
+* [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. Open Config Portal](#1-open-config-portal)
   * [2. Received data from Config Portal](#2-received-data-from-config-portal)
   * [3. Got valid Credential from Config Portal, then connected to WiFi](#3-got-valid-credential-from-config-portal-then-connected-to-wifi)
@@ -170,7 +170,7 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 
 1. WiFiNINA using [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic)
 2. WiFi101 using [`WiFi101 library v0.16.1+`](https://github.com/arduino-libraries/WiFi101)
-3. U-Blox W101, W102 using [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic)
+3. u-blox W101, W102 using [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic)
 
 ---
 ---
@@ -1798,9 +1798,9 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
 
 1. Thanks to [Darvesh7](https://github.com/Darvesh7) to report [When Saved Network is unavailable or credential changed bug](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/1) leading to the major release v1.0.3
 2. Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
-3. Thanks to great work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **U-Blox B302, B112 running as nRF52840/nRF52832**, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
+3. Thanks to great work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **u-blox B302, B112 running as nRF52840/nRF52832**, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
 4. Thanks to [Pierluigi Colangeli](https://github.com/piecol) to make enhancement request in [Custom html header #4](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/4) leading to v1.1.0.
-5. Thanks to [bizprof](https://github.com/bizprof) to report bug in 
+5. Thanks to [bizprof](https://github.com/bizprof) to report bugs in 
   - [Won't compile for SAMD when USE_DYNAMIC_PARAMETERS set to FALSE #5](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/5) leading to v1.1.1, 
   - [SAMD MultiWiFi issues when first WiFi SSID configured in CP is invalid or not available #6](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/6) leading to v1.1.2.
   - [WiFiManager connection attempt to unconfigured ("blank") SSID after restart on SAMD #8](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/8) leading to v1.1.3.
