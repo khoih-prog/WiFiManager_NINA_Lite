@@ -671,7 +671,7 @@ If you're already connected to a listed WiFi AP and don't want to change anythin
 
 See this example and modify as necessary
 
-#### 1. To always load [Default Credentials](examples//Credentials.h) and override Config Portal data
+#### 1. To always load [Default Credentials](examples/SAMD_WiFiNINA/Credentials.h) and override Config Portal data
 
 ```
 // Used mostly for development and debugging. FORCES default values to be loaded each run.
@@ -679,7 +679,7 @@ See this example and modify as necessary
 bool LOAD_DEFAULT_CONFIG_DATA = true;
 ```
 
-#### 2. To load [Default Credentials](examples//Credentials.h) when there is no valid Credentials.
+#### 2. To load [Default Credentials](examples/SAMD_WiFiNINA/Credentials.h) when there is no valid Credentials.
 
 Config Portal data input will be override DEFAULT_CONFIG_DATA
 
