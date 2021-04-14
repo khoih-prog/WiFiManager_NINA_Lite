@@ -1300,6 +1300,7 @@ class WiFiManager_NINA_Lite
 
     //////////////////////////////////////////////
     
+    // New connection logic from v1.2.0
     bool connectMultiWiFi(int retry_time)
     {
       int sleep_time  = 250;
@@ -1423,7 +1424,7 @@ class WiFiManager_NINA_Lite
 
       return wifi_connected;  
     }
-
+    
     //////////////////////////////////////////////
     
     // NEW
