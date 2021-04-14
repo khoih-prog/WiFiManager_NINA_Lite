@@ -16,6 +16,7 @@
   * [Currently supported Boards](#currently-supported-boards)
   * [Currently supported WiFi shields/modules](#currently-supported-wifi-shieldsmodules)
 * [Changelog](#changelog)
+  * [Release v1.2.0](#release-v120)
   * [Release v1.1.3](#release-v113)
   * [Release v1.1.2](#release-v112)
   * [Release v1.1.1](#release-v111)
@@ -43,16 +44,17 @@
   * [7. For STM32 boards](#7-for-stm32-boards) 
 * [How It Works](#how-it-works)
 * [How to use](#how-to-use)
-  * [1. Basic usage](#1-basic-usage)
-  * [2. Add custom parameters](#2-add-custom-parameters)
-  * [3. Not using custom parameters](#3-not-using-custom-parameters)
-  * [4. To open Config Portal](#4-to-open-config-portal)
-  * [5. To use different AP WiFi Channel](#5-to-use-different-ap-wifi-channel)
-  * [6. To use different static AP IP from default](#6-to-use-different-static-ap-ip-from-default)
-  * [7. To use custom DHCP HostName](#7-to-use-custom-dhcp-hostname)
-  * [8. To use custom HTML Style](#8-to-use-custom-html-style)
-  * [9. To use custom Head Elements](#9-to-use-custom-head-elements)
+  * [ 1. Basic usage](#1-basic-usage)
+  * [ 2. Add custom parameters](#2-add-custom-parameters)
+  * [ 3. Not using custom parameters](#3-not-using-custom-parameters)
+  * [ 4. To open Config Portal](#4-to-open-config-portal)
+  * [ 5. To use different AP WiFi Channel](#5-to-use-different-ap-wifi-channel)
+  * [ 6. To use different static AP IP from default](#6-to-use-different-static-ap-ip-from-default)
+  * [ 7. To use custom DHCP HostName](#7-to-use-custom-dhcp-hostname)
+  * [ 8. To use custom HTML Style](#8-to-use-custom-html-style)
+  * [ 9. To use custom Head Elements](#9-to-use-custom-head-elements)
   * [10. To use CORS Header](#10-to-use-cors-header)
+  * [11. To use and input only one set of WiFi SSID and PWD](#11-to-use-and-input-only-one-set-of-wifi-ssid-and-pwd)
 * [Examples](#examples)
   * [ 1. SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
   * [ 2. SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
@@ -176,6 +178,12 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 ---
 
 ## Changelog
+
+### Release v1.2.0
+
+1. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+2. Enforce WiFi Password minimum length of 8 chars
+3. Enhance MultiWiFi connection logic
 
 ### Release v1.1.3
 
@@ -610,6 +618,25 @@ While in AP mode, connect to it using its `SSID` (WIFININA_XXXXXX) / `Password` 
 
 
 Once Credentials / WiFi network information is saved in the host non-volatile memory, it will try to autoconnect to WiFi every time it is started, without requiring any function calls in the sketch.
+
+#### 11. To use and input only one set of WiFi SSID and PWD
+
+#### 11.1 If you need to use and input only one set of WiFi SSID/PWD.
+
+```
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW       true
+```
+But it's always advisable to use and input both sets for reliability.
+ 
+#### 11.2 If you need to use both sets of WiFi SSID/PWD
+
+```
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW       false
+```
 
 ---
 ---
@@ -1324,7 +1351,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1376,7 +1403,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1423,7 +1450,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1500,7 +1527,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1564,7 +1591,7 @@ FF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1620,7 +1647,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.1.3
+WiFiManager_NINA_Lite v1.2.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1694,6 +1721,12 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ---
  
 ## Releases
+
+### Release v1.2.0
+
+1. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+2. Enforce WiFi Password minimum length of 8 chars
+3. Enhance MultiWiFi connection logic
 
 ### Release v1.1.3
 
@@ -1778,10 +1811,12 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  7. Add Dynamic parameters
  8. Add Configurable Config Portal Title
  9. Split each example into several manageable files.
-10. Configurable **Customs HTML Headers**, including Customs Style, Customs Gead Elements, CORS Header
+10. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
 11. Add functions to control Config Portal from software or Virtual Switches.
 12. Use more efficient [FlashStorage_SAMD v1.1.0](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32 v1.00](https://github.com/khoih-prog/FlashStorage_STM32)
-13. Add Version String
+13. Add Version String and Table-of-Contents
+14. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
+15. Enforce WiFi Password minimum length of 8 chars
 
 
 ---
@@ -1800,10 +1835,10 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
 2. Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and encourage to add those new features in [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), such as Default Credentials/Dynamic Params, Configurable Config Portal Title, DRD. Now those features are speading fast into libraries having similar functionalities.
 3. Thanks to great work of [Miguel Alexandre Wisintainer](https://github.com/tcpipchip) for initiating, inspriring, working with, developing, debugging and testing. Without that, support to nRF52, especially **u-blox B302, B112 running as nRF52840/nRF52832**, has never been started and finished. See [u-blox nina b](https://github.com/khoih-prog/WiFiNINA_Generic/issues/1)
 4. Thanks to [Pierluigi Colangeli](https://github.com/piecol) to make enhancement request in [Custom html header #4](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/4) leading to v1.1.0.
-5. Thanks to [bizprof](https://github.com/bizprof) to report bugs in 
+5. Thanks to [Michael "bizprof"](https://github.com/bizprof) to report bugs in 
   - [Won't compile for SAMD when USE_DYNAMIC_PARAMETERS set to FALSE #5](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/5) leading to v1.1.1, 
   - [SAMD MultiWiFi issues when first WiFi SSID configured in CP is invalid or not available #6](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/6) leading to v1.1.2.
-  - [WiFiManager connection attempt to unconfigured ("blank") SSID after restart on SAMD #8](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/8) leading to v1.1.3.
+  - [WiFiManager connection attempt to unconfigured ("blank") SSID after restart on SAMD #8](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/8) leading to v1.1.3 and v1.2.0
 
 
 <table>
@@ -1812,7 +1847,7 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
     <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ Miguel Wisintainer</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/Darvesh7"><img src="https://github.com/Darvesh7.png" width="100px;" alt="Darvesh7"/><br /><sub><b>Darvesh7</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/piecol"><img src="https://github.com/piecol.png" width="100px;" alt="piecol"/><br /><sub><b>Pierluigi Colangeli</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️ bizprof</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️ Michael "bizprof"</b></sub></a><br /></td>
   </tr> 
 </table>
 

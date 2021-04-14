@@ -119,11 +119,14 @@
 // Permitted range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
 #define RETRY_TIMES_RECONNECT_WIFI                3
 
-// Permitted range of user-defined CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET between 2-100
-#define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
-
 // Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
+
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW             false
+
+#define USE_DYNAMIC_PARAMETERS              true
 
 #define USE_DYNAMIC_PARAMETERS              true
 

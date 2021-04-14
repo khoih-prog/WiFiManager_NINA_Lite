@@ -134,6 +134,10 @@
 // Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
 
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW             false
+
 #define USE_DYNAMIC_PARAMETERS              true
 
 /////////////////////////////////////////////

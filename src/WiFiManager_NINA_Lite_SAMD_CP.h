@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.1.3
+  Version: 1.2.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -24,6 +24,7 @@
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
+  1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -42,7 +43,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.1.3"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.2.0"
 
 #include <WiFiWebServer.h>
 // Include EEPROM-like API for FlashStorage
@@ -136,10 +137,10 @@ const char WIFININA_HTML_HEAD_START[] /*PROGMEM*/ = "<!DOCTYPE html><html><head>
 const char WIFININA_HTML_HEAD_STYLE[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
 
 const char WIFININA_HTML_HEAD_END[]   /*PROGMEM*/ = "</head><div style=\"text-align:left;display:inline-block;min-width:260px;\">\
-<fieldset><div><label>WiFi SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
-<div><label>PWD</label><input value=\"[[pw]]\"id=\"pw\"><div></div></div>\
-<div><label>WiFi SSID1</label><input value=\"[[id1]]\"id=\"id1\"><div></div></div>\
-<div><label>PWD1</label><input value=\"[[pw1]]\"id=\"pw1\"><div></div></div></fieldset>\
+<fieldset><div><label>*WiFi SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
+<div><label>*PWD (8+ chars)</label><input value=\"[[pw]]\"id=\"pw\"><div></div></div>\
+<div><label>*WiFi SSID1</label><input value=\"[[id1]]\"id=\"id1\"><div></div></div>\
+<div><label>*PWD1 (8+ chars)</label><input value=\"[[pw1]]\"id=\"pw1\"><div></div></div></fieldset>\
 <fieldset><div><label>Board Name</label><input value=\"[[nm]]\"id=\"nm\"><div></div></div></fieldset>";
 
 const char WIFININA_FLDSET_START[]  /*PROGMEM*/ = "<fieldset>";
@@ -174,8 +175,16 @@ const char WM_HTTP_EXPIRES[]         PROGMEM = "Expires";
 const char WM_HTTP_CORS[]            PROGMEM = "Access-Control-Allow-Origin";
 const char WM_HTTP_CORS_ALLOW_ALL[]  PROGMEM = "*";
 
-//////////////////////////////////////////
+//////////////////////////////////////////////
 
+// New from v1.2.0
+#if !defined(REQUIRE_ONE_SET_SSID_PW)
+  #define REQUIRE_ONE_SET_SSID_PW     false
+#endif
+
+#define PASSWORD_MIN_LEN        8
+
+//////////////////////////////////////////////
 
 String IPAddressToString(IPAddress _address)
 {
@@ -1062,17 +1071,29 @@ class WiFiManager_NINA_Lite
             
     //////////////////////////////////////////////
     
-    // If SSID, PW ="blank" or NULL, return false
     bool isWiFiConfigValid()
     {
-      if ( !strncmp(WIFININA_config.WiFi_Creds[0].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-           !strncmp(WIFININA_config.WiFi_Creds[0].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_ssid,       WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_pw,         WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
-           !strlen(WIFININA_config.WiFi_Creds[0].wifi_ssid) || 
-           !strlen(WIFININA_config.WiFi_Creds[1].wifi_ssid) ||
-           !strlen(WIFININA_config.WiFi_Creds[0].wifi_pw)   ||
-           !strlen(WIFININA_config.WiFi_Creds[1].wifi_pw)  )
+      #if REQUIRE_ONE_SET_SSID_PW
+      // If SSID ="blank" or NULL, or PWD length < 8 (as required by standard) => return false
+      // Only need 1 set of valid SSID/PWD
+      if (!( ( ( strncmp(WIFININA_config.WiFi_Creds[0].wifi_ssid, WM_NO_CONFIG, strlen(WM_NO_CONFIG)) && 
+                 strlen(WIFININA_config.WiFi_Creds[0].wifi_ssid) >  0 )  &&
+             (   strlen(WIFININA_config.WiFi_Creds[0].wifi_pw) >= PASSWORD_MIN_LEN ) ) ||
+             ( ( strncmp(WIFININA_config.WiFi_Creds[1].wifi_ssid, WM_NO_CONFIG, strlen(WM_NO_CONFIG)) && 
+                 strlen(WIFININA_config.WiFi_Creds[1].wifi_ssid) >  0 )  &&
+               ( strlen(WIFININA_config.WiFi_Creds[1].wifi_pw) >= PASSWORD_MIN_LEN ) ) ))
+      #else
+      // If SSID ="blank" or NULL, or PWD length < 8 (as required by standard) => invalid set
+      // Need both sets of valid SSID/PWD
+      if ( !strncmp(WIFININA_config.WiFi_Creds[0].wifi_ssid,   WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[0].wifi_pw,     WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_ssid,   WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           !strncmp(WIFININA_config.WiFi_Creds[1].wifi_pw,     WM_NO_CONFIG, strlen(WM_NO_CONFIG) )  ||
+           ( strlen(WIFININA_config.WiFi_Creds[0].wifi_ssid) == 0 ) || 
+           ( strlen(WIFININA_config.WiFi_Creds[1].wifi_ssid) == 0 ) ||
+           ( strlen(WIFININA_config.WiFi_Creds[0].wifi_pw)   < PASSWORD_MIN_LEN ) ||
+           ( strlen(WIFININA_config.WiFi_Creds[1].wifi_pw)   < PASSWORD_MIN_LEN ) )
+      #endif     
       {
         // If SSID, PW ="blank" or NULL, set the flag
         WN_LOGERROR(F("Invalid Stored WiFi Config Data"));
@@ -1294,10 +1315,12 @@ class WiFiManager_NINA_Lite
 
     //////////////////////////////////////////////
     
+    // New connection logic from v1.2.0
     bool connectMultiWiFi(int retry_time)
     {
       int sleep_time  = 250;
       int index       = 0;
+      int new_index   = 0;
       uint8_t status  = WL_IDLE_STATUS;
                        
       static int lastConnectedIndex = 255;
@@ -1309,15 +1332,45 @@ class WiFiManager_NINA_Lite
         WN_LOGDEBUG(F("UseStatIP"));
         WiFi.config(static_IP);
       }
-    
+      
       if (lastConnectedIndex != 255)
       {
-        index = (lastConnectedIndex + 1) % NUM_WIFI_CREDENTIALS;                       
-        WN_LOGDEBUG3(F("Using index="), index, F(", lastConnectedIndex="), lastConnectedIndex);
+        //  Successive connection, index = ??
+        // Checking if new_index is OK
+        new_index = (lastConnectedIndex + 1) % NUM_WIFI_CREDENTIALS;
+        
+        if ( strlen(WIFININA_config.WiFi_Creds[new_index].wifi_pw) >= PASSWORD_MIN_LEN )
+        {    
+          index = new_index;
+          WN_LOGDEBUG3(F("Using index="), index, F(", lastConnectedIndex="), lastConnectedIndex);
+        }
+        else
+        {
+          WN_LOGERROR3(F("Ignore invalid WiFi PW : index="), new_index, F(", PW="), WIFININA_config.WiFi_Creds[new_index].wifi_pw);
+          
+          // Using the previous valid index
+          index = lastConnectedIndex;
+        }
       }
-      
+      else
+      {
+        //  First connection ever, index = 0
+        if ( strlen(WIFININA_config.WiFi_Creds[0].wifi_pw) >= PASSWORD_MIN_LEN )
+        {    
+          WN_LOGDEBUG(F("First connection, Using index=0"));
+        }
+        else
+        {
+          WN_LOGERROR3(F("Ignore invalid WiFi PW : index=0, SSID="), WIFININA_config.WiFi_Creds[0].wifi_ssid,
+                       F(", PWD="), WIFININA_config.WiFi_Creds[0].wifi_pw);
+          
+          // Using the next valid index
+          index = 1;
+        }
+      } 
+         
       WN_LOGERROR3(F("con2WF:SSID="), WIFININA_config.WiFi_Creds[index].wifi_ssid,
-                F(",PW="), WIFININA_config.WiFi_Creds[index].wifi_pw);
+                   F(",PW="), WIFININA_config.WiFi_Creds[index].wifi_pw);
       
       uint8_t numIndexTried = 0;
       
@@ -1350,15 +1403,22 @@ class WiFiManager_NINA_Lite
           break;
         }
         else
-        {
-          index = (index + 1) % NUM_WIFI_CREDENTIALS;
-          //WiFi.end();
-              
+        {        
           if (retry_time <= 0)
           {      
             WN_LOGERROR3(F("Failed using index="), index, F(", retry_time="), retry_time);
             retry_time = RETRY_TIMES_CONNECT_WIFI;  
           }
+          
+          new_index = (index + 1) % NUM_WIFI_CREDENTIALS;
+          
+          // only use new index if valid (len >= PASSWORD_MIN_LEN = 8)
+          if ( strlen(WIFININA_config.WiFi_Creds[new_index].wifi_pw) >= PASSWORD_MIN_LEN )
+          {
+            index = new_index;
+          }
+          
+          //WiFi.end();
         }
       }
 
