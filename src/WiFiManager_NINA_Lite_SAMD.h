@@ -817,11 +817,12 @@ class WiFiManager_NINA_Lite
     
     void displayConfigData(WiFiNINA_Configuration configData)
     {
-      WN_LOGERROR5(F("Hdr="),   configData.header, F(",SSID="), configData.WiFi_Creds[0].wifi_ssid,
-                   F(",PW="),   configData.WiFi_Creds[0].wifi_pw);
-      WN_LOGERROR3(F("SSID1="), configData.WiFi_Creds[1].wifi_ssid, F(",PW1="),  configData.WiFi_Creds[1].wifi_pw);     
-      WN_LOGERROR1(F("BName="), configData.board_name);
-                 
+      WN_LOGERROR1(F("Hdr="), configData.header);
+	    for (uint16_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
+	    { 	
+		    WN_LOGERROR5(F("Credentials Set #"), i, F(": SSID="), configData.WiFi_Creds[i].wifi_ssid, F(", PW="),  configData.WiFi_Creds[i].wifi_pw);
+	    }
+      WN_LOGERROR1(F("BName="), configData.board_name);                 
 #if USE_DYNAMIC_PARAMETERS     
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
@@ -1058,24 +1059,25 @@ class WiFiManager_NINA_Lite
 
 #endif
 
-    //////////////////////////////////////////////
- 
-    void NULLTerminateConfig()
-    {
-      //#define HEADER_MAX_LEN      16
-      //#define SERVER_MAX_LEN      32
-      //#define TOKEN_MAX_LEN       36
-      
-      // NULL Terminating to be sure
-      WIFININA_config.header[HEADER_MAX_LEN - 1] = 0;
-      WIFININA_config.WiFi_Creds[0].wifi_ssid[SSID_MAX_LEN - 1] = 0;
-      WIFININA_config.WiFi_Creds[0].wifi_pw  [PASS_MAX_LEN - 1] = 0;
-      WIFININA_config.WiFi_Creds[1].wifi_ssid[SSID_MAX_LEN - 1] = 0;
-      WIFININA_config.WiFi_Creds[1].wifi_pw  [PASS_MAX_LEN - 1] = 0;
-      WIFININA_config.board_name[BOARD_NAME_MAX_LEN - 1]  = 0;
-    }
-            
-    //////////////////////////////////////////////
+//////////////////////////////////////////////
+
+void NULLTerminateConfig()
+{
+  //#define HEADER_MAX_LEN      16
+  //#define SERVER_MAX_LEN      32
+  //#define TOKEN_MAX_LEN       36
+  
+  // NULL Terminating to be sure
+  WIFININA_config.header[HEADER_MAX_LEN - 1] = 0;
+  for (uint16_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
+  { 	
+	  WIFININA_config.WiFi_Creds[i].wifi_ssid[SSID_MAX_LEN - 1] = 0;
+	  WIFININA_config.WiFi_Creds[i].wifi_pw  [PASS_MAX_LEN - 1] = 0;
+  }
+  WIFININA_config.board_name[BOARD_NAME_MAX_LEN - 1]  = 0;
+}
+        
+//////////////////////////////////////////////
     
     bool isWiFiConfigValid()
     {
@@ -1254,11 +1256,11 @@ class WiFiManager_NINA_Lite
             memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
           }
 #endif
-              
-          strcpy(WIFININA_config.WiFi_Creds[0].wifi_ssid,   WM_NO_CONFIG);
-          strcpy(WIFININA_config.WiFi_Creds[0].wifi_pw,     WM_NO_CONFIG);
-          strcpy(WIFININA_config.WiFi_Creds[1].wifi_ssid,   WM_NO_CONFIG);
-          strcpy(WIFININA_config.WiFi_Creds[1].wifi_pw,     WM_NO_CONFIG);
+          for (uint16_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
+		      { 		
+			      strcpy(WIFININA_config.WiFi_Creds[i].wifi_ssid,   WM_NO_CONFIG);
+			      strcpy(WIFININA_config.WiFi_Creds[i].wifi_pw,     WM_NO_CONFIG);
+		      }    
           strcpy(WIFININA_config.board_name, WM_NO_CONFIG);
           
 #if USE_DYNAMIC_PARAMETERS
