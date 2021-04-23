@@ -91,7 +91,7 @@ void setup()
   WiFiManager_NINA->setConfigPortalChannel(0);
 
 #if USING_CUSTOMS_STYLE
-  WiFiManager_NINA->setCustomsStyle(NewCustomsStyle);
+  WiFiManager_NINA->setCustomsStyle(NewCustomsStyle); 
 #endif
 
 #if USING_CUSTOMS_HEAD_ELEMENT
