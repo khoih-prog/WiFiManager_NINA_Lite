@@ -8,7 +8,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -19,12 +19,13 @@
                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.
-  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32. 
+  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32.
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
+  1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   **********************************************************************************************************************************/
   
 #include "defines.h"

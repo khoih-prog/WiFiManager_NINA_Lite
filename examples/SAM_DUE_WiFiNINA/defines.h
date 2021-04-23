@@ -128,6 +128,16 @@
 
 /////////////////////////////////////////////
 
+#define SCAN_WIFI_NETWORKS                  true
+
+// To be able to manually input SSID, not from a scanned SSID lists
+#define MANUAL_SSID_INPUT_ALLOWED           true
+
+// From 2-15
+#define MAX_SSID_IN_LIST                    6
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_DUE.h>
 
 #define HOST_NAME   "DUE-Master-Controller"
