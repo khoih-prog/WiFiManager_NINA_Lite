@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -19,12 +19,13 @@
                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.
-  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32. 
+  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32.
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
-  1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars  
+  1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
+  1.3.0	  Michael H	   21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_nRF52_h
@@ -42,7 +43,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.2.0"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.3.0"
 
 #include <WiFiWebServer.h>
 
@@ -65,6 +66,34 @@ File file(InternalFS);
 
 #ifndef USING_CORS_FEATURE
   #define USING_CORS_FEATURE     false
+#endif
+
+//////////////////////////////////////////////
+
+// New from v1.3.0
+// KH, Some minor simplification
+#if !defined(SCAN_WIFI_NETWORKS)
+	#define SCAN_WIFI_NETWORKS     true     //false
+#endif
+	
+#if SCAN_WIFI_NETWORKS
+	#if !defined(MANUAL_SSID_INPUT_ALLOWED)
+		#define MANUAL_SSID_INPUT_ALLOWED     true
+	#endif
+	
+	#if !defined(MAX_SSID_IN_LIST)
+		#define MAX_SSID_IN_LIST     10
+	#elif (MAX_SSID_IN_LIST < 2)
+		#warning Parameter MAX_SSID_IN_LIST defined must be >= 2 - Reset to 10
+		#undef MAX_SSID_IN_LIST
+		#define MAX_SSID_IN_LIST      10
+	#elif (MAX_SSID_IN_LIST > 15)
+		#warning Parameter MAX_SSID_IN_LIST defined must be <= 15 - Reset to 10
+		#undef MAX_SSID_IN_LIST
+		#define MAX_SSID_IN_LIST      10
+	#endif
+#else
+  #warning SCAN_WIFI_NETWORKS disabled	
 #endif
 
 ///////// NEW for DRD /////////////
@@ -152,14 +181,14 @@ extern WiFiNINA_Configuration defaultConfig;
 
 const char WIFININA_HTML_HEAD_START[] /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>nRF52_WM_NINA_Lite</title>";
 
-const char WIFININA_HTML_HEAD_STYLE[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
+const char WIFININA_HTML_HEAD_STYLE[] /*PROGMEM*/ = "<style>div,input,select{padding:5px;font-size:1em;}input,select{width:95%;}body{text-align:center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
 
-const char WIFININA_HTML_HEAD_END[]   /*PROGMEM*/ = "</head><div style=\"text-align:left;display:inline-block;min-width:260px;\">\
-<fieldset><div><label>*WiFi SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
-<div><label>*PWD (8+ chars)</label><input value=\"[[pw]]\"id=\"pw\"><div></div></div>\
-<div><label>*WiFi SSID1</label><input value=\"[[id1]]\"id=\"id1\"><div></div></div>\
-<div><label>*PWD1 (8+ chars)</label><input value=\"[[pw1]]\"id=\"pw1\"><div></div></div></fieldset>\
-<fieldset><div><label>Board Name</label><input value=\"[[nm]]\"id=\"nm\"><div></div></div></fieldset>";
+const char WIFININA_HTML_HEAD_END[]   /*PROGMEM*/ = "</head><div style='text-align:left;display:inline-block;min-width:260px;'>\
+<fieldset><div><label>*WiFi SSID</label><div><input value='[[id]]'id='id'></div></div>\
+<div><label>*PWD (8+ chars)</label><input value='[[pw]]'id='pw'><div></div></div>\
+<div><label>*WiFi SSID1</label><div><input value='[[id1]]'id='id1'></div></div>\
+<div><label>*PWD1 (8+ chars)</label><input value='[[pw1]]'id='pw1'><div></div></div></fieldset>\
+<fieldset><div><label>Board Name</label><input value='[[nm]]'id='nm'><div></div></div></fieldset>";	// DO NOT CHANGE THIS STRING EVER!!!!
 
 const char WIFININA_FLDSET_START[]  /*PROGMEM*/ = "<fieldset>";
 const char WIFININA_FLDSET_END[]    /*PROGMEM*/ = "</fieldset>";
@@ -175,6 +204,16 @@ udVal('nm',document.getElementById('nm').value);";
 const char WIFININA_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getElementById('{d}').value);";
 const char WIFININA_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
 const char WIFININA_HTML_END[]          /*PROGMEM*/ = "</html>";
+
+#if SCAN_WIFI_NETWORKS
+const char WIFININA_SELECT_START[]      /*PROGMEM*/ = "<select id=";
+const char WIFININA_SELECT_END[]        /*PROGMEM*/ = "</select>";
+const char WIFININA_DATALIST_START[]    /*PROGMEM*/ = "<datalist id=";
+const char WIFININA_DATALIST_END[]      /*PROGMEM*/ = "</datalist>";
+const char WIFININA_OPTION_START[]      /*PROGMEM*/ = "<option>";
+const char WIFININA_OPTION_END[]        /*PROGMEM*/ = "";			// "</option>"; is not required
+const char WIFININA_NO_NETWORKS_FOUND[] /*PROGMEM*/ = "No suitable WiFi networks available!";
+#endif
 
 //////////////////////////////////////////
 
@@ -236,7 +275,16 @@ class WiFiManager_NINA_Lite
     ~WiFiManager_NINA_Lite()
     {
       if (server)
+      {
         delete server;
+        
+#if SCAN_WIFI_NETWORKS
+        if (indices)
+        {
+          free(indices); //indices array no longer required so free memory
+        }
+#endif
+      }
     }
         
     bool connectWiFi(const char* ssid, const char* pass)
@@ -768,6 +816,15 @@ class WiFiManager_NINA_Lite
     const char* _CORS_Header        = WM_HTTP_CORS_ALLOW_ALL;   //"*";
 #endif
        
+    /////////////////////////////////////
+    // Add WiFi Scan from v1.3.0
+    
+#if SCAN_WIFI_NETWORKS
+  int WiFiNetworksFound = 0;		// Number of SSIDs found by WiFi scan, including low quality and duplicates
+  int *indices;					        // WiFi network data, filled by scan (SSID, BSSID)
+  String ListOfSSIDs = "";		  // List of SSIDs found by scan, in HTML <option> format
+#endif
+
     //////////////////////////////////////
 
     #define RFC952_HOSTNAME_MAXLEN      24
@@ -1677,8 +1734,39 @@ class WiFiManager_NINA_Lite
         root_html_template += _CustomsHeadElement;
   #endif          
       
-      root_html_template += String(WIFININA_HTML_HEAD_END) + WIFININA_FLDSET_START;
-      
+#if SCAN_WIFI_NETWORKS
+	    WN_LOGDEBUG1(WiFiNetworksFound, F(" SSIDs found, generating HTML now"));
+	    // Replace HTML <input...> with <select...>, based on WiFi network scan in startConfigurationMode()
+	    
+	    ListOfSSIDs = "";
+	    
+	    for (int i = 0, list_items = 0; (i < WiFiNetworksFound) && (list_items < MAX_SSID_IN_LIST); i++)
+	    {
+		    if (indices[i] == -1) continue; 		// skip duplicates and those that are below the required quality
+		    ListOfSSIDs += WIFININA_OPTION_START + String(WiFi.SSID(indices[i])) + WIFININA_OPTION_END;	
+		    list_items++;		// Count number of suitable, distinct SSIDs to be included in list
+	    }
+	    
+	    WN_LOGDEBUG(ListOfSSIDs);
+	    
+	    if (ListOfSSIDs == "")		// No SSID found or none was good enough
+		    ListOfSSIDs = WIFININA_OPTION_START + String(WIFININA_NO_NETWORKS_FOUND) + WIFININA_OPTION_END;
+	    
+	    pitem = String(WIFININA_HTML_HEAD_END);
+	    
+#if MANUAL_SSID_INPUT_ALLOWED
+      pitem.replace("<input value='[[id]]' id='id'>",   "<input id='id' list='SSIDs'>"  + String(WIFININA_DATALIST_START) + "'SSIDs'>" + ListOfSSIDs + WIFININA_DATALIST_END);
+	    pitem.replace("<input value='[[id1]]' id='id1'>", "<input id='id1' list='SSIDs'>" + String(WIFININA_DATALIST_START) + "'SSIDs'>" + ListOfSSIDs + WIFININA_DATALIST_END);
+#else
+	    pitem.replace("<input value='[[id]]' id='id'>",   "<select id='id'>"  + ListOfSSIDs + WIFININA_SELECT_END);
+	    pitem.replace("<input value='[[id1]]' id='id1'>", "<select id='id1'>" + ListOfSSIDs + WIFININA_SELECT_END);
+#endif
+
+	    root_html_template += pitem + WIFININA_FLDSET_START;
+#else
+	    root_html_template += String(WIFININA_HTML_HEAD_END) + WIFININA_FLDSET_START;
+#endif	
+   
 #if USE_DYNAMIC_PARAMETERS      
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {
@@ -1939,6 +2027,12 @@ class WiFiManager_NINA_Lite
 
     void startConfigurationMode()
     {
+#if SCAN_WIFI_NETWORKS
+      configTimeout = 0;  // To allow user input in CP
+
+      WiFiNetworksFound = scanWifiNetworks(&indices);
+#endif
+    
       WiFi.config(portal_apIP);
 
       if ( (portal_ssid == "") || portal_pass == "" )
@@ -2002,6 +2096,176 @@ class WiFiManager_NINA_Lite
 
       configuration_mode = true;
     }
+    
+#if SCAN_WIFI_NETWORKS
+    // Source code adapted from https://github.com/khoih-prog/ESP_WiFiManager/blob/master/src/ESP_WiFiManager-Impl.h
+
+    int           _paramsCount            = 0;
+    int           _minimumQuality         = -1;
+    bool          _removeDuplicateAPs     = true;
+
+    //////////////////////////////////////////
+    
+    void swap(int *thisOne, int *thatOne)
+    {
+       int tempo;
+
+       tempo    = *thatOne;
+       *thatOne = *thisOne;
+       *thisOne = tempo;
+    }
+
+    //////////////////////////////////////////
+    
+    void setMinimumSignalQuality(int quality)
+    {
+      _minimumQuality = quality;
+    }
+
+    //////////////////////////////////////////
+
+    //if this is true, remove duplicate Access Points - default true
+    void setRemoveDuplicateAPs(bool removeDuplicates)
+    {
+      _removeDuplicateAPs = removeDuplicates;
+    }
+
+    //////////////////////////////////////////
+
+    //Scan for WiFiNetworks in range and sort by signal strength
+    //space for indices array allocated on the heap and should be freed when no longer required
+  //public:		// "public:" Can be removed, this is only for testing!
+    int scanWifiNetworks(int **indicesptr)
+    {
+      WN_LOGDEBUG(F("Scanning Network"));
+
+      int n = WiFi.scanNetworks();
+
+      WN_LOGDEBUG1(F("scanWifiNetworks: Done, Scanned Networks n ="), n);
+
+      //KH, Terrible bug here. WiFi.scanNetworks() returns n < 0 => malloc( negative == very big ) => crash!!!
+      //In .../esp32/libraries/WiFi/src/WiFiType.h
+      //#define WIFI_SCAN_RUNNING   (-1)
+      //#define WIFI_SCAN_FAILED    (-2)
+      //if (n == 0)
+      if (n <= 0)
+      {
+        WN_LOGDEBUG(F("No network found"));
+        return (0);
+      }
+      else
+      {
+        // Allocate space off the heap for indices array.
+        // This space should be freed when no longer required.
+        int* indices = (int *)malloc(n * sizeof(int));
+
+        if (indices == NULL)
+        {
+          WN_LOGDEBUG(F("ERROR: Out of memory"));
+          *indicesptr = NULL;
+          return (0);
+        }
+
+        *indicesptr = indices;
+
+        //sort networks
+        for (int i = 0; i < n; i++)
+        {
+          indices[i] = i;
+        }
+
+        WN_LOGDEBUG(F("Sorting"));
+
+        // RSSI SORT
+        // old sort
+        for (int i = 0; i < n; i++)
+        {
+          for (int j = i + 1; j < n; j++)
+          {
+            if (WiFi.RSSI(indices[j]) > WiFi.RSSI(indices[i]))
+            {
+              //std::swap(indices[i], indices[j]);
+              // Using locally defined swap()
+              swap(&indices[i], &indices[j]);
+            }
+          }
+        }
+
+        WN_LOGDEBUG(F("Removing Dup"));
+
+        // remove duplicates ( must be RSSI sorted )
+        if (_removeDuplicateAPs)
+        {
+          String cssid;
+          for (int i = 0; i < n; i++)
+          {
+            if (indices[i] == -1)
+              continue;
+
+            cssid = WiFi.SSID(indices[i]);
+            for (int j = i + 1; j < n; j++)
+            {
+              if (cssid == WiFi.SSID(indices[j]))
+              {
+                WN_LOGDEBUG1("DUP AP:", WiFi.SSID(indices[j]));
+                indices[j] = -1; // set dup aps to index -1
+              }
+            }
+          }
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+          if (indices[i] == -1)
+            continue; // skip dups
+
+          int quality = getRSSIasQuality(WiFi.RSSI(indices[i]));
+
+          if (!(_minimumQuality == -1 || _minimumQuality < quality))
+          {
+            indices[i] = -1;
+            WN_LOGDEBUG(F("Skipping low quality"));
+          }
+        }
+
+        WN_LOGDEBUG(F("WiFi networks found:"));
+        for (int i = 0; i < n; i++)
+        {
+          if (indices[i] == -1)
+            continue; // skip dups
+          else
+            WN_LOGDEBUG5(i + 1, ": ", WiFi.SSID(indices[i]), ", ", WiFi.RSSI(i), "dB");
+        }
+
+        return (n);
+      }
+    }
+
+    //////////////////////////////////////////
+
+    int getRSSIasQuality(int RSSI)
+    {
+      int quality = 0;
+
+      if (RSSI <= -100)
+      {
+        quality = 0;
+      }
+      else if (RSSI >= -50)
+      {
+        quality = 100;
+      }
+      else
+      {
+        quality = 2 * (RSSI + 100);
+      }
+
+      return quality;
+    }
+
+    //////////////////////////////////////////
+
+#endif    
 };
 
 

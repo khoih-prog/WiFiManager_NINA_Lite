@@ -17,7 +17,7 @@
 #define DEBUG_WIFI_WEBSERVER_PORT       Serial
 #define WIFININA_DEBUG_OUTPUT           Serial
 
-#define _WIFININA_LOGLEVEL_             2
+#define _WIFININA_LOGLEVEL_             1
 
 #define DRD_GENERIC_DEBUG               true
 
@@ -47,7 +47,7 @@
   #elif defined(ARDUINO_SAMD_NANO_33_IOT)
     #define BOARD_TYPE      "SAMD NANO_33_IOT"
   #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
+      #define BOARD_TYPE      "SAMD MKRFox1200"
   #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
     #define BOARD_TYPE      "SAMD MKRWAN13X0"
   #elif defined(ARDUINO_SAMD_MKRGSM1400)
@@ -163,6 +163,16 @@
 #define REQUIRE_ONE_SET_SSID_PW             true
 
 #define USE_DYNAMIC_PARAMETERS              true
+
+/////////////////////////////////////////////
+
+#define SCAN_WIFI_NETWORKS                  true
+
+// To be able to manually input SSID, not from a scanned SSID lists
+#define MANUAL_SSID_INPUT_ALLOWED           true
+
+// From 2-15
+#define MAX_SSID_IN_LIST                    6
 
 /////////////////////////////////////////////
 
