@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.2.0
+  Version: 1.3.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -19,12 +19,13 @@
                                    SSID password maxlen is 63 now. Permit special chars # and % in input data.
   1.0.4   K Hoang      04/05/2020  Add Configurable Config Portal Title, Default Config Data and DRD. Update examples.
   1.0.5   K Hoang      11/07/2020  Modify LOAD_DEFAULT_CONFIG_DATA logic. Enhance MultiWiFi connection logic. Add MQTT examples.
-  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32. 
+  1.1.0   K Hoang      19/02/2021  Optimize code and use better FlashStorage_SAMD and FlashStorage_STM32.
                                    Add customs HTML header feature. Fix bug.
   1.1.1   K Hoang      13/03/2021  Fix USE_DYNAMIC_PARAMETERS bug.
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
+  1.3.0	  Michael H	   21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h
@@ -51,6 +52,8 @@
   #define _WIFININA_LOGLEVEL_       0
 #endif
 
+//////////////////////////////////////////
+
 const char WN_MARK[] = "[WN] ";
 
 #define WN_PRINT_MARK   DBG_PORT_WN.print(WN_MARK)
@@ -58,8 +61,7 @@ const char WN_MARK[] = "[WN] ";
 #define WN_PRINT        DBG_PORT_WN.print
 #define WN_PRINTLN      DBG_PORT_WN.println
 
-// Error waitResponse message
-#define ERROR_RESPONSE  ":Error waitResponse"
+//////////////////////////////////////////
 
 #define WN_LOGERROR0(x)     if(_WIFININA_LOGLEVEL_>0) { WN_PRINT(x); }
 #define WN_LOGERROR(x)      if(_WIFININA_LOGLEVEL_>0) { WN_PRINT_MARK; WN_PRINTLN(x); }
@@ -68,12 +70,16 @@ const char WN_MARK[] = "[WN] ";
 #define WN_LOGERROR3(x,y,z,w) if(_WIFININA_LOGLEVEL_>0) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINTLN(w); }
 #define WN_LOGERROR5(x,y,z,w,xx,yy) if(_WIFININA_LOGLEVEL_>0) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINT(w); WN_PRINT(xx); WN_PRINTLN(yy); }
 
+//////////////////////////////////////////
+
 #define WN_LOGWARN0(x)     if(_WIFININA_LOGLEVEL_>1) { WN_PRINT(x); }
 #define WN_LOGWARN(x)      if(_WIFININA_LOGLEVEL_>1) { WN_PRINT_MARK; WN_PRINTLN(x); }
 #define WN_LOGWARN1(x,y)   if(_WIFININA_LOGLEVEL_>1) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINTLN(y); }
 #define WN_LOGWARN2(x,y,z) if(_WIFININA_LOGLEVEL_>1) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINTLN(z); }
 #define WN_LOGWARN3(x,y,z,w) if(_WIFININA_LOGLEVEL_>1) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINTLN(w); }
 #define WN_LOGWARN5(x,y,z,w,xx,yy) if(_WIFININA_LOGLEVEL_>1) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINT(w); WN_PRINT(xx); WN_PRINTLN(yy); }
+
+//////////////////////////////////////////
 
 #define WN_LOGINFO0(x)     if(_WIFININA_LOGLEVEL_>2) { WN_PRINT(x); }
 #define WN_LOGINFO(x)      if(_WIFININA_LOGLEVEL_>2) { WN_PRINT_MARK; WN_PRINTLN(x); }
@@ -82,6 +88,8 @@ const char WN_MARK[] = "[WN] ";
 #define WN_LOGINFO3(x,y,z,w) if(_WIFININA_LOGLEVEL_>3) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINTLN(w); }
 #define WN_LOGINFO5(x,y,z,w,xx,yy) if(_WIFININA_LOGLEVEL_>2) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINT(w); WN_PRINT(xx); WN_PRINTLN(yy); }
 
+//////////////////////////////////////////
+
 #define WN_LOGDEBUG0(x)     if(_WIFININA_LOGLEVEL_>3) { WN_PRINT(x); }
 #define WN_LOGDEBUG(x)      if(_WIFININA_LOGLEVEL_>3) { WN_PRINT_MARK; WN_PRINTLN(x); }
 #define WN_LOGDEBUG1(x,y)   if(_WIFININA_LOGLEVEL_>3) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINTLN(y); }
@@ -89,6 +97,6 @@ const char WN_MARK[] = "[WN] ";
 #define WN_LOGDEBUG3(x,y,z,w) if(_WIFININA_LOGLEVEL_>3) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINTLN(w); }
 #define WN_LOGDEBUG5(x,y,z,w,xx,yy) if(_WIFININA_LOGLEVEL_>3) { WN_PRINT_MARK; WN_PRINT(x); WN_PRINT(y); WN_PRINT(z); WN_PRINT(w); WN_PRINT(xx); WN_PRINTLN(yy); }
 
-//////
+//////////////////////////////////////////
 
 #endif    //WiFiManager_NINA_Lite_Debug_h
