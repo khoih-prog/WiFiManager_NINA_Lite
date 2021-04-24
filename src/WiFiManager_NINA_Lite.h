@@ -25,7 +25,7 @@
   1.1.2   K Hoang      30/03/2021  Fix MultiWiFi connection bug.
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
-  1.3.0	  Michael H	   21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
+  1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_h
@@ -1037,6 +1037,9 @@ class WiFiManager_NINA_Lite
         // If SSID, PW ="blank" or NULL, set the flag
         WN_LOGERROR(F("Invalid Stored WiFi Config Data"));
         
+        // Nullify the invalid data to avoid displaying garbage
+        memset(&WIFININA_config, 0, sizeof(WIFININA_config));
+        
         hadConfigData = false;
         
         return false;
@@ -1488,11 +1491,22 @@ udVal('nm',document.getElementById('nm').value);";
             result.replace("SAMD_WM_NINA_Lite", WIFININA_config.board_name);
           }
 
-          result.replace("[[id]]",     WIFININA_config.WiFi_Creds[0].wifi_ssid);
-          result.replace("[[pw]]",     WIFININA_config.WiFi_Creds[0].wifi_pw);
-          result.replace("[[id1]]",    WIFININA_config.WiFi_Creds[1].wifi_ssid);
-          result.replace("[[pw1]]",    WIFININA_config.WiFi_Creds[1].wifi_pw);
-          result.replace("[[nm]]",     WIFININA_config.board_name);
+          if (hadConfigData)
+          {
+            result.replace("[[id]]",     WIFININA_config.WiFi_Creds[0].wifi_ssid);
+            result.replace("[[pw]]",     WIFININA_config.WiFi_Creds[0].wifi_pw);
+            result.replace("[[id1]]",    WIFININA_config.WiFi_Creds[1].wifi_ssid);
+            result.replace("[[pw1]]",    WIFININA_config.WiFi_Creds[1].wifi_pw);
+            result.replace("[[nm]]",     WIFININA_config.board_name);
+          }
+          else
+          {
+            result.replace("[[id]]",  "");
+            result.replace("[[pw]]",  "");
+            result.replace("[[id1]]", "");
+            result.replace("[[pw1]]", "");
+            result.replace("[[nm]]",  "");
+          }
           
 #if USE_DYNAMIC_PARAMETERS          
           for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)

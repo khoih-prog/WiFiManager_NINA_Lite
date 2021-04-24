@@ -16,6 +16,7 @@
   * [Currently supported Boards](#currently-supported-boards)
   * [Currently supported WiFi shields/modules](#currently-supported-wifi-shieldsmodules)
 * [Changelog](#changelog)
+  * [Major Release v1.3.0](#major-release-v130)
   * [Release v1.2.0](#release-v120)
   * [Release v1.1.3](#release-v113)
   * [Release v1.1.2](#release-v112)
@@ -42,7 +43,11 @@
   * [5. For Adafruit SAMD boards](#5-for-adafruit-samd-boards)
   * [6. For Seeeduino SAMD boards](#6-for-seeeduino-samd-boards)
   * [7. For STM32 boards](#7-for-stm32-boards) 
+    * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
+    * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
 * [How It Works](#how-it-works)
+  * [1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
+  * [2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
 * [How to use](#how-to-use)
   * [ 1. Basic usage](#1-basic-usage)
   * [ 2. Add custom parameters](#2-add-custom-parameters)
@@ -55,6 +60,12 @@
   * [ 9. To use custom Head Elements](#9-to-use-custom-head-elements)
   * [10. To use CORS Header](#10-to-use-cors-header)
   * [11. To use and input only one set of WiFi SSID and PWD](#11-to-use-and-input-only-one-set-of-wifi-ssid-and-pwd)
+    * [11.1 If you need to use and input only one set of WiFi SSID/PWD](#111-if-you-need-to-use-both-sets-of-wifi-ssidpwd)
+    * [11.2 If you need to use both sets of WiFi SSID/PWD](#112-disable-manually-input-ssids)
+  * [12. To enable auto-scan of WiFi networks for selection in Configuration Portal](#12-to-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
+    * [12.1 Enable auto-scan of WiFi networks for selection in Configuration Portal](#121-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
+    * [12.2 Disable manually input SSIDs](#122-disable-manually-input-ssids)
+    * [12.3 Select maximum number of SSIDs in the list](#123-select-maximum-number-of-ssids-in-the-list)
 * [Examples](#examples)
   * [ 1. SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
   * [ 2. SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
@@ -134,6 +145,8 @@ New recent features:
 - Configurable **Config Portal Title** to be either BoardName or default undistinguishable names.
 - Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
 - Configurable **Customs HTML Headers**, including Customs Style, Customs Gead Elements, CORS Header.
+- **Scan WiFi networks** for selection in Configuration Portal
+
 
 #### Currently supported Boards
 
@@ -178,6 +191,11 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 ---
 
 ## Changelog
+
+### Major Release v1.3.0
+
+1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
+2. Minor enhancement to not display garbage when data is invalid
 
 ### Release v1.2.0
 
@@ -423,6 +441,30 @@ This file must be copied into the directory:
 
 #### 7. For STM32 boards
 
+#### 7.1. For STM32 boards to use LAN8720
+
+To use LAN8720 on some STM32 boards 
+
+- **Nucleo-144 (F429ZI, NUCLEO_F746NG, NUCLEO_F746ZG, NUCLEO_F756ZG)**
+- **Discovery (DISCO_F746NG)**
+- **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
+
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system) to overwrite the old files.
+
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
+theses files must be copied into the corresponding directory:
+
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F4xx/stm32f4xx_hal_conf_default.h`
+- `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
+
+
+#### 7.2. For STM32 boards to use Serial1
+
 **To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
 Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
@@ -621,7 +663,7 @@ Once Credentials / WiFi network information is saved in the host non-volatile me
 
 #### 11. To use and input only one set of WiFi SSID and PWD
 
-#### 11.1 If you need to use and input only one set of WiFi SSID/PWD.
+#### 11.1 If you need to use and input only one set of WiFi SSID/PWD
 
 ```
 // Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
@@ -637,6 +679,39 @@ But it's always advisable to use and input both sets for reliability.
 // Default is false (if not defined) => must input 2 sets of SSID/PWD
 #define REQUIRE_ONE_SET_SSID_PW       false
 ```
+
+#### 12. To enable auto-scan of WiFi networks for selection in Configuration Portal
+
+#### 12.1 Enable auto-scan of WiFi networks for selection in Configuration Portal
+
+
+```
+#define SCAN_WIFI_NETWORKS                  true
+```
+
+The manual input of SSIDs is default enabled, so that users can input arbitrary SSID, not only from the scanned list. This is for the sample use-cases in which users can input the known SSIDs of another place, then send the boards to that place. The boards can connect to WiFi without users entering Config Portal to re-configure.
+
+#### 12.2 Disable manually input SSIDs
+
+```
+// To disable manually input SSID, only from a scanned SSID lists
+#define MANUAL_SSID_INPUT_ALLOWED           false
+```
+
+This is for normal use-cases in which users can only select an SSID from a scanned list of SSIDs to avoid typo mistakes and/or security.
+
+#### 12.3 Select maximum number of SSIDs in the list
+
+The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid number of SSIDs is selected, the default number of 10 will be used.
+
+
+```
+// From 2-15
+#define MAX_SSID_IN_LIST                    8
+
+/////////////////////////////////////////////
+```
+
 
 ---
 ---
@@ -668,11 +743,22 @@ After you connected, please, go to http://192.168.4.1 or newly configured AP IP,
     <img src="https://github.com/khoih-prog/WiFiManager_NINA_Lite/blob/master/pics/Main.png">
 </p>
 
+
+### 1. Without SCAN_WIFI_NETWORKS
+
 Enter your credentials, 
 
 <p align="center">
     <img src="https://github.com/khoih-prog/WiFiManager_NINA_Lite/blob/master/pics/Input.png">
 </p>
+
+### 2. With SCAN_WIFI_NETWORKS
+
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/WiFiManager_NINA_Lite/blob/master/pics/Input_With_Scan.png">
+</p>
+
 
 then click `Save`. 
 
@@ -1042,7 +1128,7 @@ void loop()
 #define DEBUG_WIFI_WEBSERVER_PORT       Serial
 #define WIFININA_DEBUG_OUTPUT           Serial
 
-#define _WIFININA_LOGLEVEL_             2
+#define _WIFININA_LOGLEVEL_             1
 
 #define DRD_GENERIC_DEBUG               true
 
@@ -1072,7 +1158,7 @@ void loop()
   #elif defined(ARDUINO_SAMD_NANO_33_IOT)
     #define BOARD_TYPE      "SAMD NANO_33_IOT"
   #elif defined(ARDUINO_SAMD_MKRFox1200)
-    #define BOARD_TYPE      "SAMD MKRFox1200"
+      #define BOARD_TYPE      "SAMD MKRFox1200"
   #elif ( defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) )
     #define BOARD_TYPE      "SAMD MKRWAN13X0"
   #elif defined(ARDUINO_SAMD_MKRGSM1400)
@@ -1129,9 +1215,9 @@ void loop()
 
   #warning Using WIFININA_Generic Library
   #define SHIELD_TYPE     "WiFiNINA using WiFiNINA_Generic Library"
-
-  #include "WiFiNINA_Pinout_Generic.h"
   
+  #include "WiFiNINA_Pinout_Generic.h"
+
 #elif USE_WIFI101
 
   #if defined(USE_WIFI_NINA)
@@ -1139,7 +1225,7 @@ void loop()
   #endif
   
   #define USE_WIFI_NINA           false
-
+  
   #define SHIELD_TYPE     "WINC1500 using WiFi101 Library"
   #warning Using WiFi101 Library
 
@@ -1156,28 +1242,48 @@ void loop()
   #endif
   
   #define USE_WIFI101             false
-
+  
   #define SHIELD_TYPE     "Custom using Custom WiFi Library"
   #warning Using Custom WiFi Library. You must include here or compile error
-  
+
 #else
 
   #define SHIELD_TYPE     "Default WiFi using WiFi Library"
   #warning Using fallback WiFi.h Library defined in WiFiWebServer Library.
-  
+
 #endif
 
 /////////////////////////////////////////////
 
-// Force some params in Blynk, only valid for library version 1.0.1 and later
-#define TIMEOUT_RECONNECT_WIFI                    10000L
+// Permit running CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET times before reset hardware
+// to permit user another chance to config. Only if Config Data is valid.
+// If Config Data is invalid, this has no effect as Config Portal will persist
 #define RESET_IF_CONFIG_TIMEOUT                   true
+
+// Permitted range of user-defined RETRY_TIMES_RECONNECT_WIFI between 2-5 times
+#define RETRY_TIMES_RECONNECT_WIFI                3
+
+// Permitted range of user-defined CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET between 2-100
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
 
-// Config Timeout 120s (default 60s)
+// Config Timeout 120s (default 60s). Applicable only if Config Data is Valid
 #define CONFIG_TIMEOUT                      120000L
 
+// Permit input only one set of WiFi SSID/PWD. The other can be "NULL or "blank"
+// Default is false (if not defined) => must input 2 sets of SSID/PWD
+#define REQUIRE_ONE_SET_SSID_PW             true
+
 #define USE_DYNAMIC_PARAMETERS              true
+
+/////////////////////////////////////////////
+
+#define SCAN_WIFI_NETWORKS                  true
+
+// To be able to manually input SSID, not from a scanned SSID lists
+#define MANUAL_SSID_INPUT_ALLOWED           true
+
+// From 2-15
+#define MAX_SSID_IN_LIST                    8
 
 /////////////////////////////////////////////
 
@@ -1351,7 +1457,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1403,7 +1509,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1450,7 +1556,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1527,7 +1633,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1591,7 +1697,7 @@ FF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1647,7 +1753,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.2.0
+WiFiManager_NINA_Lite v1.3.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1721,6 +1827,11 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ---
  
 ## Releases
+
+### Major Release v1.3.0
+
+1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
+2. Minor enhancement to not display garbage when data is invalid
 
 ### Release v1.2.0
 
@@ -1839,7 +1950,8 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
   - [Won't compile for SAMD when USE_DYNAMIC_PARAMETERS set to FALSE #5](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/5) leading to v1.1.1, 
   - [SAMD MultiWiFi issues when first WiFi SSID configured in CP is invalid or not available #6](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/6) leading to v1.1.2.
   - [WiFiManager connection attempt to unconfigured ("blank") SSID after restart on SAMD #8](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/8) leading to v1.1.3 and v1.2.0
-
+6. Again thanks to [Michael H "bizprof"](https://github.com/bizprof) to be `collaborator, co-author/maintainer` of this library. With the impressive new feature : 
+  - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.3.0
 
 <table>
   <tr>
@@ -1847,7 +1959,7 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
     <td align="center"><a href="https://github.com/tcpipchip"><img src="https://github.com/tcpipchip.png" width="100px;" alt="tcpipchip"/><br /><sub><b>⭐️ Miguel Wisintainer</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/Darvesh7"><img src="https://github.com/Darvesh7.png" width="100px;" alt="Darvesh7"/><br /><sub><b>Darvesh7</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/piecol"><img src="https://github.com/piecol.png" width="100px;" alt="piecol"/><br /><sub><b>Pierluigi Colangeli</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️ Michael "bizprof"</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️⭐️ Michael "bizprof"</b></sub></a><br /></td>
   </tr> 
 </table>
 

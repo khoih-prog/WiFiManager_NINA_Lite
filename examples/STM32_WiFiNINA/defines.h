@@ -21,9 +21,9 @@
 
 #define DRD_GENERIC_DEBUG               true
 
-#if ( defined(STM32F0) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
-      defined(STM32L0) || defined(STM32L1) || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
-      defined(STM32WB) || defined(STM32MP1) )
+#if ( defined(STM32F0) || defined(STM32F1)  || defined(STM32F2) || defined(STM32F3)  ||defined(STM32F4) || defined(STM32F7) || \
+      defined(STM32L0) || defined(STM32L1)  || defined(STM32L4) || defined(STM32H7)  ||defined(STM32G0) || defined(STM32G4) || \
+      defined(STM32WB) || defined(STM32MP1) || defined(STM32L5) )
   #if defined(WIFININA_USE_STM32)
     #undef WIFININA_USE_STM32
     #undef WIFI_USE_STM32
