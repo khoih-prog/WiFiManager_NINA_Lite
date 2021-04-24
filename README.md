@@ -46,8 +46,6 @@
     * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
     * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
 * [How It Works](#how-it-works)
-  * [1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
-  * [2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
 * [How to use](#how-to-use)
   * [ 1. Basic usage](#1-basic-usage)
   * [ 2. Add custom parameters](#2-add-custom-parameters)
@@ -60,8 +58,8 @@
   * [ 9. To use custom Head Elements](#9-to-use-custom-head-elements)
   * [10. To use CORS Header](#10-to-use-cors-header)
   * [11. To use and input only one set of WiFi SSID and PWD](#11-to-use-and-input-only-one-set-of-wifi-ssid-and-pwd)
-    * [11.1 If you need to use and input only one set of WiFi SSID/PWD](#111-if-you-need-to-use-both-sets-of-wifi-ssidpwd)
-    * [11.2 If you need to use both sets of WiFi SSID/PWD](#112-disable-manually-input-ssids)
+    * [11.1 If you need to use and input only one set of WiFi SSID/PWD](#111-if-you-need-to-use-and-input-only-one-set-of-wifi-ssidpwd)
+    * [11.2 If you need to use both sets of WiFi SSID/PWD](#112-if-you-need-to-use-both-sets-of-wifi-ssidpwd)
   * [12. To enable auto-scan of WiFi networks for selection in Configuration Portal](#12-to-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
     * [12.1 Enable auto-scan of WiFi networks for selection in Configuration Portal](#121-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
     * [12.2 Disable manually input SSIDs](#122-disable-manually-input-ssids)
@@ -79,6 +77,8 @@
   * [10. SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
   * [11. Mega_WiFiNINA](examples/Mega_WiFiNINA)
 * [So, how it works?](#so-how-it-works)
+  * [1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
+  * [2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
 * [Important Notes](#important-notes)
 * [How to use default Credentials and have them pre-loaded onto Config Portal](#how-to-use-default-credentials-and-have-them-pre-loaded-onto-config-portal)
   * [1. To always load Default Credentials and override Config Portal data](#1-to-always-load-default-credentials-and-override-config-portal-data)
@@ -273,7 +273,7 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
- 2. [`Arduino Core for STM32 v1.9.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
+ 2. [`Arduino Core for STM32 v2.0.0+`](https://github.com/stm32duino/Arduino_Core_STM32) for STM32 boards. [![GitHub release](https://img.shields.io/github/release/stm32duino/Arduino_Core_STM32.svg)](https://github.com/stm32duino/Arduino_Core_STM32/releases/latest)
  3. [`Teensy core 1.51`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards
  5. [`Arduino SAMD core 1.8.11+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
@@ -708,8 +708,6 @@ The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid nu
 ```
 // From 2-15
 #define MAX_SSID_IN_LIST                    8
-
-/////////////////////////////////////////////
 ```
 
 
@@ -1924,10 +1922,11 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  9. Split each example into several manageable files.
 10. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
 11. Add functions to control Config Portal from software or Virtual Switches.
-12. Use more efficient [FlashStorage_SAMD v1.1.0](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32 v1.00](https://github.com/khoih-prog/FlashStorage_STM32)
+12. Use more efficient [FlashStorage_SAMD v1.1.0](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32 v1.0.1](https://github.com/khoih-prog/FlashStorage_STM32)
 13. Add Version String and Table-of-Contents
 14. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
 15. Enforce WiFi Password minimum length of 8 chars
+16. Enable scan of WiFi networks for selection in Configuration Portal
 
 
 ---
