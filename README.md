@@ -16,6 +16,7 @@
   * [Currently supported Boards](#currently-supported-boards)
   * [Currently supported WiFi shields/modules](#currently-supported-wifi-shieldsmodules)
 * [Changelog](#changelog)
+  * [Release v1.3.1](#release-v131)
   * [Major Release v1.3.0](#major-release-v130)
   * [Release v1.2.0](#release-v120)
   * [Release v1.1.3](#release-v113)
@@ -45,6 +46,7 @@
   * [7. For STM32 boards](#7-for-stm32-boards) 
     * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
     * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
+  * [8. For RP2040-based boards](#8-for-rp2040-based-boards)
 * [How It Works](#how-it-works)
 * [How to use](#how-to-use)
   * [ 1. Basic usage](#1-basic-usage)
@@ -192,6 +194,10 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 
 ## Changelog
 
+### Release v1.3.1
+
+1. Fix createHTML bug.
+
 ### Major Release v1.3.0
 
 1. Enable scan of WiFi networks for selection in Configuration Portal. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10). Now you can select optional **SCAN_WIFI_NETWORKS**, **MANUAL_SSID_INPUT_ALLOWED** to be able to manually input SSID, not only from a scanned SSID lists and **MAX_SSID_IN_LIST** (from 2-15)
@@ -277,7 +283,7 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  3. [`Teensy core 1.51`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards
  5. [`Arduino SAMD core 1.8.11+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.6.7+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.6.8+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v0.21.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
  9. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
@@ -285,10 +291,10 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 11. [`WiFi101 library v0.16.1+`](https://github.com/arduino-libraries/WiFi101) if using WINC1500/WiFi101 shields (MKR1000, etc.). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFi101.svg?)](https://www.ardu-badge.com/WiFi101)
 12. [`WiFiWebServer library v1.1.1+`](https://github.com/khoih-prog/WiFiWebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
 13. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
-14. [`FlashStorage_STM32 library v1.0.1+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
+14. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
 15. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
 16. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52
-17. [`DoubleResetDetector_Generic v1.0.3+`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
+17. [`DoubleResetDetector_Generic v1.2.0+`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
 
 ---
 
@@ -415,11 +421,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.7) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.7). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.8) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.8). 
 
-Supposing the Adafruit SAMD core version is 1.6.7. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.6.8. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.7/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.6.8/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -441,7 +447,7 @@ This file must be copied into the directory:
 
 #### 7. For STM32 boards
 
-#### 7.1. For STM32 boards to use LAN8720
+#### 7.1 For STM32 boards to use LAN8720
 
 To use LAN8720 on some STM32 boards 
 
@@ -449,12 +455,12 @@ To use LAN8720 on some STM32 boards
 - **Discovery (DISCO_F746NG)**
 - **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
 
-you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system) to overwrite the old files.
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system) to overwrite the old files.
 
-Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
 
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
 theses files must be copied into the corresponding directory:
@@ -463,20 +469,33 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/system/STM32F7xx/stm32f7xx_hal_conf_default.h
 
 
-#### 7.2. For STM32 boards to use Serial1
+#### 7.2 For STM32 boards to use Serial1
 
-**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/2.0.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
-Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
+Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
 
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
-- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
 theses files must be copied into the corresponding directory:
 
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
+
+#### 8. For RP2040-based boards
+ 
+ ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards***, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.2.2) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.2.2). 
+
+Supposing the rp2040 core version is 1.2.2. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.2.2/platform.txt`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
 
 
 ---
@@ -1455,7 +1474,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1507,7 +1526,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1554,7 +1573,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1631,7 +1650,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1695,7 +1714,7 @@ FF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1751,7 +1770,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.0
+WiFiManager_NINA_Lite v1.3.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1825,6 +1844,10 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ---
  
 ## Releases
+
+### Release v1.3.1
+
+1. Fix createHTML bug.
 
 ### Major Release v1.3.0
 
@@ -1907,7 +1930,7 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 
 ### TO DO
 
-1. Support more boards
+1. Support more boards (RP2040, Nano RP2040 Connect, etc)
 
 ### DONE
 

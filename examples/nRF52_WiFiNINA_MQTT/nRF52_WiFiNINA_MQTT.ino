@@ -8,7 +8,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.3.0
+  Version: 1.3.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -26,13 +26,13 @@
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
+  1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
   **********************************************************************************************************************************/
 
 /****************************************************************************************************************************
   You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp  as follows to avoid dtostrf error
    
-  //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) ||             \
-  //    defined(ARDUINO_ARCH_SAMD)
+  //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_ARCH_SAMD)
   #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) )
   static char *dtostrf(double val, signed char width, unsigned char prec, char *sout) 
   {

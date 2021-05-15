@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.3.0
+  Version: 1.3.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -26,6 +26,7 @@
   1.1.3   K Hoang      12/04/2021  Fix invalid "blank" Config Data treated as Valid.
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
+  1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_h
@@ -39,7 +40,7 @@
   #error This code is intended to run on the AVR Mega, Mega2560, Mega ADK platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.3.0"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.3.1"
 
 #include <WiFiWebServer.h>
 #include <EEPROM.h>
