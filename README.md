@@ -84,8 +84,8 @@
   * [ 9. SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
   * [10. SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
   * [11. Mega_WiFiNINA](examples/Mega_WiFiNINA)
-  * [12. RP2040_WiFiNINA](examples/RP2040_WiFiNINA)  ** New**
-  * [13. RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT)  ** New**
+  * [12. RP2040_WiFiNINA](examples/RP2040_WiFiNINA)  **New**
+  * [13. RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT)  **New**
 * [So, how it works?](#so-how-it-works)
   * [1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
   * [2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
@@ -110,7 +110,7 @@
     * [1.5 Reopen Config Portal if can't connect to any of the 2 WiFi APs](#15-reopen-config-portal-if-cant-connect-to-any-of-the-2-wifi-aps)
     * [1.6 DRD Not Detected](#16-drd-not-detected) 
     * [1.7 DRD detected and Config Portal is forcefully opened](#17-drd-detected-and-config-portal-is-forcefully-opened)
-  * [ 2. RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT](#2-2p2040_wifinina_mqtt-on-mbed-nano_rp2040_connect)
+  * [ 2. RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT](#2-rp2040_wifinina_mqtt-on-mbed-nano_rp2040_connect)
     * [2.1 No Config Data => Config Portal](#21-no-config-data--config-portal)
     * [2.2 Config Data Saved => Connect to AIO](#22-config-data-saved--connect-to-aio)
 * [Debug](#debug)
@@ -200,7 +200,7 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
  
  8. RP2040-based boards, such as **Nano RP2040 Connect**, using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
 
- 9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core v1.5.1+](https://github.com/earlephilhower/arduino-pico).
+ 9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
  
 ---
 
@@ -217,8 +217,8 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 
 ### Major Release v1.4.0
 
-1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** v1.5.1+ core](https://github.com/earlephilhower/arduino-pico).
-2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed).
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
 3. Update `Packages' Patches`
 4. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
 
@@ -805,8 +805,8 @@ The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid nu
  9. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
 10. [SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
 11. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
-12. [RP2040_WiFiNINA](examples/RP2040_WiFiNINA). ** New**
-13. [RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT) ** New**
+12. [RP2040_WiFiNINA](examples/RP2040_WiFiNINA). **New**
+13. [RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT) **New**
  
 ---
 ---
@@ -2036,8 +2036,8 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 
 ### Major Release v1.4.0
 
-1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** v1.5.1+ core](https://github.com/earlephilhower/arduino-pico).
-2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed).
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed).
 3. Update `Packages' Patches`
 4. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
 
