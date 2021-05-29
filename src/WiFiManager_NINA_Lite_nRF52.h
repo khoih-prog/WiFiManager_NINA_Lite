@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.3.1
+  Version: 1.4.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -27,6 +27,7 @@
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
+  1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_nRF52_h
@@ -44,7 +45,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.3.1"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.4.0"
 
 #include <WiFiWebServer.h>
 
@@ -1033,7 +1034,7 @@ class WiFiManager_NINA_Lite
     {
       int checkSum = 0;
       int readCheckSum;
-      char* readBuffer;
+      char* readBuffer = nullptr;
            
       file.open(CREDENTIALS_FILENAME, FILE_O_READ);
       WN_LOGDEBUG(F("LoadCredFile "));
@@ -1043,8 +1044,8 @@ class WiFiManager_NINA_Lite
         WN_LOGDEBUG(F("failed"));
 
         // Trying open redundant config file
-       //file(CREDENTIALS_FILENAME_BACKUP, FILE_O_READ);
         file.open(CREDENTIALS_FILENAME_BACKUP, FILE_O_READ);
+        
         WN_LOGDEBUG(F("LoadBkUpCredFile "));
 
         if (!file)
@@ -1059,7 +1060,8 @@ class WiFiManager_NINA_Lite
       // We dont like to destroy myMenuItems[i].pdata with invalid data
       
       uint16_t maxBufferLength = 0;
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         if (myMenuItems[i].maxlen > maxBufferLength)
           maxBufferLength = myMenuItems[i].maxlen;
@@ -1079,56 +1081,53 @@ class WiFiManager_NINA_Lite
         {
           WN_LOGDEBUG1(F("ChkCrR: Buffer allocated, Sz="), maxBufferLength + 1);
         }    
-      }
-      else
-      {
-        WN_LOGDEBUG(F("ChkCrR: maxBufferLength = 0."));
-        return false;
-      }
      
-      uint16_t offset = 0;
-      
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
-      {       
-        char* _pointer = readBuffer;
-
-        // Actual size of pdata is [maxlen + 1]
-        memset(readBuffer, 0, myMenuItems[i].maxlen + 1);
+        uint16_t offset = 0;
         
-        // Redundant, but to be sure correct position
-        file.seek(offset);
-        file.read(_pointer, myMenuItems[i].maxlen);
-        
-        offset += myMenuItems[i].maxlen;
-     
-        WN_LOGDEBUG3(F("ChkCrR:pdata="), readBuffer, F(",len="), myMenuItems[i].maxlen);         
-               
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
-        {         
-          checkSum += *_pointer;  
-        }       
-      }
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+        {       
+          char* _pointer = readBuffer;
 
-      file.read((char *) &readCheckSum, sizeof(readCheckSum));
+          // Actual size of pdata is [maxlen + 1]
+          memset(readBuffer, 0, myMenuItems[i].maxlen + 1);
+          
+          // Redundant, but to be sure correct position
+          file.seek(offset);
+          file.read(_pointer, myMenuItems[i].maxlen);
+          
+          offset += myMenuItems[i].maxlen;
+       
+          WN_LOGDEBUG3(F("ChkCrR:pdata="), readBuffer, F(",len="), myMenuItems[i].maxlen);         
+                 
+          for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+          {         
+            checkSum += *_pointer;  
+          }       
+        }
+
+        file.read((char *) &readCheckSum, sizeof(readCheckSum));
+        
+        WN_LOGDEBUG(F("OK"));
+        file.close();
+        
+        WN_LOGDEBUG3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+        
+        // Free buffer
+        if (readBuffer != nullptr)
+        {
+          // Free buffer
+          delete [] readBuffer;
+            
+          WN_LOGDEBUG(F("Buffer freed"));
+        }
+        
+        if ( checkSum == readCheckSum)
+        {
+          return true;
+        }
+      }  
       
-      WN_LOGDEBUG(F("OK"));
-      file.close();
-      
-      WN_LOGDEBUG3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
-      
-      // Free buffer
-      if (readBuffer != NULL)
-      {
-        free(readBuffer);
-        WN_LOGDEBUG(F("Buffer freed"));
-      }
-      
-      if ( checkSum != readCheckSum)
-      {
-        return false;
-      }
-      
-      return true;    
+      return false;    
     }
     
     //////////////////////////////////////////////
@@ -1159,7 +1158,7 @@ class WiFiManager_NINA_Lite
      
       uint16_t offset = 0;
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
@@ -1184,6 +1183,7 @@ class WiFiManager_NINA_Lite
       file.read((char *) &readCheckSum, sizeof(readCheckSum));
       
       WN_LOGDEBUG(F("OK"));
+      
       file.close();
       
       WN_LOGDEBUG3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
@@ -1207,7 +1207,7 @@ class WiFiManager_NINA_Lite
 
       uint16_t offset = 0;
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
        
@@ -1251,7 +1251,7 @@ class WiFiManager_NINA_Lite
 
       offset = 0;
       
-      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
         char* _pointer = myMenuItems[i].pdata;
      
@@ -1280,6 +1280,7 @@ class WiFiManager_NINA_Lite
       {
         file.write((uint8_t*) &checkSum, sizeof(checkSum));     
         file.close();
+        
         WN_LOGDEBUG(F("OK"));    
       }
       else
@@ -1353,7 +1354,8 @@ class WiFiManager_NINA_Lite
       WN_LOGDEBUG(F("LoadCfgFile "));
       
       // file existed
-      file.open(CONFIG_FILENAME, FILE_O_READ);      
+      file.open(CONFIG_FILENAME, FILE_O_READ);
+      
       if (!file)
       {
         WN_LOGDEBUG(F("failed"));
@@ -1371,9 +1373,9 @@ class WiFiManager_NINA_Lite
      
       file.seek(0);
       file.read((char *) &WIFININA_config, sizeof(WIFININA_config));
-
-      WN_LOGDEBUG(F("OK"));
       file.close();
+      
+      WN_LOGDEBUG(F("OK"));
       
       return isWiFiConfigValid();
     }
@@ -1411,9 +1413,9 @@ class WiFiManager_NINA_Lite
       if (file)
       {
         file.seek(0);
-        file.write((uint8_t *) &WIFININA_config, sizeof(WIFININA_config));
-        
+        file.write((uint8_t *) &WIFININA_config, sizeof(WIFININA_config));        
         file.close();
+        
         WN_LOGDEBUG(F("OK"));
       }
       else
@@ -1496,10 +1498,8 @@ class WiFiManager_NINA_Lite
           {
   #if USE_DYNAMIC_PARAMETERS        
             loadDynamicData();
-            
-    #if ( BLYNK_WM_DEBUG > 2)      
+             
             WN_LOGERROR(F("Valid Stored Dynamic Data"));
-    #endif
   #endif 
          
             WN_LOGERROR(F("======= Start Stored Config Data ======="));
@@ -1860,12 +1860,12 @@ class WiFiManager_NINA_Lite
           if ( RFC952_hostname[0] != 0 )
           {
             // Replace only if Hostname is valid
-            result.replace("SAMD_WM_NINA_Lite", RFC952_hostname);
+            result.replace("nRF52_WM_NINA_Lite", RFC952_hostname);
           }
           else if ( WIFININA_config.board_name[0] != 0 )
           {
             // Or replace only if board_name is valid.  Otherwise, keep intact
-            result.replace("SAMD_WM_NINA_Lite", WIFININA_config.board_name);
+            result.replace("nRF52_WM_NINA_Lite", WIFININA_config.board_name);
           }
 
           if (hadConfigData)
@@ -1992,10 +1992,11 @@ class WiFiManager_NINA_Lite
           else
             strncpy(WIFININA_config.board_name, value.c_str(), sizeof(WIFININA_config.board_name) - 1);
         }
+
+        
+#if USE_DYNAMIC_PARAMETERS
         else
         {
-        
-#if USE_DYNAMIC_PARAMETERS        
           for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
           {           
             if ( !menuItemUpdated[i] && (key == myMenuItems[i].id) )
@@ -2017,8 +2018,8 @@ class WiFiManager_NINA_Lite
               break;  
             }
           }
+        }  
 #endif
-        }
         
         WN_LOGDEBUG1(F("h:items updated ="), number_items_Updated);
         WN_LOGDEBUG3(F("h:key ="), key, ", value =", value);

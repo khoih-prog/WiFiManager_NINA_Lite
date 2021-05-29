@@ -16,6 +16,7 @@
   * [Currently supported Boards](#currently-supported-boards)
   * [Currently supported WiFi shields/modules](#currently-supported-wifi-shieldsmodules)
 * [Changelog](#changelog)
+  * [Major Release v1.4.0](#major-release-v140)
   * [Release v1.3.1](#release-v131)
   * [Major Release v1.3.0](#major-release-v130)
   * [Release v1.2.0](#release-v120)
@@ -46,7 +47,12 @@
   * [7. For STM32 boards](#7-for-stm32-boards) 
     * [7.1. For STM32 boards to use LAN8720](#71-for-stm32-boards-to-use-lan8720)
     * [7.2. For STM32 boards to use Serial1](#72-for-stm32-boards-to-use-serial1)
-  * [8. For RP2040-based boards](#8-for-rp2040-based-boards)
+  * [8. For RP2040-based boards using Earle Philhower arduino-pico core](#8-for-rp2040-based-boards-using-earle-philhower-arduino-pico-core)
+    * [8.1. To use BOARD_NAME](#81-to-use-board_name)
+    * [8.2. To avoid compile error relating to microsecondsToClockCycles](#82-to-avoid-compile-error-relating-to-microsecondstoclockcycles)
+* [Libraries' Patches](#libraries-patches)
+  * [1. For Adafruit_MQTT_Library](#1-for-adafruit_mqtt_library) 
+* [HOWTO Change pin definitions for WiFiNINA](#howto-change-pin-definitions-for-wifinina) 
 * [How It Works](#how-it-works)
 * [How to use](#how-to-use)
   * [ 1. Basic usage](#1-basic-usage)
@@ -78,6 +84,8 @@
   * [ 9. SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
   * [10. SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
   * [11. Mega_WiFiNINA](examples/Mega_WiFiNINA)
+  * [12. RP2040_WiFiNINA](examples/RP2040_WiFiNINA)  ** New**
+  * [13. RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT)  ** New**
 * [So, how it works?](#so-how-it-works)
   * [1. Without SCAN_WIFI_NETWORKS](#1-without-scan_wifi_networks)
   * [2. With SCAN_WIFI_NETWORKS](#2-with-scan_wifi_networks)
@@ -94,13 +102,17 @@
   * [3. File Credentials.h](#3-file-credentialsh)
   * [4. File dynamicParams.h](#4-file-dynamicparamsh)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
-  * [1. Open Config Portal](#1-open-config-portal)
-  * [2. Received data from Config Portal](#2-received-data-from-config-portal)
-  * [3. Got valid Credential from Config Portal, then connected to WiFi](#3-got-valid-credential-from-config-portal-then-connected-to-wifi)
-  * [4. Lost a WiFi and autoconnect to another WiFi AP](#4-lost-a-wifi-and-autoconnect-to-another-wifi-ap)
-  * [5. Reopen Config Portal if can't connect to any of the 2 WiFi APs](#5-reopen-config-portal-if-cant-connect-to-any-of-the-2-wifi-aps)
-  * [6. DRD Not Detected](#6-drd-not-detected) 
-  * [7. DRD detected and Config Portal is forcefully opened](#7-drd-detected-and-config-portal-is-forcefully-opened)
+  * [ 1. SAMD_WiFiNINA on Nano-33-IoT](#1-samd_wifinina-on-nano-33-iot)
+    * [1.1 Open Config Portal](#11-open-config-portal)
+    * [1.2 Received data from Config Portal](#12-received-data-from-config-portal)
+    * [1.3 Got valid Credential from Config Portal, then connected to WiFi](#13-got-valid-credential-from-config-portal-then-connected-to-wifi)
+    * [1.4 Lost a WiFi and autoconnect to another WiFi AP](#14-lost-a-wifi-and-autoconnect-to-another-wifi-ap)
+    * [1.5 Reopen Config Portal if can't connect to any of the 2 WiFi APs](#15-reopen-config-portal-if-cant-connect-to-any-of-the-2-wifi-aps)
+    * [1.6 DRD Not Detected](#16-drd-not-detected) 
+    * [1.7 DRD detected and Config Portal is forcefully opened](#17-drd-detected-and-config-portal-is-forcefully-opened)
+  * [ 2. RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT](#2-2p2040_wifinina_mqtt-on-mbed-nano_rp2040_connect)
+    * [2.1 No Config Data => Config Portal](#21-no-config-data--config-portal)
+    * [2.2 Config Data Saved => Connect to AIO](#22-config-data-saved--connect-to-aio)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Releases](#releases)
@@ -127,7 +139,7 @@ If you have used the full-fledge WiFiManager such as :
 
 and have to write **complicated callback functions** to save custom parameters in SPIFFS/LittleFS/EEPROM, you'd appreciate the simplicity of this Light-Weight Credentials / WiFiManager.
 
-This library is a Light Weight Credentials / WiFi Manager for WiFiNINA (WiFiNINA, WINC1500/WiFi101, etc.) modules/shields, specially designed to support **Teensy, SAM DUE, SAMD21 (Nano-33 IoT, Itsy-Bitsy M0, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32F (F1, F2, F3, F4, F7, Nucleo-144, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, NINA_B112_ublox, etc.), etc. boards running WiFiNINA modules/shields.** with smaller memory (64+K bytes)
+This library is a Light Weight Credentials / WiFi Manager for WiFiNINA (WiFiNINA, WINC1500/WiFi101, etc.) modules/shields, specially designed to support **Teensy, SAM DUE, SAMD21 (Nano-33 IoT, Itsy-Bitsy M0, etc), SAMD51 (Itsy-Bitsy M4, Metro M4, Grand Central M4, Feather M4 Express, etc.), STM32F (F1, F2, F3, F4, F7, Nucleo-144, etc.), nRF52 (Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, NINA_B302_ublox, NINA_B112_ublox, etc.), RP2040-based (Nano RP2040 Connect, RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040), etc. boards running WiFiNINA modules/shields.** with smaller memory (64+K bytes)
 
 The AVR-family boards (UNO, Nano, etc.) are **not supported** as they don't have enough memory to run Config Portal WebServer.
 
@@ -149,6 +161,7 @@ New recent features:
 - Configurable **Customs HTML Headers**, including Customs Style, Customs Gead Elements, CORS Header.
 - **Scan WiFi networks** for selection in Configuration Portal
 
+---
 
 #### Currently supported Boards
 
@@ -183,6 +196,14 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
   - Midatronics boards
 
 
+ 7. **AVR Mega1280, 2560, ADK.**
+ 
+ 8. RP2040-based boards, such as **Nano RP2040 Connect**, using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+
+ 9. RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed) or [**Earle Philhower's arduino-pico** core v1.5.1+](https://github.com/earlephilhower/arduino-pico).
+ 
+---
+
 #### Currently supported WiFi shields/modules
 
 1. WiFiNINA using [`WiFiNINA_Generic library`](https://github.com/khoih-prog/WiFiNINA_Generic)
@@ -193,6 +214,13 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
 ---
 
 ## Changelog
+
+### Major Release v1.4.0
+
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** v1.5.1+ core](https://github.com/earlephilhower/arduino-pico).
+2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed).
+3. Update `Packages' Patches`
+4. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
 
 ### Release v1.3.1
 
@@ -283,18 +311,20 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  3. [`Teensy core 1.51`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards
  5. [`Arduino SAMD core 1.8.11+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.6.8+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.7.2+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.1+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
- 8. [`Adafruit nRF52 v0.21.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 9. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
-10. [`WiFiNINA_Generic library v1.8.5+`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
-11. [`WiFi101 library v0.16.1+`](https://github.com/arduino-libraries/WiFi101) if using WINC1500/WiFi101 shields (MKR1000, etc.). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFi101.svg?)](https://www.ardu-badge.com/WiFi101)
-12. [`WiFiWebServer library v1.1.1+`](https://github.com/khoih-prog/WiFiWebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
-13. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
-14. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
-15. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
-16. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52
-17. [`DoubleResetDetector_Generic v1.2.0+`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
+ 8. [`Adafruit nRF52 v0.22.1+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
+ 9. [`Arduino mbed_rp2040 core 2.1.0+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+10. [`Earle Philhower's arduino-pico core v1.6.2+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+11. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
+12. [`WiFiNINA_Generic library v1.8.10-1+`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
+13. [`WiFi101 library v0.16.1+`](https://github.com/arduino-libraries/WiFi101) if using WINC1500/WiFi101 shields (MKR1000, etc.). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFi101.svg?)](https://www.ardu-badge.com/WiFi101)
+14. [`WiFiWebServer library v1.2.0+`](https://github.com/khoih-prog/WiFiWebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+15. [`FlashStorage_SAMD library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
+16. [`FlashStorage_STM32 library v1.1.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
+17. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
+18. [`Adafruit's LittleFS/InternalFS`](www.adafruit.com) for nRF52
+19. [`DoubleResetDetector_Generic v1.3.0+`](https://github.com/khoih-prog/DoubleResetDetector_Generic). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DoubleResetDetector_Generic.svg?)](https://www.ardu-badge.com/DoubleResetDetector_Generic)
 
 ---
 
@@ -326,16 +356,16 @@ You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/
 
 #### 1. For Adafruit nRF52840 and nRF52832 boards
 
-**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.21.0](Packages_Patches/adafruit/hardware/nrf52/0.21.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0). 
+**To be able to compile, run and automatically detect and display BOARD_NAME on nRF52840/nRF52832 boards**, you have to copy the whole [nRF52 0.22.0](Packages_Patches/adafruit/hardware/nrf52/0.22.0) directory into Adafruit nRF52 directory (~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0). 
 
-Supposing the Adafruit nRF52 version is 0.21.0. These files must be copied into the directory:
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/boards.txt`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B302_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B302_ublox/variant.cpp`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B112_ublox/variant.h`
-- `~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/variants/NINA_B112_ublox/variant.cpp`
-- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.21.0/cores/nRF5/Udp.h`**
+Supposing the Adafruit nRF52 version is 0.22.0. These files must be copied into the directory:
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/boards.txt`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B302_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B302_ublox/variant.cpp`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B112_ublox/variant.h`
+- `~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/variants/NINA_B112_ublox/variant.cpp`
+- **`~/.arduino15/packages/adafruit/hardware/nrf52/0.22.0/cores/nRF5/Udp.h`**
 
 Whenever a new version is installed, remember to copy these files into the new version directory. For example, new version is x.yy.z
 These files must be copied into the directory:
@@ -382,7 +412,7 @@ This file must be copied into the directory:
 
 #### 4. For Arduino SAMD boards
  
- ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.10](Packages_Patches/arduino/hardware/samd/1.8.10) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.10).
+ ***To be able to compile without error and automatically detect and display BOARD_NAME on Arduino SAMD (Nano-33-IoT, etc) boards***, you have to copy the whole [Arduino SAMD cores 1.8.11](Packages_Patches/arduino/hardware/samd/1.8.11) directory into Arduino SAMD directory (~/.arduino15/packages/arduino/hardware/samd/1.8.11).
  
 #### For core version v1.8.10+
 
@@ -421,11 +451,11 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.6.8) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.6.8). 
+ ***To be able to automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the file [Adafruit SAMD platform.txt](Packages_Patches/adafruit/hardware/samd/1.7.1) into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.1). 
 
-Supposing the Adafruit SAMD core version is 1.6.8. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.1. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.6.8/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.1/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -455,12 +485,12 @@ To use LAN8720 on some STM32 boards
 - **Discovery (DISCO_F746NG)**
 - **STM32F4 boards (BLACK_F407VE, BLACK_F407VG, BLACK_F407ZE, BLACK_F407ZG, BLACK_F407VE_Mini, DIYMORE_F407VGT, FK407M1)**
 
-you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/2.0.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system) to overwrite the old files.
+you have to copy the files [stm32f4xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F4xx) and [stm32f7xx_hal_conf_default.h](Packages_Patches/STM32/hardware/stm32/1.9.0/system/STM32F7xx) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system) to overwrite the old files.
 
-Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
 
-- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
-- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F4xx/stm32f4xx_hal_conf_default.h` for STM32F4.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/system/STM32F7xx/stm32f7xx_hal_conf_default.h` for Nucleo-144 STM32F7.
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
 theses files must be copied into the corresponding directory:
@@ -471,12 +501,12 @@ theses files must be copied into the corresponding directory:
 
 #### 7.2 For STM32 boards to use Serial1
 
-**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/2.0.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/2.0.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
+**To use Serial1 on some STM32 boards without Serial1 definition (Nucleo-144 NUCLEO_F767ZI, Nucleo-64 NUCLEO_L053R8, etc.) boards**, you have to copy the files [STM32 variant.h](Packages_Patches/STM32/hardware/stm32/1.9.0) into STM32 stm32 directory (~/.arduino15/packages/STM32/hardware/stm32/1.9.0). You have to modify the files corresponding to your boards, this is just an illustration how to do.
 
-Supposing the STM32 stm32 core version is 2.0.0. These files must be copied into the directory:
+Supposing the STM32 stm32 core version is 1.9.0. These files must be copied into the directory:
 
-- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
-- `~/.arduino15/packages/STM32/hardware/stm32/2.0.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_F767ZI/variant.h` for Nucleo-144 NUCLEO_F767ZI.
+- `~/.arduino15/packages/STM32/hardware/stm32/1.9.0/variants/NUCLEO_L053R8/variant.h` for Nucleo-64 NUCLEO_L053R8.
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz,
 theses files must be copied into the corresponding directory:
@@ -484,19 +514,48 @@ theses files must be copied into the corresponding directory:
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_F767ZI/variant.h`
 - `~/.arduino15/packages/STM32/hardware/stm32/x.yy.zz/variants/NUCLEO_L053R8/variant.h`
 
-#### 8. For RP2040-based boards
- 
- ***To be able to automatically detect and display BOARD_NAME on Seeeduino SAMD (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards***, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.2.2) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.2.2). 
+#### 8. For RP2040-based boards using [Earle Philhower arduino-pico core](https://github.com/earlephilhower/arduino-pico)
 
-Supposing the rp2040 core version is 1.2.2. This file must be copied into the directory:
+#### 8.1 To use BOARD_NAME
 
-- `~/.arduino15/packages/rp2040/hardware/rp2040/1.2.2/platform.txt`
+ **To be able to automatically detect and display BOARD_NAME on RP2040-based boards (RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040, GENERIC_RP2040, etc) boards**, you have to copy the file [RP2040 platform.txt](Packages_Patches/rp2040/hardware/rp2040/1.4.0) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0). 
+
+Supposing the rp2040 core version is 1.4.0. This file must be copied into the directory:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/platform.txt`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
 
 - `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/platform.txt`
 
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add -DBOARD_NAME="{build.board}" #136](https://github.com/earlephilhower/arduino-pico/pull/136).
+
+#### 8.2 To avoid compile error relating to microsecondsToClockCycles
+
+Some libraries, such as [Adafruit DHT-sensor-library](https://github.com/adafruit/DHT-sensor-library), require the definition of microsecondsToClockCycles(). **To be able to compile and run on RP2040-based boards**, you have to copy the files in [**RP2040 Arduino.h**](Packages_Patches/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h) into rp2040 directory (~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0).
+
+Supposing the rp2040 core version is 1.4.0. This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/1.4.0/cores/rp2040/Arduino.h`
+
+Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
+This file must be copied to replace:
+
+- `~/.arduino15/packages/rp2040/hardware/rp2040/x.yy.zz/cores/rp2040/Arduino.h`
+
+With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add defs for compatibility #142](https://github.com/earlephilhower/arduino-pico/pull/142).
+
+
+---
+
+### Libraries' Patches
+
+#### 1. For Adafruit_MQTT_Library 
+
+To avoid `ltoa`, `ultoa` and/or `dtostrf` compiler error, just copy the following file into the [`Adafruit_MQTT_Library library`](https://github.com/adafruit/Adafruit_MQTT_Library) directory to overwrite the old file:
+
+- [Adafruit_MQTT.cpp](LibraryPatches/Adafruit_MQTT_Library/Adafruit_MQTT.cpp)
 
 ---
 ---
@@ -746,7 +805,9 @@ The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid nu
  9. [SAM_DUE_WiFiNINA](examples/SAM_DUE_WiFiNINA)
 10. [SAM_DUE_WiFiNINA_MQTT](examples/SAM_DUE_WiFiNINA_MQTT)
 11. [Mega_WiFiNINA](examples/Mega_WiFiNINA)
-
+12. [RP2040_WiFiNINA](examples/RP2040_WiFiNINA). ** New**
+13. [RP2040_WiFiNINA_MQTT](examples/RP2040_WiFiNINA_MQTT) ** New**
+ 
 ---
 ---
 
@@ -1000,9 +1061,9 @@ Please be noted that the following **reserved names are already used in library*
 
 ### Example [SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
 
-Please take a look at other examples, as well.
 
 #### 1. File [SAMD_WiFiNINA.ino](examples/SAMD_WiFiNINA/SAMD_WiFiNINA.ino)
+
 
 ```cpp
 #include "defines.h"
@@ -1133,6 +1194,7 @@ void loop()
 #endif  
 }
 ```
+
 ---
 
 #### 2. File [defines.h](examples/SAMD_WiFiNINA/defines.h)
@@ -1310,6 +1372,7 @@ void loop()
 
 #endif      //defines_h
 ```
+
 ---
 
 #### 3. File [Credentials.h](examples/SAMD_WiFiNINA/Credentials.h)
@@ -1393,7 +1456,9 @@ WiFiNINA_Configuration defaultConfig;
 
 #endif    //Credentials_h
 ```
+
 ---
+
 
 #### 4. File [dynamicParams.h](examples/SAMD_WiFiNINA/dynamicParams.h)
 
@@ -1468,13 +1533,15 @@ uint16_t NUM_MENU_ITEMS = 0;
 
 ### Debug Terminal output Samples
 
-This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **Nano-33 IoT**:
+#### 1. SAMD_WiFiNINA on Nano-33-IoT
 
-#### 1. Open Config Portal
+This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **AMD NANO_33_IOT**:
+
+#### 1.1 Open Config Portal
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1522,11 +1589,11 @@ ClearFlag write = 0xd0d04321
 FFFFFFFFF 
 ```
 
-#### 2. Received data from Config Portal
+#### 1.2 Received data from Config Portal
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1569,11 +1636,11 @@ FFFFFFFFF
 [WN] h:Rst
 ```
 
-#### 3. Got valid Credential from Config Portal, then connected to WiFi
+#### 1.3 Got valid Credential from Config Portal, then connected to WiFi
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1627,7 +1694,7 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHH
 HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 ```
 
-#### 4. Lost a WiFi and autoconnect to another WiFi AP
+#### 1.4 Lost a WiFi and autoconnect to another WiFi AP
 
 ```
 [WN] r:Check&WLost                      <=== Lost primary WiFi
@@ -1646,11 +1713,11 @@ WiFi-begin: return2 = 3
 HHHHHHHHHH HHHHHHHHHH
 ```
 
-#### 5. Reopen Config Portal if can't connect to any of the 2 WiFi APs
+#### 1.5 Reopen Config Portal if can't connect to any of the 2 WiFi APs
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1710,11 +1777,11 @@ MQTT Server = new_mqtt.duckdns.org
 FF
 ```
 
-#### 6. DRD Not Detected:
+#### 1.6 DRD Not Detected
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1766,11 +1833,11 @@ MQTT Server = new_mqtt.duckdns.org
 HHHHHHHHH HHHHHHHHHH
 ```
 
-#### 7. DRD detected and Config Portal is forcefully opened
+#### 1.7 DRD detected and Config Portal is forcefully opened
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.3.1
+WiFiManager_NINA_Lite v1.4.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1815,6 +1882,128 @@ Port = 8080
 MQTT Server = new_mqtt.duckdns.org
 
 ```
+
+---
+
+#### 2. RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
+
+This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **AMD NANO_33_IOT**:
+
+#### 2.1 No Config Data => Config Portal
+
+```
+Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
+WiFiManager_NINA_Lite v1.4.0
+[WN] Hostname=RP2040-Master-Controller
+LittleFS size (KB) = 64
+LittleFS Mount OK
+LittleFS Flag read = 0xd0d04321
+Flag read = 0xd0d04321
+No doubleResetDetected
+Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0xd0d01234
+Saving DRD file OK
+SetFlag write = 0xd0d01234
+[WN] CCSum=0x1434,RCSum=0x1434
+[WN] CrCCsum=0x1981,CrRCsum=0x0
+[WN] Invalid Stored Dynamic Data. Load default from Sketch
+[WN] Hdr=WIFININA,SSID=,PW=
+[WN] SSID1=,PW1=
+[WN] BName=
+[WN] i=0,id=svr,data=io.adafruit.com
+[WN] i=1,id=prt,data=1883
+[WN] i=2,id=usr,data=private
+[WN] i=3,id=key,data=private
+[WN] i=4,id=pub,data=/feeds/Temperature
+[WN] i=5,id=sub,data=/feeds/LED_Control
+[WN] bg: isForcedConfigPortal = false
+[WN] bg:Stay forever in CP:No ConfigDat
+[WN] clearForcedCP
+[WN] SaveCPFile 
+[WN] OK
+[WN] SaveBkUpCPFile 
+[WN] OK
+[WN] SSID=WIFININA_51F485,PW=MyWIFININA_51F485
+[WN] IP=192.168.4.1,CH=9
+N
+Your stored Credentials :
+AIO_SERVER = io.adafruit.com
+AIO_SERVERPORT = 1883
+aio_username = private
+AIO_KEY = private
+AIO_PUB_TOPIC = /feeds/Temperature
+AIO_SUB_TOPIC = /feeds/LED_Control
+Stop doubleResetDetecting
+Saving to DRD file : 0xd0d04321
+Saving DRD file OK
+LittleFS Flag read = 0xd0d04321
+ClearFlag write = 0xd0d04321
+N
+```
+
+#### 2.2 Config Data Saved => Connect to AIO
+
+
+```
+Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
+WiFiManager_NINA_Lite v1.4.0
+[WN] Hostname=RP2040-Master-Controller
+LittleFS size (KB) = 64
+LittleFS Mount OK
+LittleFS Flag read = 0xd0d04321
+Flag read = 0xd0d04321
+No doubleResetDetected
+Saving DOUBLERESETDETECTOR_FLAG to DRD file : 0xd0d01234
+Saving DRD file OK
+SetFlag write = 0xd0d01234
+[WN] CCSum=0x1434,RCSum=0x1434
+[WN] CrCCsum=0x2236,CrRCsum=0x2236
+[WN] Valid Stored Dynamic Data
+[WN] ======= Start Stored Config Data =======
+[WN] Hdr=WIFININA,SSID=HueNet1,PW=password
+[WN] SSID1=HueNet2,PW1=password
+[WN] BName=Nano-RP2040-Connect
+[WN] i=0,id=svr,data=io.adafruit.com
+[WN] i=1,id=prt,data=1883
+[WN] i=2,id=usr,data=aio_username
+[WN] i=3,id=key,data=aio_key i=4,id=pub,data=/feeds/Temperature
+[WN] i=5,id=sub,data=/feeds/LED_Control
+[WN] con2WF:SSID=HueNet1,PW=password
+[WN] con2WF:OK
+[WN] IP=192.168.2.153
+[WN] SSID=HueNet1,RSSI=-43
+[WN] IP=192.168.2.153
+[WN] b:WOK
+Stop doubleResetDetecting
+Saving to DRD file : 0xd0d04321
+Saving DRD file OK
+LittleFS Flag read = 0xd0d04321
+ClearFlag write = 0xd0d04321
+
+Creating new WiFi client object OK
+Creating new MQTT object OK
+AIO_SERVER = io.adafruit.com, AIO_SERVERPORT = 1883
+aio_username = aio_username, AIO_KEY = aio_key
+Creating new MQTT_Pub_Topic,  Temperature = aio_username/feeds/Temperature
+Creating new Temperature object OK
+Temperature MQTT_Pub_Topic = aio_username/feeds/Temperature
+Creating new AIO_SUB_TOPIC, LED_Control = aio_username/feeds/LED_Control
+Creating new LED_Control object OK
+LED_Control AIO_SUB_TOPIC = aio_username/feeds/LED_Control
+
+Connecting to WiFi MQTT (3 attempts)...
+WiFi MQTT connection successful!
+TW
+Your stored Credentials :
+AIO_SERVER = io.adafruit.com
+AIO_SERVERPORT = 1883
+aio_username = aio_username
+AIO_KEY = aio_key
+AIO_PUB_TOPIC = /feeds/Temperature
+AIO_SUB_TOPIC = /feeds/LED_Control
+TWTWTWTW TWTWTWTWTW TWTWTWTWTW TWTW
+```
+
+
 ---
 ---
 
@@ -1844,6 +2033,13 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 ---
  
 ## Releases
+
+### Major Release v1.4.0
+
+1. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** v1.5.1+ core](https://github.com/earlephilhower/arduino-pico).
+2. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** v2.1.0+ core](https://github.com/arduino/ArduinoCore-mbed).
+3. Update `Packages' Patches`
+4. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
 
 ### Release v1.3.1
 
@@ -1930,14 +2126,14 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
 
 ### TO DO
 
-1. Support more boards (RP2040, Nano RP2040 Connect, etc)
+1. Support more boards.
 
 ### DONE
 
  1. Adding dynamic custom parameters
  2. Add MultiWiFi and Auto(Re)Connect feature
  3. Add support to SAMD21, SAMD51, nRF52, etc.
- 4. Many more to list ( DHCP Hostname, WPA2 password length, special chars, etc.)
+ 4. Many more to list (DHCP Hostname, WPA2 password length, special chars, etc.)
  5. Add DRD
  6. Add default Credentials
  7. Add Dynamic parameters
@@ -1945,12 +2141,15 @@ Thanks to [Thor Johnson](https://github.com/thorathome) to test, suggest and enc
  9. Split each example into several manageable files.
 10. Configurable **Customs HTML Headers**, including Customs Style, Customs Head Elements, CORS Header
 11. Add functions to control Config Portal from software or Virtual Switches.
-12. Use more efficient [FlashStorage_SAMD v1.1.0](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32 v1.0.1](https://github.com/khoih-prog/FlashStorage_STM32)
+12. Use more efficient [FlashStorage_SAMD v1.1.0+](https://github.com/khoih-prog/FlashStorage_SAMD) and [FlashStorage_STM32 v1.0.1](https://github.com/khoih-prog/FlashStorage_STM32)
 13. Add Version String and Table-of-Contents
 14. Permit optionally inputting one set of WiFi SSID/PWD by using `REQUIRE_ONE_SET_SSID_PW == true`
 15. Enforce WiFi Password minimum length of 8 chars
 16. Enable scan of WiFi networks for selection in Configuration Portal
-
+17. Add support to **Arduino Nano RP2040 Connect** using [**Arduino mbed OS for Nano boards**](https://github.com/arduino/ArduinoCore-mbed).
+18. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
+19. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
+20. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
 
 ---
 --- 

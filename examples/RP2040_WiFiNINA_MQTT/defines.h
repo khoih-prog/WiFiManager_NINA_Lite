@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
-  defines.h for nRF52840_WiFiNINA_MQTT.ino
-  For nRF52 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+  defines.h for RP2040_WiFiNINA_MQTT.ino
+  For RP2040 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
@@ -21,55 +21,45 @@
 
 #define DRD_GENERIC_DEBUG               true
 
-#if ( defined(NRF52840_FEATHER) || defined(NRF52832_FEATHER) || defined(NRF52_SERIES) || defined(ARDUINO_NRF52_ADAFRUIT) || \
-        defined(NRF52840_FEATHER_SENSE) || defined(NRF52840_ITSYBITSY) || defined(NRF52840_CIRCUITPLAY) || defined(NRF52840_CLUE) || \
-        defined(NRF52840_METRO) || defined(NRF52840_PCA10056) || defined(PARTICLE_XENON) || defined(NINA_B302_ublox) )
-  #if defined(WIFININA_USE_NRF528XX)
-    #undef WIFININA_USE_NRF528XX
-    #undef WIFI_USE_NRF528XX
+#if ( defined(ARDUINO_NANO_RP2040_CONNECT) || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+      defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+  #if defined(WIFININA_USE_RP2040)
+    #undef WIFININA_USE_RP2040
+    #undef WIFI_USE_RP2040
   #endif
-  #define WIFININA_USE_NRF528XX      true
-  #define WIFI_USE_NRF528XX          true
+  #define WIFININA_USE_RP2040      true
+  #define WIFI_USE_RP2040          true
 #else
-  #error This code is intended to run only on the NRF528XX boards ! Please check your Tools->Board setting.
+  #error This code is intended to run only on the RP2040-based boards ! Please check your Tools->Board setting.
 #endif
 
 
-#if defined(WIFININA_USE_NRF528XX)
+#if defined(WIFININA_USE_RP2040) && defined(ARDUINO_ARCH_MBED)
 
-  #if defined(NRF52840_FEATHER)
-    #define BOARD_TYPE      "NRF52840_FEATHER"
-  #elif defined(NRF52832_FEATHER)
-    #define BOARD_TYPE      "NRF52832_FEATHER"
-  #elif defined(NRF52840_FEATHER_SENSE)
-    #define BOARD_TYPE      "NRF52840_FEATHER_SENSE"
-  #elif defined(NRF52840_ITSYBITSY)
-    #define BOARD_TYPE      "NRF52840_ITSYBITSY"
-  #elif defined(NRF52840_CIRCUITPLAY)
-    #define BOARD_TYPE      "NRF52840_CIRCUITPLAY"
-  #elif defined(NRF52840_CLUE)
-    #define BOARD_TYPE      "NRF52840_CLUE"
-  #elif defined(NRF52840_METRO)
-    #define BOARD_TYPE      "NRF52840_METRO"
-  #elif defined(NRF52840_PCA10056)
-    #define BOARD_TYPE      "NRF52840_PCA10056"
-  #elif defined(PARTICLE_XENON)
-    #define BOARD_TYPE      "PARTICLE_XENON"
-  #elif defined(NINA_B302_ublox)
-    #define BOARD_TYPE      "NINA_B302_ublox"
-  #elif defined(ARDUINO_NRF52_ADAFRUIT)
-    #define BOARD_TYPE      "ARDUINO_NRF52_ADAFRUIT"
-  #elif defined(NRF52_SERIES)
-    #define BOARD_TYPE      "NRF52_SERIES"
+  #warning Using ARDUINO_ARCH_MBED
+  
+  #if ( defined(ARDUINO_NANO_RP2040_CONNECT)    || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+        defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+    // Only undef known BOARD_NAME to use better one
+    #undef BOARD_NAME
+  #endif
+  
+  #if defined(ARDUINO_RASPBERRY_PI_PICO)
+    #define BOARD_NAME      "MBED RASPBERRY_PI_PICO"
+  #elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+    #define BOARD_NAME      "MBED ADAFRUIT_FEATHER_RP2040"
+  #elif defined(ARDUINO_GENERIC_RP2040)
+    #define BOARD_NAME      "MBED GENERIC_RP2040"
+  #elif defined(ARDUINO_NANO_RP2040_CONNECT) 
+    #define BOARD_NAME      "MBED NANO_RP2040_CONNECT"
   #else
-    #define BOARD_TYPE      "NRF52 Unknown"
+    // Use default BOARD_NAME if exists
+    #if !defined(BOARD_NAME)
+      #define BOARD_NAME      "MBED Unknown RP2040"
+    #endif
   #endif
 
 #endif
-
-// Start location in EEPROM to store config data. Default 0
-// Config data Size currently is 128 bytes)
-#define EEPROM_START
 
 /////////////////////////////////////////////
 
@@ -160,10 +150,9 @@
 
 /////////////////////////////////////////////
 
+#include <WiFiManager_NINA_Lite_RP2040.h>
 
-#include <WiFiManager_NINA_Lite_nRF52.h>
-
-#define HOST_NAME   "nRF52-MQTT-Controller"
+#define HOST_NAME   "RP2040-Master-Controller"
 
 #ifdef LED_BUILTIN
   #define LED_PIN     LED_BUILTIN

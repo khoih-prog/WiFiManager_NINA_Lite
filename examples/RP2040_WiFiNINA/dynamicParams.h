@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-  dynamicParams.h for SAM_DUE_WiFiNINA.ino
-  For SAM DUE boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
+  dynamicParams.h for RP2040_WiFiNINA.ino
+  For RP2040-based boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
   
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
-  Licensed under MIT license   
+  Licensed under MIT license       
  *****************************************************************************************************************************/
 
 #ifndef dynamicParams_h
@@ -15,10 +15,11 @@
 
 #include "defines.h"
 
+// USE_DYNAMIC_PARAMETERS defined in defined.h
 
 /////////////// Start dynamic Credentials ///////////////
 
-//Defined in <WiFiManager_NINA_Lite_DUE.h>
+//Defined in <WiFiManager_NINA_Lite_RP2040.h>
 /**************************************
   #define MAX_ID_LEN                5
   #define MAX_DISPLAY_NAME_LEN      16

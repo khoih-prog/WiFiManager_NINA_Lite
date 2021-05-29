@@ -8,7 +8,7 @@
   
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.3.1
+  Version: 1.4.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -27,6 +27,7 @@
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
+  1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   **********************************************************************************************************************************/
 
 #include "defines.h"

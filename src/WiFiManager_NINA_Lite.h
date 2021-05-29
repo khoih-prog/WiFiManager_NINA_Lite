@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.3.1
+  Version: 1.4.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -27,6 +27,7 @@
   1.2.0   K Hoang      14/04/2021  Optional one set of WiFi Credentials. Enforce WiFi PWD minimum 8 chars
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
+  1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_h
@@ -40,7 +41,7 @@
   #error This code is intended to run on the AVR Mega, Mega2560, Mega ADK platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.3.1"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.4.0"
 
 #include <WiFiWebServer.h>
 #include <EEPROM.h>
@@ -1484,12 +1485,12 @@ udVal('nm',document.getElementById('nm').value);";
           if ( RFC952_hostname[0] != 0 )
           {
             // Replace only if Hostname is valid
-            result.replace("SAMD_WM_NINA_Lite", RFC952_hostname);
+            result.replace("AVR_WM_NINA_Lite", RFC952_hostname);
           }
           else if ( WIFININA_config.board_name[0] != 0 )
           {
             // Or replace only if board_name is valid.  Otherwise, keep intact
-            result.replace("SAMD_WM_NINA_Lite", WIFININA_config.board_name);
+            result.replace("AVR_WM_NINA_Lite", WIFININA_config.board_name);
           }
 
           if (hadConfigData)
@@ -1616,10 +1617,11 @@ udVal('nm',document.getElementById('nm').value);";
           else
             strncpy(WIFININA_config.board_name, value.c_str(), sizeof(WIFININA_config.board_name) - 1);
         }
+
+        
+#if USE_DYNAMIC_PARAMETERS
         else
         {
-        
-#if USE_DYNAMIC_PARAMETERS        
           for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
           {           
             if ( !menuItemUpdated[i] && (key == myMenuItems[i].id) )
@@ -1641,8 +1643,8 @@ udVal('nm',document.getElementById('nm').value);";
               break;  
             }
           }
+        }  
 #endif
-        }
         
         WN_LOGDEBUG1(F("h:items updated ="), number_items_Updated);
         WN_LOGDEBUG3(F("h:key ="), key, ", value =", value);

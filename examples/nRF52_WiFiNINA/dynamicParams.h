@@ -56,8 +56,8 @@ MenuItem myMenuItems [] =
   { "tk1", "Token1",        Blynk_Token1,   MAX_BLYNK_TOKEN_LEN },
   { "sv2", "Blynk Server2", Blynk_Server2,  MAX_BLYNK_SERVER_LEN },
   { "tk2", "Token2",        Blynk_Token2,   MAX_BLYNK_TOKEN_LEN },
-  { "pt", "Port",           Blynk_Port,     MAX_BLYNK_PORT_LEN },
-  { "mq", "MQTT Server",    MQTT_Server,    MAX_MQTT_SERVER_LEN },
+  { "prt", "Port",          Blynk_Port,     MAX_BLYNK_PORT_LEN },
+  { "mqt", "MQTT Server",   MQTT_Server,    MAX_MQTT_SERVER_LEN },
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;

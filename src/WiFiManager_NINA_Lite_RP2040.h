@@ -1,6 +1,6 @@
-/****************************************************************************************************************************
-  WiFiManager_NINA_Lite_SAMD.h
-  For SAMD boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+/*********************************************************************************************************************************
+  WiFiManager_NINA_Lite_RP2040.h
+  For RP2040 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
 
   WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
   (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
@@ -28,31 +28,45 @@
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
   1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
-  *****************************************************************************************************************************/
+  **********************************************************************************************************************************/
 
-#ifndef WiFiManager_NINA_Lite_SAMD_h
-#define WiFiManager_NINA_Lite_SAMD_h
+#ifndef WiFiManager_NINA_Lite_RP2040_h
+#define WiFiManager_NINA_Lite_RP2040_h
 
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
-  #if defined(WIFININA_USE_SAMD)
-    #undef WIFININA_USE_SAMD
+#if ( defined(NANO_RP2040_CONNECT)    || defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_RASPBERRY_PI_PICO) || \
+      defined(ARDUINO_GENERIC_RP2040) || defined(ARDUINO_ADAFRUIT_FEATHER_RP2040) )
+  #if defined(WIFININA_USE_RP2040)
+    #undef WIFININA_USE_RP2040
   #endif
-  #define WIFININA_USE_SAMD      true
+  #define WIFININA_USE_RP2040      true
 #else
-  #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
+  #error This code is intended to run on the RP2040 platform! Please check your Tools->Board setting.  
 #endif
 
 #define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.4.0"
 
 #include <WiFiWebServer.h>
-// Include EEPROM-like API for FlashStorage
-//#include <FlashAsEEPROM.h>                //https://github.com/cmaglie/FlashStorage
-#include <FlashAsEEPROM_SAMD.h>                //https://github.com/khoih-prog/FlashStorage_SAMD
+
+
+//////////////////////////////////////////
+
+#warning Using LittleFS in WiFiManager_NINA_Lite_RP2040.h
+
+//////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_Debug.h>
+
+#ifndef USING_CUSTOMS_STYLE
+  #define USING_CUSTOMS_STYLE     false
+#endif
+
+#ifndef USING_CUSTOMS_HEAD_ELEMENT
+  #define USING_CUSTOMS_HEAD_ELEMENT     false
+#endif
+
+#ifndef USING_CORS_FEATURE
+  #define USING_CORS_FEATURE     false
+#endif
 
 //////////////////////////////////////////////
 
@@ -88,8 +102,8 @@
 // Otherwise, library will use default EEPROM storage
 #define  DRD_FLAG_DATA_SIZE     4
 
-#ifndef DRD_GENERIC_DEBUG
-#define DRD_GENERIC_DEBUG     false
+#ifndef DOUBLERESETDETECTOR_DEBUG
+#define DOUBLERESETDETECTOR_DEBUG     false
 #endif
 
 #include <DoubleResetDetector_Generic.h>      //https://github.com/khoih-prog/DoubleResetDetector_Generic
@@ -104,6 +118,7 @@
 DoubleResetDetector_Generic* drd;
 
 ///////// NEW for DRD /////////////
+
 
 //NEW
 #define MAX_ID_LEN                5
@@ -129,7 +144,7 @@ typedef struct
 #endif
 
 #define SSID_MAX_LEN      32
-// WPA2 passwords can be up to 63 characters long.
+//From v1.0.3, WPA2 passwords can be up to 63 characters long.
 #define PASS_MAX_LEN      64
 
 typedef struct
@@ -140,7 +155,7 @@ typedef struct
 
 #define NUM_WIFI_CREDENTIALS      2
 
-// Configurable items besides fixed Header
+// Configurable items besides fixed Header, just add board_name 
 #define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ) + 1 )
 ////////////////
 
@@ -158,12 +173,13 @@ typedef struct Configuration
 // Currently CONFIG_DATA_SIZE  =   236  = (16 + 96 * 2 + 4 + 24)
 uint16_t CONFIG_DATA_SIZE = sizeof(WiFiNINA_Configuration);
 
+///New from v1.0.4
 extern bool LOAD_DEFAULT_CONFIG_DATA;
 extern WiFiNINA_Configuration defaultConfig;
 
 // -- HTML page fragments
 
-const char WIFININA_HTML_HEAD_START[] /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>SAMD_WM_NINA_Lite</title>";
+const char WIFININA_HTML_HEAD_START[] /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>RP2040_WM_NINA_Lite</title>";
 
 const char WIFININA_HTML_HEAD_STYLE[] /*PROGMEM*/ = "<style>div,input,select{padding:5px;font-size:1em;}input,select{width:95%;}body{text-align:center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
 
@@ -313,7 +329,7 @@ class WiFiManager_NINA_Lite
         String randomNum = String(random(0xFFFFFF), HEX);
         randomNum.toUpperCase();
         
-        String _hostname = "SAMD-WIFI_GENERIC-" + randomNum;
+        String _hostname = "NRF52-WiFiNINA-" + randomNum;
         _hostname.toUpperCase();
 
         getRFC952_hostname(_hostname.c_str());
@@ -693,35 +709,53 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
+        
+    typedef struct
+    {
+      uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
+      uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register */
+      uint32_t RESERVED0;
+      uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register */
+      uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
+      uint32_t CCR;                    /*!< Offset: 0x014 (R/W)  Configuration Control Register */
+      uint32_t RESERVED1;
+      uint32_t SHP[2U];                /*!< Offset: 0x01C (R/W)  System Handlers Priority Registers. [0] is RESERVED */
+      uint32_t SHCSR;                  /*!< Offset: 0x024 (R/W)  System Handler Control and State Register */
+    } SCB_Type;
+    
+    //////////////////////////////////////////////
 
+    void NVIC_SystemReset()
+    {                  
+    /* SCB Application Interrupt and Reset Control Register Definitions */
+    #define SCB_AIRCR_VECTKEY_Pos              16U                                      /*!< SCB AIRCR: VECTKEY Position */
+    #define SCB_AIRCR_VECTKEY_Msk              (0xFFFFUL << SCB_AIRCR_VECTKEY_Pos)      /*!< SCB AIRCR: VECTKEY Mask */
+        
+    #define SCB_AIRCR_SYSRESETREQ_Pos           2U                                      /*!< SCB AIRCR: SYSRESETREQ Position */
+    #define SCB_AIRCR_SYSRESETREQ_Msk          (1UL << SCB_AIRCR_SYSRESETREQ_Pos)       /*!< SCB AIRCR: SYSRESETREQ Mask */    
+
+    #define SCS_BASE            (0xE000E000UL)                            /*!< System Control Space Base Address */
+    #define SysTick_BASE        (SCS_BASE +  0x0010UL)                    /*!< SysTick Base Address */
+    #define NVIC_BASE           (SCS_BASE +  0x0100UL)                    /*!< NVIC Base Address */
+    #define SCB_BASE            (SCS_BASE +  0x0D00UL)                    /*!< System Control Block Base Address */
+
+    #define SCB                 ((SCB_Type       *)     SCB_BASE      )   /*!< SCB configuration struct */
+    #define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration struct */
+    #define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struct */
+
+                                  
+      SCB->AIRCR  = ((0x5FAUL << SCB_AIRCR_VECTKEY_Pos) | SCB_AIRCR_SYSRESETREQ_Msk);
+
+      while(true);
+    }
+
+    //////////////////////////////////////////////
+    
     void resetFunc()
-    {    
-      // Best one. Possibly don't need the WDT
+    {
+      delay(1000);
+      // Restart for RPi_Pico
       NVIC_SystemReset();
-      
-#if ( defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) || defined(__SAMD51G19A__)  )
-      // For SAMD51
-      // see Table 17-5 Timeout Period (valid values 0-11)
-      WDT->CONFIG.reg = 5; 
-      WDT->CTRLA.reg = WDT_CTRLA_ENABLE;
-      // To check if OK or bit.ENABLE/CLEAR
-      while (WDT->SYNCBUSY.bit.WEN == 1);
-      
-      // use the WDT watchdog timer to force a system reset.
-      WDT->CLEAR.reg= 0x00;
-      // To check if OK or bit.ENABLE/CLEAR
-      while (WDT->SYNCBUSY.bit.WEN == 1);
-#else   
-      // For SAMD21, etc
-      // see Table 17-5 Timeout Period (valid values 0-11)
-      WDT->CONFIG.reg = 5; 
-      WDT->CTRL.reg = WDT_CTRL_ENABLE;
-      while (WDT->STATUS.bit.SYNCBUSY == 1);
-      
-      // use the WDT watchdog timer to force a system reset.
-      WDT->CLEAR.reg= 0x00;
-      while (WDT->STATUS.bit.SYNCBUSY == 1);
-#endif      
     }
 
     //////////////////////////////////////
@@ -809,8 +843,8 @@ class WiFiManager_NINA_Lite
     String portal_pass = "";
 
     IPAddress static_IP   = IPAddress(0, 0, 0, 0);
-
-/////////////////////////////////////
+    
+    /////////////////////////////////////
     
     // Add customs headers from v1.1.0
     
@@ -836,8 +870,8 @@ class WiFiManager_NINA_Lite
 #endif
 
     //////////////////////////////////////
-    
-#define RFC952_HOSTNAME_MAXLEN      24
+
+    #define RFC952_HOSTNAME_MAXLEN      24
     char RFC952_hostname[RFC952_HOSTNAME_MAXLEN + 1];
 
     char* getRFC952_hostname(const char* iHostname)
@@ -863,6 +897,8 @@ class WiFiManager_NINA_Lite
       return RFC952_hostname;
     }
     
+    //////////////////////////////////////////////
+    
     void displayConfigData(WiFiNINA_Configuration configData)
     {
       WN_LOGERROR5(F("Hdr="),   configData.header, F(",SSID="), configData.WiFi_Creds[0].wifi_ssid,
@@ -877,6 +913,8 @@ class WiFiManager_NINA_Lite
       }
 #endif               
     }
+    
+    //////////////////////////////////////////////
 
     void displayWiFiData()
     {
@@ -886,23 +924,6 @@ class WiFiManager_NINA_Lite
 
 #define WIFININA_BOARD_TYPE       "WIFININA"
 #define WM_NO_CONFIG              "blank"
-
-// DRD_FLAG_DATA_SIZE is 4, to store DRD flag, defined in DRD
-#if (EEPROM_SIZE < DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE)
-#error EEPROM_SIZE must be > CONFIG_DATA_SIZE.
-#endif
-
-#ifndef EEPROM_START
-  #define EEPROM_START     0
-  #warning EEPROM_START not defined. Set to 0
-#else
-  #if (EEPROM_START + DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE + FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE > EEPROM_SIZE)
-    #error EPROM_START + DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE + FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE > EEPROM_SIZE. Please adjust.
-  #endif
-#endif
-
-// Stating positon to store WIFININA_config
-#define CONFIG_EEPROM_START    (EEPROM_START + DRD_FLAG_DATA_SIZE)
 
     int calcChecksum()
     {
@@ -915,57 +936,113 @@ class WiFiManager_NINA_Lite
       return checkSum;
     }
     
+// Use LittleFS/InternalFS for nRF52
+#define  CONFIG_FILENAME                  ("/fs/wm_config.dat")
+#define  CONFIG_FILENAME_BACKUP           ("/fs/wm_config.bak")
+
+#define  CREDENTIALS_FILENAME             ("/fs/wm_cred.dat")
+#define  CREDENTIALS_FILENAME_BACKUP      ("/fs/wm_cred.bak")
+
+#define  CONFIG_PORTAL_FILENAME           ("/fs/wm_cp.dat")
+#define  CONFIG_PORTAL_FILENAME_BACKUP    ("/fs/wm_cp.bak")
+
+    //////////////////////////////////////////////
+    
+    void saveForcedCP(uint32_t value)
+    {
+      // Mbed RP2040 code
+      FILE *file = fopen(CONFIG_PORTAL_FILENAME, "w");
+      
+      WN_LOGERROR(F("SaveCPFile "));
+
+      if (file)
+      {
+        fseek(file, 0, SEEK_SET);
+        fwrite((uint8_t *) &value, 1, sizeof(value), file);        
+        fclose(file);
+        
+        WN_LOGERROR(F("OK"));
+      }
+      else
+      {
+        WN_LOGERROR(F("failed"));
+      }
+
+      // Trying open redundant CP file
+      file = fopen(CONFIG_PORTAL_FILENAME_BACKUP, "w");
+      
+      WN_LOGERROR(F("SaveBkUpCPFile "));
+
+      if (file)
+      {
+        fseek(file, 0, SEEK_SET);
+        fwrite((uint8_t *) &value, 1, sizeof(value), file);        
+        fclose(file);
+        
+        WN_LOGERROR(F("OK"));
+      }
+      else
+      {
+        WN_LOGERROR(F("failed"));
+      }
+    }
+    
     //////////////////////////////////////////////
     
     void setForcedCP(bool isPersistent)
     {
       uint32_t readForcedConfigPortalFlag = isPersistent? FORCED_PERS_CONFIG_PORTAL_FLAG_DATA : FORCED_CONFIG_PORTAL_FLAG_DATA;
-    
+  
       WN_LOGERROR(isPersistent ? F("setForcedCP Persistent") : F("setForcedCP non-Persistent"));
-
-      uint16_t offset = CONFIG_EEPROM_START + CONFIG_DATA_SIZE;
-           
-      uint8_t* _pointer = (uint8_t *) &readForcedConfigPortalFlag;
       
-      for (uint16_t i = 0; i < sizeof(readForcedConfigPortalFlag); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
-      }
-      
-      EEPROM.commit();
+      saveForcedCP(readForcedConfigPortalFlag);
     }
+    
+    //////////////////////////////////////////////
     
     void clearForcedCP()
     {
       uint32_t readForcedConfigPortalFlag = 0;
+   
+      WN_LOGERROR(F("clearForcedCP"));
       
-      uint16_t offset = CONFIG_EEPROM_START + CONFIG_DATA_SIZE;
-           
-      uint8_t* _pointer = (uint8_t *) &readForcedConfigPortalFlag;
-      
-      for (uint16_t i = 0; i < sizeof(readForcedConfigPortalFlag); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
-      }
-      
-      EEPROM.commit();
+      saveForcedCP(readForcedConfigPortalFlag);
     }
+    
+    //////////////////////////////////////////////
 
     bool isForcedCP()
     {
       uint32_t readForcedConfigPortalFlag;
+    
+      WN_LOGDEBUG(F("Check if isForcedCP"));
       
-      // Return true if forced CP (0xDEADBEEF read at offset EPROM_START + DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE)
-      // => set flag noForcedConfigPortal = false
-      uint16_t offset = CONFIG_EEPROM_START + CONFIG_DATA_SIZE;
-                
-      uint8_t* _pointer = (uint8_t *) &readForcedConfigPortalFlag;
+      FILE *file = fopen(CONFIG_PORTAL_FILENAME, "r");
       
-      for (uint16_t i = 0; i < sizeof(readForcedConfigPortalFlag); i++, _pointer++, offset++)
-      {              
-        *_pointer = EEPROM.read(offset);
+      WN_LOGDEBUG(F("LoadCPFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = fopen(CONFIG_PORTAL_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCPFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
       }
-     
+           
+      fseek(file, 0, SEEK_SET);
+      fread((uint8_t *) &readForcedConfigPortalFlag, 1, sizeof(readForcedConfigPortalFlag), file);        
+      fclose(file);
+      WN_LOGDEBUG(F("OK"));
+      
+      
       // Return true if forced CP (0xDEADBEEF read at offset EPROM_START + DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE)
       // => set flag noForcedConfigPortal = false     
       if (readForcedConfigPortalFlag == FORCED_CONFIG_PORTAL_FLAG_DATA)
@@ -985,40 +1062,169 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
-    
+
 #if USE_DYNAMIC_PARAMETERS
     
-    bool checkDynamicData(void)
+    bool checkDynamicData()
     {
-      // It's too bad that emulate EEPROM.read()/write() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library
-      
       int checkSum = 0;
       int readCheckSum;
+      char* readBuffer = nullptr;
+           
+      FILE *file = fopen(CREDENTIALS_FILENAME, "r");
       
-      uint16_t offset = CONFIG_EEPROM_START + sizeof(WIFININA_config) + FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE;
-                
+      WN_LOGDEBUG(F("LoadCredFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = fopen(CREDENTIALS_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCredFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+      
       // Find the longest pdata, then dynamically allocate buffer. Remember to free when done
       // This is used to store tempo data to calculate checksum to see of data is valid
       // We dont like to destroy myMenuItems[i].pdata with invalid data
-          
+      
+      uint16_t maxBufferLength = 0;
+      
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
-      {                             
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++, offset++)
-        {       
-          checkSum += EEPROM.read(offset);    
-         }       
+      {       
+        if (myMenuItems[i].maxlen > maxBufferLength)
+          maxBufferLength = myMenuItems[i].maxlen;
       }
       
-      uint8_t* _pointer = (uint8_t *) &readCheckSum;
-      
-      for (uint16_t i = 0; i < sizeof(readCheckSum); i++, _pointer++, offset++)
-      {                  
-        *_pointer = EEPROM.read(offset);
-      }  
-                  
-      WN_LOGERROR3(F("ChkCrR:CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+      if (maxBufferLength > 0)
+      {
+        readBuffer = new char[ maxBufferLength + 1 ];
+        
+        // check to see NULL => stop and return false
+        if (readBuffer == NULL)
+        {
+          WN_LOGERROR(F("ChkCrR: Error can't allocate buffer."));
+          return false;
+        }     
+        else
+        {
+          WN_LOGDEBUG1(F("ChkCrR: Buffer allocated, Sz="), maxBufferLength + 1);
+        }  
+          
+        uint16_t offset = 0;
+        
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+        {       
+          uint8_t * _pointer = (uint8_t *) readBuffer;
+
+          // Actual size of pdata is [maxlen + 1]
+          memset(readBuffer, 0, myMenuItems[i].maxlen + 1);
+          
+          // Redundant, but to be sure correct position         
+          fseek(file, offset, SEEK_SET);
+          fread(_pointer, 1, myMenuItems[i].maxlen, file);  
            
+          offset += myMenuItems[i].maxlen;
+       
+          WN_LOGDEBUG3(F("ChkCrR:pdata="), readBuffer, F(",len="), myMenuItems[i].maxlen);         
+                 
+          for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+          {         
+            checkSum += *_pointer;  
+          }       
+        }
+
+        fread((uint8_t *) &readCheckSum, 1, sizeof(readCheckSum), file);
+        
+        WN_LOGDEBUG(F("OK"));
+        
+        fclose(file);
+        
+        WN_LOGERROR3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+        
+        if (readBuffer != nullptr)
+        {
+          // Free buffer
+          delete [] readBuffer;
+          WN_LOGDEBUG(F("Buffer freed"));
+        }
+        
+        if ( checkSum == readCheckSum)
+        {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    //////////////////////////////////////////////
+
+    bool loadDynamicData()
+    {
+      int checkSum = 0;
+      int readCheckSum;
+      totalDataSize = sizeof(WIFININA_config) + sizeof(readCheckSum);
+      
+      FILE *file = fopen(CREDENTIALS_FILENAME, "r");
+      
+      WN_LOGDEBUG(F("LoadCredFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = fopen(CREDENTIALS_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCredFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+     
+      uint16_t offset = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        uint8_t * _pointer = (uint8_t *) myMenuItems[i].pdata;
+        totalDataSize += myMenuItems[i].maxlen;
+
+        // Actual size of pdata is [maxlen + 1]
+        memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
+        
+        // Redundant, but to be sure correct position
+        fseek(file, offset, SEEK_SET);
+        fread(_pointer, 1, myMenuItems[i].maxlen, file);
+        
+        offset += myMenuItems[i].maxlen;        
+    
+        WN_LOGDEBUG3(F("CrR:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);         
+               
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;  
+        }       
+      }
+
+      fread((uint8_t *) &readCheckSum, 1, sizeof(readCheckSum), file);
+      
+      WN_LOGDEBUG(F("OK"));
+      
+      fclose(file);
+      
+      WN_LOGDEBUG3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+      
       if ( checkSum != readCheckSum)
       {
         return false;
@@ -1028,94 +1234,104 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
-    
-    bool EEPROM_getDynamicData()
-    {          
-      int checkSum = 0;
-      int readCheckSum;
-      
-      totalDataSize = sizeof(WIFININA_config) + sizeof(readCheckSum);
-          
-      // Using FORCED_CONFIG_PORTAL_FLAG_DATA
-      //offset += FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE;
-      uint16_t offset = CONFIG_EEPROM_START + sizeof(WIFININA_config) + FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE;
-      uint8_t* _pointer;
-   
-      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
-      {       
-        _pointer = (uint8_t *) myMenuItems[i].pdata;
-        totalDataSize += myMenuItems[i].maxlen;
-        
-        // Actual size of pdata is [maxlen + 1]
-        memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
-               
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++, _pointer++, offset++)
-        {
-          *_pointer = EEPROM.read(offset);          
-          checkSum += *_pointer;  
-         }       
-      }
-      
-      _pointer = (uint8_t *) &readCheckSum;
-      
-      for (uint16_t i = 0; i < sizeof(readCheckSum); i++, _pointer++, offset++)
-      {                  
-        *_pointer = EEPROM.read(offset);
-      }
-         
-      WN_LOGERROR3(F("CrCCSum="), String(checkSum, HEX), F(",CrRCSum="), String(readCheckSum, HEX));
-      
-      if ( checkSum != readCheckSum)
-      {
-        return false;
-      }
-     
-      return true;
-    }
-    
-    //////////////////////////////////////////////
-    
-    void EEPROM_putDynamicData()
+
+    void saveDynamicData()
     {
-      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library          
       int checkSum = 0;
-      
-      // Using FORCED_CONFIG_PORTAL_FLAG_DATA
-      //offset += FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE;
-      uint16_t offset = CONFIG_EEPROM_START + sizeof(WIFININA_config) + FORCED_CONFIG_PORTAL_FLAG_DATA_SIZE;
-      uint8_t* _pointer;
     
+      FILE *file = fopen(CREDENTIALS_FILENAME, "w");
+      
+      WN_LOGDEBUG(F("SaveCredFile "));
+
+      uint16_t offset = 0;
+      
       for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
       {       
-        _pointer = (uint8_t *) myMenuItems[i].pdata;
-      
-        WN_LOGDEBUG3(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
-                     
-        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
+        uint8_t* _pointer = (uint8_t *) myMenuItems[i].pdata;
+       
+        WN_LOGDEBUG3(F("CW1:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
         {
-          EEPROM.write(offset, *_pointer);
+          // Redundant, but to be sure correct position
+          fseek(file, offset, SEEK_SET);
+          fwrite(_pointer, 1, myMenuItems[i].maxlen, file); 
           
+          offset += myMenuItems[i].maxlen;      
+        }
+        else
+        {
+          WN_LOGDEBUG(F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
           checkSum += *_pointer;     
          }
       }
       
-      _pointer = (uint8_t *) &checkSum;
+      if (file)
+      {
+        fwrite((uint8_t *) &checkSum, 1, sizeof(checkSum), file);        
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));    
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }   
+           
+      WN_LOGDEBUG1(F("CrWCSum=0x"), String(checkSum, HEX));
       
-      for (uint16_t i = 0; i < sizeof(checkSum); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
+      // Trying open redundant Auth file
+      file = fopen(CREDENTIALS_FILENAME_BACKUP, "w");
+      
+      WN_LOGDEBUG(F("SaveBkUpCredFile "));
+
+      offset = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        uint8_t* _pointer = (uint8_t *) myMenuItems[i].pdata;
+     
+        WN_LOGDEBUG3(F("CW2:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
+        {
+          fseek(file, offset, SEEK_SET);
+          fwrite(_pointer, 1, myMenuItems[i].maxlen, file); 
+          
+          // Redundant, but to be sure correct position
+          offset += myMenuItems[i].maxlen; 
+        }
+        else
+        {
+          WN_LOGDEBUG(F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;     
+         }
       }
       
-      WN_LOGERROR1(F("CrCCSum=0x"), String(checkSum, HEX));
-      
-      EEPROM.commit();
+      if (file)
+      {
+        fwrite((uint8_t *) &checkSum, 1, sizeof(checkSum), file);        
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));    
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }   
     }
-
 #endif
 
     //////////////////////////////////////////////
- 
+    
     void NULLTerminateConfig()
     {
       //#define HEADER_MAX_LEN      16
@@ -1130,7 +1346,7 @@ class WiFiManager_NINA_Lite
       WIFININA_config.WiFi_Creds[1].wifi_pw  [PASS_MAX_LEN - 1] = 0;
       WIFININA_config.board_name[BOARD_NAME_MAX_LEN - 1]  = 0;
     }
-            
+
     //////////////////////////////////////////////
     
     bool isWiFiConfigValid()
@@ -1159,7 +1375,7 @@ class WiFiManager_NINA_Lite
       {
         // If SSID, PW ="blank" or NULL, set the flag
         WN_LOGERROR(F("Invalid Stored WiFi Config Data"));
-        
+           
         // Nullify the invalid data to avoid displaying garbage
         memset(&WIFININA_config, 0, sizeof(WIFININA_config));
         
@@ -1172,63 +1388,90 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
-    
-    bool EEPROM_get()
+
+    bool loadConfigData()
     {
-      // It's too bad that emulate EEPROM.read()/write() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library
+      WN_LOGDEBUG(F("LoadCfgFile "));
       
-      uint16_t offset = CONFIG_EEPROM_START;
-                
-      uint8_t* _pointer = (uint8_t *) &WIFININA_config;
+      // file existed
+      FILE *file = fopen(CONFIG_FILENAME, "r");
       
-      for (uint16_t i = 0; i < sizeof(WIFININA_config); i++, _pointer++, offset++)
-      {              
-        *_pointer = EEPROM.read(offset);
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = fopen(CONFIG_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCfgFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
       }
-      
-      NULLTerminateConfig();
+     
+      fseek(file, 0, SEEK_SET);
+      fread((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
+      fclose(file);
+
+      WN_LOGDEBUG(F("OK"));
       
       return isWiFiConfigValid();
     }
     
     //////////////////////////////////////////////
-    
-    void EEPROM_put()
-    {
-      // It's too bad that emulate EEPROM.read()/writ() can only deal with bytes. 
-      // Have to read/write each byte. To rewrite the library
-      
-      uint16_t offset = CONFIG_EEPROM_START;
-           
-      uint8_t* _pointer = (uint8_t *) &WIFININA_config;
-      
-      for (uint16_t i = 0; i < sizeof(WIFININA_config); i++, _pointer++, offset++)
-      {              
-        EEPROM.write(offset, *_pointer);
-      }
 
-      EEPROM.commit();      
-    }
-    
-    //////////////////////////////////////////////
-    
     void saveConfigData()
     {
+      WN_LOGDEBUG(F("SaveCfgFile "));
+
       int calChecksum = calcChecksum();
       WIFININA_config.checkSum = calChecksum;
+      WN_LOGDEBUG1(F("WCSum=0x"), String(calChecksum, HEX));
       
-      WN_LOGERROR5(F("SaveEEPROM,Sz="), EEPROM.length(), F(",DataSz="), totalDataSize, F(",WCSum=0x"), String(calChecksum, HEX));
+      FILE *file = fopen(CONFIG_FILENAME, "w");
+
+      if (file)
+      {
+        fseek(file, 0, SEEK_SET);
+        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
       
-      EEPROM_put();
+      WN_LOGDEBUG(F("SaveBkUpCfgFile "));
       
-#if USE_DYNAMIC_PARAMETERS        
-      EEPROM_putDynamicData();
+      // Trying open redundant Auth file
+      file = fopen(CONFIG_FILENAME_BACKUP, "w");
+
+      if (file)
+      {
+        fseek(file, 0, SEEK_SET);
+        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
+      
+#if USE_DYNAMIC_PARAMETERS      
+      saveDynamicData();
 #endif
     }
     
     //////////////////////////////////////////////
     
+    // New from v1.0.5
     void loadAndSaveDefaultConfigData()
     {
       // Load Default Config Data from Sketch
@@ -1238,18 +1481,19 @@ class WiFiManager_NINA_Lite
       // Including config and dynamic data, and assume valid
       saveConfigData();
           
-      WN_LOGERROR(F("======= Start Loaded Config Data ======="));
+      WN_LOGDEBUG(F("======= Start Loaded Config Data ======="));
       displayConfigData(WIFININA_config);    
     }
     
     //////////////////////////////////////////////
     
+    // Return false if init new EEPROM or SPIFFS. No more need trying to connect. Go directly to config mode
     bool getConfigData()
     {
-      bool dynamicDataValid = true;
+      bool dynamicDataValid = true; 
       int calChecksum; 
       
-      hadConfigData = false; 
+      hadConfigData = false;
       
       // Use new LOAD_DEFAULT_CONFIG_DATA logic
       if (LOAD_DEFAULT_CONFIG_DATA)
@@ -1262,34 +1506,36 @@ class WiFiManager_NINA_Lite
       }
       else
       {   
+        // Load stored config data from LittleFS
         // Get config data. If "blank" or NULL, set false flag and exit
-        if (!EEPROM_get())
+        if (!loadConfigData())
         {
           return false;
         }
         
-        // Verify ChkSum
+        // Verify ChkSum        
         calChecksum = calcChecksum();
 
         WN_LOGERROR3(F("CCSum=0x"), String(calChecksum, HEX),
-                     F(",RCSum=0x"), String(WIFININA_config.checkSum, HEX));
+                   F(",RCSum=0x"), String(WIFININA_config.checkSum, HEX));
         
 #if USE_DYNAMIC_PARAMETERS        
-        // Load stored dynamic data from EEPROM
-        dynamicDataValid = checkDynamicData();              
+        // Load stored dynamic data from LittleFS
+        dynamicDataValid = checkDynamicData();
 #endif
-       
-        // If checksum = 0 => FlashStorage has been cleared (by uploading new FW, etc) => force to CP
+        
+        // If checksum = 0 => LittleFS has been cleared (by uploading new FW, etc) => force to CP
+        // If bad checksum = 0 => force to CP
         if ( (calChecksum != 0) && (calChecksum == WIFININA_config.checkSum) )
-        {           
+        {       
           if (dynamicDataValid)
           {
-#if USE_DYNAMIC_PARAMETERS          
-            // CkSum verified, Now get valid config/ dynamic data
-            EEPROM_getDynamicData();
-            
+  #if USE_DYNAMIC_PARAMETERS        
+            loadDynamicData();
+             
             WN_LOGERROR(F("Valid Stored Dynamic Data"));
-#endif            
+  #endif 
+         
             WN_LOGERROR(F("======= Start Stored Config Data ======="));
             displayConfigData(WIFININA_config);
             
@@ -1307,9 +1553,9 @@ class WiFiManager_NINA_Lite
             // Need Config Portal here as data can be just dummy
             // Even if you don't open CP, you're OK on next boot if your default config data is valid 
             return false;
-          }      
-        }
-      }
+          }
+        }   
+      }   
 
       if ( (strncmp(WIFININA_config.header, WIFININA_BOARD_TYPE, strlen(WIFININA_BOARD_TYPE)) != 0) ||
            (calChecksum != WIFININA_config.checkSum) || !dynamicDataValid || 
@@ -1363,7 +1609,7 @@ class WiFiManager_NINA_Lite
 
         saveConfigData();
         
-        return false;   
+        return false;        
       }
       else if ( !isWiFiConfigValid() )
       {
@@ -1377,9 +1623,9 @@ class WiFiManager_NINA_Lite
 
       return true;
     }
-
-    //////////////////////////////////////////////
     
+    //////////////////////////////////////////////
+
     // New connection logic from v1.2.0
     bool connectMultiWiFi(int retry_time)
     {
@@ -1504,52 +1750,9 @@ class WiFiManager_NINA_Lite
 
       return wifi_connected;  
     }
-
-    //////////////////////////////////////////////
-    
-    /** Is this an IP? */
-    bool isIp(String str)
-    {
-      for (unsigned int i = 0; i < str.length(); i++)
-      {
-        int c = str.charAt(i);
-
-        if (c != '.' && (c < '0' || c > '9'))
-        {
-          return false;
-        }
-      }
-      
-      return true;
-    }
-
-    //////////////////////////////////////////////
-    
-    /**
-       HTTPD redirector (NOT WORKING YET)
-       Redirect to captive portal if we got a request for another domain.
-       Return true in that case so the page handler do not try to handle the request again.
-    */
-    bool captivePortal()
-    {
-      WN_LOGERROR1(F("captivePortal: hostHeader = "), server->hostHeader());
-      
-      //if (!isIp(server->hostHeader()))
-      {
-        WN_LOGERROR1(F("Request redirected to captive portal : "), (String) F("http://") + IPAddressToString(portal_apIP));
-        
-        server->sendHeader(F("Location"), (String) F("http://") + IPAddressToString(portal_apIP), true);
-        server->send(302, WM_HTTP_HEAD_TEXT_PLAIN, "");
-        server->client().stop();
-        
-        return true;
-      }
-      
-      return false;
-    }
     
     //////////////////////////////////////////////
-    
+
     // NEW
     void createHTML(String& root_html_template)
     {
@@ -1572,8 +1775,6 @@ class WiFiManager_NINA_Lite
         root_html_template += _CustomsHeadElement;
   #endif          
       
-      root_html_template += String(WIFININA_HTML_HEAD_END) + WIFININA_FLDSET_START;
-        
 #if SCAN_WIFI_NETWORKS
       WN_LOGDEBUG1(WiFiNetworksFound, F(" SSIDs found, generating HTML now"));
       // Replace HTML <input...> with <select...>, based on WiFi network scan in startConfigurationMode()
@@ -1693,12 +1894,12 @@ class WiFiManager_NINA_Lite
           if ( RFC952_hostname[0] != 0 )
           {
             // Replace only if Hostname is valid
-            result.replace("SAMD_WM_NINA_Lite", RFC952_hostname);
+            result.replace("RP2040_WM_NINA_Lite", RFC952_hostname);
           }
           else if ( WIFININA_config.board_name[0] != 0 )
           {
             // Or replace only if board_name is valid.  Otherwise, keep intact
-            result.replace("SAMD_WM_NINA_Lite", WIFININA_config.board_name);
+            result.replace("RP2040_WM_NINA_Lite", WIFININA_config.board_name);
           }
 
           if (hadConfigData)
@@ -1853,7 +2054,7 @@ class WiFiManager_NINA_Lite
           }
         }  
 #endif
-        
+             
         WN_LOGDEBUG1(F("h:items updated ="), number_items_Updated);
         WN_LOGDEBUG3(F("h:key ="), key, ", value =", value);
 
@@ -1863,9 +2064,9 @@ class WiFiManager_NINA_Lite
         if (number_items_Updated == NUM_CONFIGURABLE_ITEMS + NUM_MENU_ITEMS)
 #else
         if (number_items_Updated == NUM_CONFIGURABLE_ITEMS)
-#endif 
+#endif
         {
-          WN_LOGERROR(F("h:UpdEEPROM"));
+          WN_LOGDEBUG(F("h:UpdLittleFS"));
 
           saveConfigData();
           
@@ -1873,7 +2074,7 @@ class WiFiManager_NINA_Lite
           if (isForcedConfigPortal)
             clearForcedCP();
 
-          WN_LOGERROR(F("h:Rst"));
+          WN_LOGDEBUG(F("h:Rst"));
 
           // TO DO : what command to reset
           // Delay then reset the board after save data
@@ -1881,39 +2082,6 @@ class WiFiManager_NINA_Lite
           resetFunc();  //call reset
         }
       }   // if (server)
-    }
-    
-    //////////////////////////////////////////////
-    
-
-    void handleNotFound()
-    {
-      if (captivePortal())
-      {
-        // If captive portal redirect instead of displaying the error page.
-        return;
-      }
-
-      String message = "File Not Found\n\n";
-      
-      message += "URI: ";
-      message += server->uri();
-      message += "\nMethod: ";
-      message += (server->method() == HTTP_GET) ? "GET" : "POST";
-      message += "\nArguments: ";
-      message += server->args();
-      message += "\n";
-
-      for (uint8_t i = 0; i < server->args(); i++)
-      {
-        message += " " + server->argName(i) + ": " + server->arg(i) + "\n";
-      }
-
-      server->sendHeader(WM_HTTP_CACHE_CONTROL, WM_HTTP_NO_STORE);
-      server->sendHeader(WM_HTTP_PRAGMA, WM_HTTP_NO_CACHE);
-      server->sendHeader(WM_HTTP_EXPIRES, "-1");
-      
-      server->send(404, WM_HTTP_HEAD_TEXT_PLAIN, message);
     }
     
     //////////////////////////////////////////////
@@ -1930,7 +2098,7 @@ class WiFiManager_NINA_Lite
 
       WiFiNetworksFound = scanWifiNetworks(&indices);
 #endif
-
+    
       WiFi.config(portal_apIP);
 
       if ( (portal_ssid == "") || portal_pass == "" )
@@ -1974,8 +2142,6 @@ class WiFiManager_NINA_Lite
       if (server)
       {
         server->on("/", [this](){ handleRequest(); });
-        server->onNotFound([this](){ handleNotFound(); });
-        
         server->begin();
       }
 
@@ -1998,13 +2164,12 @@ class WiFiManager_NINA_Lite
     }
     
 #if SCAN_WIFI_NETWORKS
-
     // Source code adapted from https://github.com/khoih-prog/ESP_WiFiManager/blob/master/src/ESP_WiFiManager-Impl.h
 
     int           _paramsCount            = 0;
     int           _minimumQuality         = -1;
     bool          _removeDuplicateAPs     = true;
-    
+
     //////////////////////////////////////////
     
     void swap(int *thisOne, int *thatOne)
@@ -2165,8 +2330,8 @@ class WiFiManager_NINA_Lite
 
     //////////////////////////////////////////
 
-#endif    // SCAN_WIFI_NETWORKS    
+#endif    
 };
 
 
-#endif    //WiFiManager_NINA_Lite_SAMD_h
+#endif    //WiFiManager_NINA_Lite_RP2040_h

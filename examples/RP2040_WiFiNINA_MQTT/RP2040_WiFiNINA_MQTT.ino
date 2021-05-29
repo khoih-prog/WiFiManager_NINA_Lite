@@ -1,11 +1,11 @@
-/****************************************************************************************************************************
-  Teensy40_WiFiNINA_MQTT.ino
-  For Teensy boards using WiFiNINA Modules/Shields, using much less code to support boards with smaller memory
-  
-  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards 
-  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy 
+/*********************************************************************************************************************************
+  RP2040_WiFiNINA_MQTT.ino
+  For RP2040 boards using WiFiNINA modules/shields, using much less code to support boards with smaller memory
+
+  WiFiManager_NINA_WM_Lite is a library for the Mega, Teensy, SAM DUE, SAMD and STM32 boards
+  (https://github.com/khoih-prog/WiFiManager_NINA_Lite) to enable store Credentials in EEPROM/LittleFS for easy
   configuration/reconfiguration and autoconnect/autoreconnect of WiFi and other services without Hardcoding.
-  
+
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
   Version: 1.4.0
@@ -29,12 +29,26 @@
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
   1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   **********************************************************************************************************************************/
+
 /****************************************************************************************************************************
-  You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp  as follows to avoid dtostrf error
-   
-  //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_ARCH_SAMD)
-  #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) )
-  static char *dtostrf(double val, signed char width, unsigned char prec, char *sout) 
+  You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp  as follows to avoid ltoa, ultoa and dtostrf error
+
+  #ifdef __cplusplus
+    extern "C" {
+  #endif
+
+  extern char* itoa(int value, char *string, int radix);
+  extern char* ltoa(long value, char *string, int radix);
+  extern char* utoa(unsigned value, char *string, int radix);
+  extern char* ultoa(unsigned long value, char *string, int radix);
+
+  #ifdef __cplusplus
+    } // extern "C"
+  #endif
+
+  #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || \
+       ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) ) ) 
+  static char *dtostrf(double val, signed char width, unsigned char prec, char *sout)
   {
     char fmt[20];
     sprintf(fmt, "%%%d.%df", width, prec);
@@ -307,7 +321,7 @@ void setup()
 
   delay(200);
 
-  Serial.print(F("\nStarting Teensy_WiFiNINA_MQTT on ")); Serial.println(BOARD_TYPE);
+  Serial.print(F("\nStarting RP2040_WiFiNINA_MQTT on ")); Serial.println(BOARD_NAME);
   Serial.println(WIFIMANAGER_NINA_LITE_VERSION);
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();
@@ -316,7 +330,7 @@ void setup()
   //WiFiManager_NINA->setConfigPortalIP(IPAddress(192, 168, 120, 1));
   WiFiManager_NINA->setConfigPortalChannel(0);
 
-  #if USING_CUSTOMS_STYLE
+#if USING_CUSTOMS_STYLE
   WiFiManager_NINA->setCustomsStyle(NewCustomsStyle);
 #endif
 
@@ -324,14 +338,15 @@ void setup()
   WiFiManager_NINA->setCustomsHeadElement("<style>html{filter: invert(10%);}</style>");
 #endif
 
-#if USING_CORS_FEATURE  
+#if USING_CORS_FEATURE
   WiFiManager_NINA->setCORSHeader("Your Access-Control-Allow-Origin");
 #endif
 
   // Set customized DHCP HostName
   WiFiManager_NINA->begin(HOST_NAME);
-  //Or use default Hostname "SAMD-WiFiNINA-XXXXXX"
+  //Or use default Hostname "RP2040-WiFiNINA-XXXXXX"
   //WiFiManager_NINA->begin();
+
 }
 
 #if USE_DYNAMIC_PARAMETERS
@@ -378,5 +393,5 @@ void loop()
 
 #if USE_DYNAMIC_PARAMETERS
   displayCredentialsInLoop();
-#endif  
+#endif
 }
