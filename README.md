@@ -1535,7 +1535,7 @@ uint16_t NUM_MENU_ITEMS = 0;
 
 #### 1. SAMD_WiFiNINA on Nano-33-IoT
 
-This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **AMD NANO_33_IOT**:
+This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **SAMD NANO_33_IOT**:
 
 #### 1.1 Open Config Portal
 
@@ -1887,7 +1887,7 @@ MQTT Server = new_mqtt.duckdns.org
 
 #### 2. RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
 
-This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiNINA) example on **AMD NANO_33_IOT**:
+This is the terminal output when running [**RP2040_WiFiNINA_MQTT**](examples/RP2040_WiFiNINA_MQTT) example on **MBED NANO_RP2040_CONNECT**:
 
 #### 2.1 No Config Data => Config Portal
 
