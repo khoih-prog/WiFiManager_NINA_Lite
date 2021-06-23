@@ -22,21 +22,23 @@
 #include "Adafruit_MQTT.h"
 
 #ifdef __cplusplus
-extern "C" {
+  extern "C" {
 #endif
-
 extern char* itoa(int value, char *string, int radix);
 extern char* ltoa(long value, char *string, int radix);
 extern char* utoa(unsigned value, char *string, int radix);
 extern char* ultoa(unsigned long value, char *string, int radix);
-
 #ifdef __cplusplus
-} // extern "C"
+  } // extern "C"
 #endif
 
-#if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) ) )    
-static char *dtostrf(double val, signed char width, unsigned char prec,
-                     char *sout) {
+//#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_ARCH_SAMD)
+#if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || \
+     ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) ) || ARDUINO_ARCH_SEEED_SAMD || ( defined(SEEED_WIO_TERMINAL) || defined(SEEED_XIAO_M0) || \
+       defined(SEEED_FEMTO_M0) || defined(Wio_Lite_MG126) || defined(WIO_GPS_BOARD) || defined(SEEEDUINO_ZERO) || defined(SEEEDUINO_LORAWAN) || defined(WIO_LTE_CAT) || \
+       defined(SEEED_GROVE_UI_WIRELESS) ) ) 
+static char *dtostrf(double val, signed char width, unsigned char prec, char *sout)
+{
   char fmt[20];
   sprintf(fmt, "%%%d.%df", width, prec);
   sprintf(sout, fmt, val);
@@ -363,13 +365,13 @@ bool Adafruit_MQTT::publish(const char *topic, uint8_t *data, uint16_t bLen,
 
   // If QOS level is high enough verify the response packet.
   if (qos > 0) {
-    len = readFullPacket(buffer, MAXBUFFERSIZE, PUBLISH_TIMEOUT_MS);
+    len = processPacketsUntil(buffer, MQTT_CTRL_PUBACK, PUBLISH_TIMEOUT_MS);
+
     DEBUG_PRINT(F("Publish QOS1+ reply:\t"));
     DEBUG_PRINTBUFFER(buffer, len);
     if (len != 4)
       return false;
-    if ((buffer[0] >> 4) != MQTT_CTRL_PUBACK)
-      return false;
+
     uint16_t packnum = buffer[2];
     packnum <<= 8;
     packnum |= buffer[3];
@@ -520,10 +522,32 @@ void Adafruit_MQTT::processPackets(int16_t timeout) {
   }
 }
 Adafruit_MQTT_Subscribe *Adafruit_MQTT::readSubscription(int16_t timeout) {
-  // Check if data is available to read.
-  uint16_t len =
-      readFullPacket(buffer, MAXBUFFERSIZE, timeout); // return one full packet
-  return handleSubscriptionPacket(len);
+
+  // Sync or Async subscriber with message
+  Adafruit_MQTT_Subscribe *s = 0;
+
+  // Check if are unread messages
+  for (uint8_t i = 0; i < MAXSUBSCRIPTIONS; i++) {
+    if (subscriptions[i] && subscriptions[i]->new_message) {
+      s = subscriptions[i];
+      break;
+    }
+  }
+
+  // not unread message
+  if (!s) {
+    // Check if data is available to read.
+    uint16_t len = readFullPacket(buffer, MAXBUFFERSIZE,
+                                  timeout); // return one full packet
+    s = handleSubscriptionPacket(len);
+  }
+
+  // it there is a message, mark it as not pending
+  if (s) {
+    s->new_message = false;
+  }
+
+  return s;
 }
 
 Adafruit_MQTT_Subscribe *Adafruit_MQTT::handleSubscriptionPacket(uint16_t len) {
@@ -563,6 +587,12 @@ Adafruit_MQTT_Subscribe *Adafruit_MQTT::handleSubscriptionPacket(uint16_t len) {
                       topiclen) == 0) {
         DEBUG_PRINT(F("Found sub #"));
         DEBUG_PRINTLN(i);
+        if (subscriptions[i]->new_message) {
+          DEBUG_PRINTLN(F("Lost previous message"));
+        } else {
+          subscriptions[i]->new_message = true;
+        }
+
         break;
       }
     }
@@ -922,6 +952,7 @@ Adafruit_MQTT_Subscribe::Adafruit_MQTT_Subscribe(Adafruit_MQTT *mqttserver,
   callback_double = 0;
   callback_io = 0;
   io_mqtt = 0;
+  new_message = false;
 }
 
 void Adafruit_MQTT_Subscribe::setCallback(SubscribeCallbackUInt32Type cb) {
