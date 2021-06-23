@@ -36,6 +36,11 @@
   #error This code is intended to run only on the SAMD boards ! Please check your Tools->Board setting.
 #endif
 
+#if ( defined(SEEED_WIO_TERMINAL) || defined(SEEED_XIAO_M0) || defined(SEEED_FEMTO_M0) || defined(Wio_Lite_MG126) || defined(WIO_GPS_BOARD) || defined(SEEEDUINO_ZERO) || \
+      defined(SEEEDUINO_LORAWAN) || defined(WIO_LTE_CAT) || defined(SEEED_GROVE_UI_WIRELESS) )
+  #define ARDUINO_ARCH_SEEED_SAMD       true
+#endif
+     
 #if defined(WIFININA_USE_SAMD)
 
   #if defined(ARDUINO_SAMD_ZERO)

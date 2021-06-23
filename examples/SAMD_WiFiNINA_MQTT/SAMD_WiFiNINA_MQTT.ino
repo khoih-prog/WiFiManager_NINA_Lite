@@ -32,9 +32,23 @@
 /****************************************************************************************************************************
   You have to modify file ./libraries/Adafruit_MQTT_Library/Adafruit_MQTT.cpp as follows to avoid dtostrf error, if exists
    
+  #ifdef __cplusplus
+    extern "C" {
+  #endif
+  extern char* itoa(int value, char *string, int radix);
+  extern char* ltoa(long value, char *string, int radix);
+  extern char* utoa(unsigned value, char *string, int radix);
+  extern char* ultoa(unsigned long value, char *string, int radix);
+  #ifdef __cplusplus
+    } // extern "C"
+  #endif
+
   //#if defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_ARCH_SAMD)
-  #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) )
-  static char *dtostrf(double val, signed char width, unsigned char prec, char *sout) 
+  #if !( ESP32 || ESP8266 || defined(CORE_TEENSY) || defined(STM32F1) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || \
+       ( defined(ARDUINO_ARCH_RP2040) && !defined(ARDUINO_ARCH_MBED) ) || ARDUINO_ARCH_SEEED_SAMD || ( defined(SEEED_WIO_TERMINAL) || defined(SEEED_XIAO_M0) || \
+         defined(SEEED_FEMTO_M0) || defined(Wio_Lite_MG126) || defined(WIO_GPS_BOARD) || defined(SEEEDUINO_ZERO) || defined(SEEEDUINO_LORAWAN) || defined(WIO_LTE_CAT) || \
+         defined(SEEED_GROVE_UI_WIRELESS) ) ) 
+  static char *dtostrf(double val, signed char width, unsigned char prec, char *sout)
   {
     char fmt[20];
     sprintf(fmt, "%%%d.%df", width, prec);
@@ -111,8 +125,8 @@ void subscribeMQTT(void)
   {
     if (subscription == LED_Control)
     {
-      Serial.print(F("\nGot: "));
-      Serial.println((char *)LED_Control->lastread);
+      //Serial.print(F("\nGot: "));
+      //Serial.println((char *)LED_Control->lastread);
 
       if (!strcmp((char*) LED_Control->lastread, "ON"))
       {
