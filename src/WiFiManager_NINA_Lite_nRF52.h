@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.4.1
+  Version: 1.5.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -28,7 +28,8 @@
   1.3.0   Michael H    21/04/2021  Enable scan of WiFi networks for selection in Configuration Portal
   1.3.1   K Hoang      15/05/2021  Fix createHTML bug.
   1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
-  1.4.1   K Hoang      12/10/2021 Update `platform.ini` and `library.json`
+  1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
+  1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_nRF52_h
@@ -46,7 +47,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.4.1"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.5.0"
 
 #include <WiFiWebServer.h>
 
@@ -1593,6 +1594,16 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
 
+// Max times to try WiFi per loop() iteration. To avoid blocking issue in loop()
+// Default 1 and minimum 1.
+#if !defined(MAX_NUM_WIFI_RECON_TRIES_PER_LOOP)      
+  #define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     1
+#else
+  #if (MAX_NUM_WIFI_RECON_TRIES_PER_LOOP < 1)  
+    #define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     1
+  #endif
+#endif 
+
     // New connection logic from v1.2.0
     bool connectMultiWiFi(int retry_time)
     {
@@ -1652,7 +1663,9 @@ class WiFiManager_NINA_Lite
       
       uint8_t numIndexTried = 0;
       
-      while ( !wifi_connected && (numIndexTried++ < NUM_WIFI_CREDENTIALS) )
+      uint8_t numWiFiReconTries = 0;
+      
+      while ( !wifi_connected && (numIndexTried++ < NUM_WIFI_CREDENTIALS) && (numWiFiReconTries++ < MAX_NUM_WIFI_RECON_TRIES_PER_LOOP) )
       {         
         while ( 0 < retry_time )
         {      

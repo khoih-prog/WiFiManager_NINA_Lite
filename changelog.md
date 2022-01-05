@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.5.0](#release-v150)
   * [Release v1.4.1](#release-v141)
   * [Major Release v1.4.0](#major-release-v140)
   * [Release v1.3.1](#release-v131)
@@ -33,6 +34,13 @@
 ---
 
 ## Changelog
+
+### Release v1.5.0
+
+1. Fix the blocking issue in loop(). Check [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18)
+2. Drop support to `AVR Mega`
+3. Update `Packages' Patches`
+
 
 ### Release v1.4.1
 

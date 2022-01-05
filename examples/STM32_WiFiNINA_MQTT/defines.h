@@ -138,6 +138,12 @@
 // Default is false (if not defined) => must input 2 sets of SSID/PWD
 #define REQUIRE_ONE_SET_SSID_PW             false
 
+// Max times to try WiFi per loop() iteration. To avoid blocking issue in loop()
+// Default 1 if not defined, and minimum 1.
+//#define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     2
+
+/////////////////////////////////////////////
+
 #define USE_DYNAMIC_PARAMETERS              true
 
 /////////////////////////////////////////////
