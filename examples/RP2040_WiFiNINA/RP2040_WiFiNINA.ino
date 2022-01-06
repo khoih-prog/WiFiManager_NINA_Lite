@@ -129,7 +129,7 @@ void displayCredentialsInLoop()
 #endif
 
 void loop()
-{
+{ 
   WiFiManager_NINA->run();
   check_status();
 

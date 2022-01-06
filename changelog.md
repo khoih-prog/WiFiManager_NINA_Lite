@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Major Release v1.6.0](#major-release-v160)
   * [Release v1.5.0](#release-v150)
   * [Release v1.4.1](#release-v141)
   * [Major Release v1.4.0](#major-release-v140)
@@ -34,6 +35,11 @@
 ---
 
 ## Changelog
+
+### Major Release v1.6.0
+
+1. Add support to RP2040-based boards, such as **NANO_RP2040_CONNECT**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico)
+2. Configurable `WIFI_RECON_INTERVAL`. Check [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18#issuecomment-1006197561)
 
 ### Release v1.5.0
 

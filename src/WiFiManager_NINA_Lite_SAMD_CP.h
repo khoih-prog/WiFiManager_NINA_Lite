@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.5.0
+  Version: 1.6.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -30,6 +30,7 @@
   1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
+  1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
   *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -48,7 +49,7 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.5.0"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.6.0"
 
 #include <WiFiWebServer.h>
 // Include EEPROM-like API for FlashStorage
@@ -426,6 +427,16 @@ class WiFiManager_NINA_Lite
   #endif
 #endif
 
+#if !defined(WIFI_RECON_INTERVAL)      
+  #define WIFI_RECON_INTERVAL       0         // default 0s between reconnecting WiFi
+#else
+  #if (WIFI_RECON_INTERVAL < 0)
+    #define WIFI_RECON_INTERVAL     0
+  #elif  (WIFI_RECON_INTERVAL > 600000)
+    #define WIFI_RECON_INTERVAL     600000    // Max 10min
+  #endif
+#endif
+
     void run()
     {
       static int retryTimes = 0;
@@ -437,6 +448,10 @@ class WiFiManager_NINA_Lite
       static unsigned long checkstatus_timeout = 0;
       #define WIFI_STATUS_CHECK_INTERVAL    5000L
       
+      static uint32_t curMillis;
+      
+      curMillis = millis();
+      
       //// New DRD ////
       // Call the double reset detector loop method every so often,
       // so that it can recognise when the timeout expires.
@@ -445,7 +460,7 @@ class WiFiManager_NINA_Lite
       drd->loop();
       //// New DRD ////
          
-      if ( !configuration_mode && (millis() > checkstatus_timeout) )
+      if ( !configuration_mode && (curMillis > checkstatus_timeout) )
       {       
         if (WiFi.status() == WL_CONNECTED)
         {
@@ -465,7 +480,7 @@ class WiFiManager_NINA_Lite
           }
         }
         
-        checkstatus_timeout = millis() + WIFI_STATUS_CHECK_INTERVAL;
+        checkstatus_timeout = curMillis + WIFI_STATUS_CHECK_INTERVAL;
       }    
 
       // Lost connection in running. Give chance to reconfig.
@@ -506,12 +521,31 @@ class WiFiManager_NINA_Lite
           // Not in config mode, try reconnecting before forcing to config mode
           if ( !wifi_connected )
           {
+            
+ 
+#if (WIFI_RECON_INTERVAL > 0)
+
+            static uint32_t lastMillis = 0;
+            
+            if ( (lastMillis == 0) || (curMillis - lastMillis) > WIFI_RECON_INTERVAL )
+            {
+              lastMillis = curMillis;
+              
+              WN_LOGERROR(F("r:WLost.ReconW"));
+               
+              if (connectMultiWiFi(RETRY_TIMES_RECONNECT_WIFI))
+              {
+                WN_LOGERROR(F("r:WOK"));
+              }
+            }
+#else
             WN_LOGERROR(F("r:WLost.ReconW"));
             
             if (connectMultiWiFi(RETRY_TIMES_RECONNECT_WIFI))
             {
               WN_LOGERROR(F("r:WOK"));
             }
+#endif            
           }
         }
       }

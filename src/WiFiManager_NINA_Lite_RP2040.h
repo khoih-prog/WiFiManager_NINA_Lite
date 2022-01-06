@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.5.0
+  Version: 1.6.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -30,6 +30,7 @@
   1.4.0   K Hoang      28/05/2021  Add support to Nano_RP2040_Connect, RASPBERRY_PI_PICO using Arduino mbed or Arduino-pico core
   1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
+  1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_RP2040_h
@@ -45,7 +46,7 @@
   #error This code is intended to run on the RP2040 platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.5.0"
+#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.6.0"
 
 #include <WiFiWebServer.h>
 
@@ -442,6 +443,16 @@ class WiFiManager_NINA_Lite
   #endif
 #endif
 
+#if !defined(WIFI_RECON_INTERVAL)      
+  #define WIFI_RECON_INTERVAL       0         // default 0s between reconnecting WiFi
+#else
+  #if (WIFI_RECON_INTERVAL < 0)
+    #define WIFI_RECON_INTERVAL     0
+  #elif  (WIFI_RECON_INTERVAL > 600000)
+    #define WIFI_RECON_INTERVAL     600000    // Max 10min
+  #endif
+#endif
+
     void run()
     {
       static int retryTimes = 0;
@@ -453,6 +464,10 @@ class WiFiManager_NINA_Lite
       static unsigned long checkstatus_timeout = 0;
       #define WIFI_STATUS_CHECK_INTERVAL    5000L
       
+      static uint32_t curMillis;
+      
+      curMillis = millis();
+      
       //// New DRD ////
       // Call the double reset detector loop method every so often,
       // so that it can recognise when the timeout expires.
@@ -461,7 +476,7 @@ class WiFiManager_NINA_Lite
       drd->loop();
       //// New DRD ////
          
-      if ( !configuration_mode && (millis() > checkstatus_timeout) )
+      if ( !configuration_mode && (curMillis > checkstatus_timeout) )
       {       
         if (WiFi.status() == WL_CONNECTED)
         {
@@ -481,7 +496,7 @@ class WiFiManager_NINA_Lite
           }
         }
         
-        checkstatus_timeout = millis() + WIFI_STATUS_CHECK_INTERVAL;
+        checkstatus_timeout = curMillis + WIFI_STATUS_CHECK_INTERVAL;
       }    
 
       // Lost connection in running. Give chance to reconfig.
@@ -522,12 +537,31 @@ class WiFiManager_NINA_Lite
           // Not in config mode, try reconnecting before forcing to config mode
           if ( !wifi_connected )
           {
+            
+ 
+#if (WIFI_RECON_INTERVAL > 0)
+
+            static uint32_t lastMillis = 0;
+            
+            if ( (lastMillis == 0) || (curMillis - lastMillis) > WIFI_RECON_INTERVAL )
+            {
+              lastMillis = curMillis;
+              
+              WN_LOGERROR(F("r:WLost.ReconW"));
+               
+              if (connectMultiWiFi(RETRY_TIMES_RECONNECT_WIFI))
+              {
+                WN_LOGERROR(F("r:WOK"));
+              }
+            }
+#else
             WN_LOGERROR(F("r:WLost.ReconW"));
             
             if (connectMultiWiFi(RETRY_TIMES_RECONNECT_WIFI))
             {
               WN_LOGERROR(F("r:WOK"));
             }
+#endif            
           }
         }
       }
@@ -950,6 +984,10 @@ class WiFiManager_NINA_Lite
 
     //////////////////////////////////////////////
     
+#if defined(ARDUINO_ARCH_MBED)
+    #warning Using Arduino-mbed core
+    // For boards using Arduino-mbed core
+    
     void saveForcedCP(uint32_t value)
     {
       // Mbed RP2040 code
@@ -1333,6 +1371,570 @@ class WiFiManager_NINA_Lite
 #endif
 
     //////////////////////////////////////////////
+
+    bool loadConfigData()
+    {
+      WN_LOGDEBUG(F("LoadCfgFile "));
+      
+      // file existed
+      FILE *file = fopen(CONFIG_FILENAME, "r");
+      
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = fopen(CONFIG_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCfgFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+     
+      fseek(0, SeekSet);
+      fread((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config));
+      fclose(file);
+
+      WN_LOGDEBUG(F("OK"));
+      
+      return isWiFiConfigValid();
+    }
+    
+    //////////////////////////////////////////////
+
+    void saveConfigData()
+    {
+      WN_LOGDEBUG(F("SaveCfgFile "));
+
+      int calChecksum = calcChecksum();
+      WIFININA_config.checkSum = calChecksum;
+      WN_LOGDEBUG1(F("WCSum=0x"), String(calChecksum, HEX));
+      
+      FILE *file = fopen(CONFIG_FILENAME, "w");
+
+      if (file)
+      {
+        fseek(0, SeekSet);
+        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config));
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
+      
+      WN_LOGDEBUG(F("SaveBkUpCfgFile "));
+      
+      // Trying open redundant Auth file
+      file = fopen(CONFIG_FILENAME_BACKUP, "w");
+
+      if (file)
+      {
+        fseek(0, SeekSet);
+        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config));
+        fclose(file);
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
+      
+#if USE_DYNAMIC_PARAMETERS      
+      saveDynamicData();
+#endif
+    }
+
+//////////////////////////////////////////////
+
+#else   // #if defined(ARDUINO_ARCH_MBED)
+
+//////////////////////////////////////////////
+
+    #warning Using arduino-pico core
+    // For boards using arduino-pico core
+    // Already defined in DoubleResetDetector_Generic.h
+    // FS* filesystem =      &LittleFS;
+    // #define FileFS        LittleFS
+    
+    //#define SEEK_SET        SeekSet     
+    
+    void saveForcedCP(uint32_t value)
+    {
+      // Mbed RP2040 code
+      File file = filesystem->open(CONFIG_PORTAL_FILENAME, "w");
+      
+      WN_LOGERROR(F("SaveCPFile "));
+
+      if (file)
+      {
+        file.seek(0, SeekSet);
+        file.write((uint8_t *) &value, sizeof(value));        
+        file.close();
+        
+        WN_LOGERROR(F("OK"));
+      }
+      else
+      {
+        WN_LOGERROR(F("failed"));
+      }
+
+      // Trying open redundant CP file
+      file = filesystem->open(CONFIG_PORTAL_FILENAME_BACKUP, "w");
+      
+      WN_LOGERROR(F("SaveBkUpCPFile "));
+
+      if (file)
+      {
+        file.seek(0, SeekSet);
+        file.write((uint8_t *) &value, sizeof(value));        
+        file.close();
+        
+        WN_LOGERROR(F("OK"));
+      }
+      else
+      {
+        WN_LOGERROR(F("failed"));
+      }
+    }
+    
+    //////////////////////////////////////////////
+    
+    void setForcedCP(bool isPersistent)
+    {
+      uint32_t readForcedConfigPortalFlag = isPersistent? FORCED_PERS_CONFIG_PORTAL_FLAG_DATA : FORCED_CONFIG_PORTAL_FLAG_DATA;
+  
+      WN_LOGERROR(isPersistent ? F("setForcedCP Persistent") : F("setForcedCP non-Persistent"));
+      
+      saveForcedCP(readForcedConfigPortalFlag);
+    }
+    
+    //////////////////////////////////////////////
+    
+    void clearForcedCP()
+    {
+      uint32_t readForcedConfigPortalFlag = 0;
+   
+      WN_LOGERROR(F("clearForcedCP"));
+      
+      saveForcedCP(readForcedConfigPortalFlag);
+    }
+    
+    //////////////////////////////////////////////
+
+    bool isForcedCP()
+    {
+      uint32_t readForcedConfigPortalFlag;
+    
+      WN_LOGDEBUG(F("Check if isForcedCP"));
+      
+      File file = filesystem->open(CONFIG_PORTAL_FILENAME, "r");
+      
+      WN_LOGDEBUG(F("LoadCPFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = filesystem->open(CONFIG_PORTAL_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCPFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+           
+      file.seek(0, SeekSet);
+      file.read((uint8_t *) &readForcedConfigPortalFlag, sizeof(readForcedConfigPortalFlag));        
+      file.close();
+      WN_LOGDEBUG(F("OK"));
+      
+      
+      // Return true if forced CP (0xDEADBEEF read at offset EPROM_START + DRD_FLAG_DATA_SIZE + CONFIG_DATA_SIZE)
+      // => set flag noForcedConfigPortal = false     
+      if (readForcedConfigPortalFlag == FORCED_CONFIG_PORTAL_FLAG_DATA)
+      {       
+        persForcedConfigPortal = false;
+        return true;
+      }
+      else if (readForcedConfigPortalFlag == FORCED_PERS_CONFIG_PORTAL_FLAG_DATA)
+      {       
+        persForcedConfigPortal = true;
+        return true;
+      }
+      else
+      {       
+        return false;
+      }
+    }
+    
+    //////////////////////////////////////////////
+
+#if USE_DYNAMIC_PARAMETERS
+    
+    bool checkDynamicData()
+    {
+      int checkSum = 0;
+      int readCheckSum;
+      char* readBuffer = nullptr;
+           
+      File file = filesystem->open(CREDENTIALS_FILENAME, "r");
+      
+      WN_LOGDEBUG(F("LoadCredFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = filesystem->open(CREDENTIALS_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCredFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+      
+      // Find the longest pdata, then dynamically allocate buffer. Remember to free when done
+      // This is used to store tempo data to calculate checksum to see of data is valid
+      // We dont like to destroy myMenuItems[i].pdata with invalid data
+      
+      uint16_t maxBufferLength = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        if (myMenuItems[i].maxlen > maxBufferLength)
+          maxBufferLength = myMenuItems[i].maxlen;
+      }
+      
+      if (maxBufferLength > 0)
+      {
+        readBuffer = new char[ maxBufferLength + 1 ];
+        
+        // check to see NULL => stop and return false
+        if (readBuffer == NULL)
+        {
+          WN_LOGERROR(F("ChkCrR: Error can't allocate buffer."));
+          return false;
+        }     
+        else
+        {
+          WN_LOGDEBUG1(F("ChkCrR: Buffer allocated, Sz="), maxBufferLength + 1);
+        }  
+          
+        uint16_t offset = 0;
+        
+        for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+        {       
+          uint8_t * _pointer = (uint8_t *) readBuffer;
+
+          // Actual size of pdata is [maxlen + 1]
+          memset(readBuffer, 0, myMenuItems[i].maxlen + 1);
+          
+          // Redundant, but to be sure correct position         
+          file.seek(offset, SeekSet);
+          file.read(_pointer, myMenuItems[i].maxlen);  
+           
+          offset += myMenuItems[i].maxlen;
+       
+          WN_LOGDEBUG3(F("ChkCrR:pdata="), readBuffer, F(",len="), myMenuItems[i].maxlen);         
+                 
+          for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+          {         
+            checkSum += *_pointer;  
+          }       
+        }
+
+        file.read((uint8_t *) &readCheckSum, sizeof(readCheckSum));
+        
+        WN_LOGDEBUG(F("OK"));
+        
+        file.close();
+        
+        WN_LOGERROR3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+        
+        if (readBuffer != nullptr)
+        {
+          // Free buffer
+          delete [] readBuffer;
+          WN_LOGDEBUG(F("Buffer freed"));
+        }
+        
+        if ( checkSum == readCheckSum)
+        {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    //////////////////////////////////////////////
+
+    bool loadDynamicData()
+    {
+      int checkSum = 0;
+      int readCheckSum;
+      totalDataSize = sizeof(WIFININA_config) + sizeof(readCheckSum);
+      
+      File file = filesystem->open(CREDENTIALS_FILENAME, "r");
+      
+      WN_LOGDEBUG(F("LoadCredFile "));
+
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = filesystem->open(CREDENTIALS_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCredFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+     
+      uint16_t offset = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        uint8_t * _pointer = (uint8_t *) myMenuItems[i].pdata;
+        totalDataSize += myMenuItems[i].maxlen;
+
+        // Actual size of pdata is [maxlen + 1]
+        memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
+        
+        // Redundant, but to be sure correct position
+        file.seek(offset, SeekSet);
+        file.read(_pointer, myMenuItems[i].maxlen);
+        
+        offset += myMenuItems[i].maxlen;        
+    
+        WN_LOGDEBUG3(F("CrR:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);         
+               
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;  
+        }       
+      }
+
+      file.read((uint8_t *) &readCheckSum, sizeof(readCheckSum));
+      
+      WN_LOGDEBUG(F("OK"));
+      
+      file.close();
+      
+      WN_LOGDEBUG3(F("CrCCsum=0x"), String(checkSum, HEX), F(",CrRCsum=0x"), String(readCheckSum, HEX));
+      
+      if ( checkSum != readCheckSum)
+      {
+        return false;
+      }
+      
+      return true;    
+    }
+    
+    //////////////////////////////////////////////
+
+    void saveDynamicData()
+    {
+      int checkSum = 0;
+    
+      File file = filesystem->open(CREDENTIALS_FILENAME, "w");
+      
+      WN_LOGDEBUG(F("SaveCredFile "));
+
+      uint16_t offset = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        uint8_t* _pointer = (uint8_t *) myMenuItems[i].pdata;
+       
+        WN_LOGDEBUG3(F("CW1:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
+        {
+          // Redundant, but to be sure correct position
+          file.seek(offset, SeekSet);
+          file.write(_pointer, myMenuItems[i].maxlen); 
+          
+          offset += myMenuItems[i].maxlen;      
+        }
+        else
+        {
+          WN_LOGDEBUG(F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;     
+         }
+      }
+      
+      if (file)
+      {
+        file.write((uint8_t *) &checkSum, sizeof(checkSum));        
+        file.close();
+        
+        WN_LOGDEBUG(F("OK"));    
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }   
+           
+      WN_LOGDEBUG1(F("CrWCSum=0x"), String(checkSum, HEX));
+      
+      // Trying open redundant Auth file
+      file = filesystem->open(CREDENTIALS_FILENAME_BACKUP, "w");
+      
+      WN_LOGDEBUG(F("SaveBkUpCredFile "));
+
+      offset = 0;
+      
+      for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        uint8_t* _pointer = (uint8_t *) myMenuItems[i].pdata;
+     
+        WN_LOGDEBUG3(F("CW2:pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
+        {
+          file.seek(offset, SeekSet);
+          file.write(_pointer, myMenuItems[i].maxlen); 
+          
+          // Redundant, but to be sure correct position
+          offset += myMenuItems[i].maxlen; 
+        }
+        else
+        {
+          WN_LOGDEBUG(F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;     
+         }
+      }
+      
+      if (file)
+      {
+        file.write((uint8_t *) &checkSum, sizeof(checkSum));        
+        file.close();
+        
+        WN_LOGDEBUG(F("OK"));    
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }   
+    }
+#endif
+
+    //////////////////////////////////////////////
+
+    bool loadConfigData()
+    {
+      WN_LOGDEBUG(F("LoadCfgFile "));
+      
+      // file existed
+      File file = filesystem->open(CONFIG_FILENAME, "r");
+      
+      if (!file)
+      {
+        WN_LOGDEBUG(F("failed"));
+
+        // Trying open redundant config file
+        file = filesystem->open(CONFIG_FILENAME_BACKUP, "r");
+        
+        WN_LOGDEBUG(F("LoadBkUpCfgFile "));
+
+        if (!file)
+        {
+          WN_LOGDEBUG(F("failed"));
+          return false;
+        }
+      }
+     
+      file.seek(0, SeekSet);
+      file.read((uint8_t *) &WIFININA_config, sizeof(WIFININA_config));
+      file.close();
+
+      WN_LOGDEBUG(F("OK"));
+      
+      return isWiFiConfigValid();
+    }
+    
+    //////////////////////////////////////////////
+
+    void saveConfigData()
+    {
+      WN_LOGDEBUG(F("SaveCfgFile "));
+
+      int calChecksum = calcChecksum();
+      WIFININA_config.checkSum = calChecksum;
+      WN_LOGDEBUG1(F("WCSum=0x"), String(calChecksum, HEX));
+      
+      File file = filesystem->open(CONFIG_FILENAME, "w");
+
+      if (file)
+      {
+        file.seek(0, SeekSet);
+        file.write((uint8_t *) &WIFININA_config, sizeof(WIFININA_config));
+        file.close();
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
+      
+      WN_LOGDEBUG(F("SaveBkUpCfgFile "));
+      
+      // Trying open redundant Auth file
+      file = filesystem->open(CONFIG_FILENAME_BACKUP, "w");
+
+      if (file)
+      {
+        file.seek(0, SeekSet);
+        file.write((uint8_t *) &WIFININA_config, sizeof(WIFININA_config));
+        file.close();
+        
+        WN_LOGDEBUG(F("OK"));
+      }
+      else
+      {
+        WN_LOGDEBUG(F("failed"));
+      }
+      
+#if USE_DYNAMIC_PARAMETERS      
+      saveDynamicData();
+#endif
+    }
+
+//////////////////////////////////////////////
+
+#endif    // #if defined(ARDUINO_ARCH_MBED)
+
+    //////////////////////////////////////////////
     
     void NULLTerminateConfig()
     {
@@ -1388,89 +1990,7 @@ class WiFiManager_NINA_Lite
       
       return true;
     }
-    
-    //////////////////////////////////////////////
-
-    bool loadConfigData()
-    {
-      WN_LOGDEBUG(F("LoadCfgFile "));
-      
-      // file existed
-      FILE *file = fopen(CONFIG_FILENAME, "r");
-      
-      if (!file)
-      {
-        WN_LOGDEBUG(F("failed"));
-
-        // Trying open redundant config file
-        file = fopen(CONFIG_FILENAME_BACKUP, "r");
         
-        WN_LOGDEBUG(F("LoadBkUpCfgFile "));
-
-        if (!file)
-        {
-          WN_LOGDEBUG(F("failed"));
-          return false;
-        }
-      }
-     
-      fseek(file, 0, SEEK_SET);
-      fread((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
-      fclose(file);
-
-      WN_LOGDEBUG(F("OK"));
-      
-      return isWiFiConfigValid();
-    }
-    
-    //////////////////////////////////////////////
-
-    void saveConfigData()
-    {
-      WN_LOGDEBUG(F("SaveCfgFile "));
-
-      int calChecksum = calcChecksum();
-      WIFININA_config.checkSum = calChecksum;
-      WN_LOGDEBUG1(F("WCSum=0x"), String(calChecksum, HEX));
-      
-      FILE *file = fopen(CONFIG_FILENAME, "w");
-
-      if (file)
-      {
-        fseek(file, 0, SEEK_SET);
-        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
-        fclose(file);
-        
-        WN_LOGDEBUG(F("OK"));
-      }
-      else
-      {
-        WN_LOGDEBUG(F("failed"));
-      }
-      
-      WN_LOGDEBUG(F("SaveBkUpCfgFile "));
-      
-      // Trying open redundant Auth file
-      file = fopen(CONFIG_FILENAME_BACKUP, "w");
-
-      if (file)
-      {
-        fseek(file, 0, SEEK_SET);
-        fwrite((uint8_t *) &WIFININA_config, 1, sizeof(WIFININA_config), file);
-        fclose(file);
-        
-        WN_LOGDEBUG(F("OK"));
-      }
-      else
-      {
-        WN_LOGDEBUG(F("failed"));
-      }
-      
-#if USE_DYNAMIC_PARAMETERS      
-      saveDynamicData();
-#endif
-    }
-    
     //////////////////////////////////////////////
     
     // New from v1.0.5
@@ -1636,7 +2156,7 @@ class WiFiManager_NINA_Lite
   #if (MAX_NUM_WIFI_RECON_TRIES_PER_LOOP < 1)  
     #define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     1
   #endif
-#endif 
+#endif
 
     // New connection logic from v1.2.0
     bool connectMultiWiFi(int retry_time)
@@ -1698,6 +2218,23 @@ class WiFiManager_NINA_Lite
       uint8_t numIndexTried = 0;
       
       uint8_t numWiFiReconTries = 0;
+
+#if 0      
+      static uint32_t lastMillis = 0;
+      
+      //if (delayBetweenReconnect)
+      {
+        if ( (millis() - lastMillis) > WIFI_RECON_INTERVAL )
+        {
+          lastMillis = millis();
+        }
+        else
+        {
+          // Don't recon WiFi
+          numWiFiReconTries = MAX_NUM_WIFI_RECON_TRIES_PER_LOOP;
+        }
+      }
+#endif
       
       while ( !wifi_connected && (numIndexTried++ < NUM_WIFI_CREDENTIALS) && (numWiFiReconTries++ < MAX_NUM_WIFI_RECON_TRIES_PER_LOOP) )
       {         

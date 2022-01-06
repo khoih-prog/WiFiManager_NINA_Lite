@@ -142,6 +142,12 @@
 // Default 1 if not defined, and minimum 1.
 //#define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     2
 
+// Default no interval between recon WiFi if lost
+// Max permitted interval will be 10mins
+// Uncomment to use. Be careful, WiFi reconnect will be delayed if using this method
+// Only use whenever urgent tasks in loop() can't be delayed. But if so, it's better you have to rewrite your code, e.g. using higher priority tasks.
+//#define WIFI_RECON_INTERVAL                   30000
+
 /////////////////////////////////////////////
 
 #define USE_DYNAMIC_PARAMETERS              true

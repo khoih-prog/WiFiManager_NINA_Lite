@@ -60,6 +60,9 @@
     * [12.1 Enable auto-scan of WiFi networks for selection in Configuration Portal](#121-enable-auto-scan-of-wifi-networks-for-selection-in-configuration-portal)
     * [12.2 Disable manually input SSIDs](#122-disable-manually-input-ssids)
     * [12.3 Select maximum number of SSIDs in the list](#123-select-maximum-number-of-ssids-in-the-list)
+  * [13. To avoid blocking in loop when WiFi is lost](#13-To-avoid-blocking-in-loop-when-wifi-is-lost)
+    * [13.1 Max times to try WiFi per loop](#131-max-times-to-try-wifi-per-loop)
+    * [13.2 Interval between reconnection WiFi if lost](#132-interval-between-reconnection-wifi-if-lost)
 * [Examples](#examples)
   * [ 1. SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
   * [ 2. SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
@@ -219,7 +222,7 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
  7. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v1.2.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
  9. [`Arduino mbed_rp2040 core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-10. [`Earle Philhower's arduino-pico core v1.9.12+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+10. [`Earle Philhower's arduino-pico core v1.9.13+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 11. [`Functional-VLPP library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 12. [`WiFiNINA_Generic library v1.8.14-3+`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
 13. [`Modified WiFi101 Library v0.16.1+`](https://github.com/khoih-prog/WiFi101) if using WINC1500/WiFi101 shields (MKR1000, etc.).
@@ -741,6 +744,38 @@ The maximum number of SSIDs in the list is seletable from 2 to 15. If invalid nu
 // From 2-15
 #define MAX_SSID_IN_LIST                    8
 ```
+
+#### 13. To avoid blocking in loop when WiFi is lost
+
+
+#### 13.1 Max times to try WiFi per loop
+
+To define max times to try WiFi per loop() iteration. To avoid blocking issue in loop()
+
+Default is 1 if not defined, and minimum is forced to be 1.
+
+To use, uncomment in `defines.h`. 
+
+Check [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18#issue-1094004380)
+
+```
+#define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     2
+```
+
+#### 13.2 Interval between reconnection WiFi if lost
+
+Default is no interval between reconnection WiFi times if lost WiFi. Max permitted interval will be 10mins.
+
+Uncomment to use. Be careful, WiFi reconnection will be delayed if using this method.
+
+Only use whenever urgent tasks in loop() can't be delayed. But if so, it's better you have to rewrite your code, e.g. using higher priority tasks.
+
+Check [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18#issuecomment-1006197561)
+
+```
+#define WIFI_RECON_INTERVAL                   30000     // 30s
+```
+
 
 
 ---
@@ -1309,6 +1344,12 @@ void loop()
 // Default 1 if not defined, and minimum 1.
 //#define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     2
 
+// Default no interval between recon WiFi if lost
+// Max permitted interval will be 10mins
+// Uncomment to use. Be careful, WiFi reconnect will be delayed if using this method
+// Only use whenever urgent tasks in loop() can't be delayed. But if so, it's better you have to rewrite your code, e.g. using higher priority tasks.
+//#define WIFI_RECON_INTERVAL                   30000
+
 /////////////////////////////////////////////
 
 #define USE_DYNAMIC_PARAMETERS              true
@@ -1500,7 +1541,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1552,7 +1593,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1599,7 +1640,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1676,7 +1717,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1740,7 +1781,7 @@ FF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1796,7 +1837,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1852,7 +1893,7 @@ This is the terminal output when running [**RP2040_WiFiNINA_MQTT**](examples/RP2
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -1904,7 +1945,7 @@ N
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.5.0
+WiFiManager_NINA_Lite v1.6.0
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -2018,7 +2059,7 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 18. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Earle Philhower's arduino-pico** core](https://github.com/earlephilhower/arduino-pico).
 19. Add support to RP2040-based boards, such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, using [**Arduino-mbed RP2040** core](https://github.com/arduino/ArduinoCore-mbed)
 20. Add `LibraryPatches` for [**Adafruit_MQTT_Library**](https://github.com/adafruit/Adafruit_MQTT_Library) to fix compiler error for RP2040-based and many other boards.
-21. Fix the blocking issue in loop()
+21. Fix the blocking issue in loop() with configurable `WIFI_RECON_INTERVAL`
 
 ---
 --- 
@@ -2042,7 +2083,9 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
   - [WiFiManager connection attempt to unconfigured ("blank") SSID after restart on SAMD #8](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/8) leading to v1.1.3 and v1.2.0
 6. Again thanks to [Michael H. "bizprof"](https://github.com/bizprof) to be `collaborator, co-author/maintainer` of this library. With the impressive new introducing feature : 
   - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.3.0
-7. Thanks to [tomtobback](https://github.com/tomtobback) to report issue [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18) leading to version v1.5.0 to fix the blocking issue in loop().
+7. Thanks to [tomtobback](https://github.com/tomtobback) to report issue [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18) leading to version v1.5.0 and v1.6.0 to fix the blocking issue in loop() with `WIFI_RECON_INTERVAL`.
+
+
 
 <table>
   <tr>
