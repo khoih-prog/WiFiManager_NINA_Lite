@@ -42,7 +42,8 @@
 1. Update to be compatible with new `FlashStorage_SAMD`
 2. Use better `FlashStorage_STM32` library for STM32
 3. Fix bug for RP2040 boards using `ArduinoCore-mbed`
-4. Update `Packages' Patches`
+4. Add support to generic SAMD21 boards : `__SAMD21E1xA__`, `__SAMD21G1xA__` and `__SAMD21J1xA__`
+5. Update `Packages' Patches`
 
 ### Major Release v1.6.0
 
