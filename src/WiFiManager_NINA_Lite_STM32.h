@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.6.0
+  Version: 1.6.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -31,6 +31,7 @@
   1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
   1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
+  1.6.1   K Hoang      26/01/2022  Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_STM32_h
@@ -43,16 +44,26 @@
     #undef WIFININA_USE_STM32
   #endif
   #define WIFININA_USE_STM32      true
+#else
+  #error This code is intended to run on STM32 platform! Please check your Tools->Board setting.  
 #endif
 
-#if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || defined(CORE_TEENSY) || !(WIFININA_USE_STM32) )
-  #error This code is intended to run on STM32 platform! Please check your Tools->Board setting.
-#endif
+#ifndef WIFIMANAGER_NINA_LITE_VERSION
+  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.6.1"
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1."
+  #define WIFIMANAGER_NINA_LITE_VERSION_MAJOR      1
+  #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      6
+  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      1
+
+#define WIFIMANAGER_NINA_LITE_VERSION_INT        1006001
+
+#endif
 
 #include <WiFiWebServer.h>
-#include <EEPROM.h>
+
+// Include EEPROM-like API for FlashStorage
+#include <FlashStorage_STM32.h>             //https://github.com/khoih-prog/FlashStorage_STM32
+
 #include <WiFiManager_NINA_Lite_Debug.h>
 
 #ifndef USING_CUSTOMS_STYLE

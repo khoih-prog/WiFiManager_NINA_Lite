@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.6.1](#release-v161)
   * [Major Release v1.6.0](#major-release-v160)
   * [Release v1.5.0](#release-v150)
   * [Release v1.4.1](#release-v141)
@@ -35,6 +36,13 @@
 ---
 
 ## Changelog
+
+### Release v1.6.1
+
+1. Update to be compatible with new `FlashStorage_SAMD`
+2. Use better `FlashStorage_STM32` library for STM32
+3. Fix bug for RP2040 boards using `ArduinoCore-mbed`
+4. Update `Packages' Patches`
 
 ### Major Release v1.6.0
 

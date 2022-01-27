@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.6.0
+  Version: 1.6.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -31,6 +31,7 @@
   1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
   1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
+  1.6.1   K Hoang      26/01/2022  Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h

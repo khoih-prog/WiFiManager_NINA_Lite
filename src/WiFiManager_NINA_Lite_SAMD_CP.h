@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.6.0
+  Version: 1.6.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -31,16 +31,20 @@
   1.4.1   K Hoang      12/10/2021  Update `platform.ini` and `library.json`
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
   1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
+  1.6.1   K Hoang      26/01/2022  Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
   *****************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
 #define WiFiManager_NINA_Lite_SAMD_h
 
-#if    ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
-      || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
-      || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) || defined(__SAMD21G18A__) \
-      || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD21E18A__) || defined(__SAMD51__) || defined(__SAMD51J20A__) || defined(__SAMD51J19A__) \
-      || defined(__SAMD51G19A__) || defined(__SAMD51P19A__) || defined(__SAMD21G18A__) )
+#if  ( defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_SAMD_MKR1000) || defined(ARDUINO_SAMD_MKRWIFI1010) \
+    || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_SAMD_MKRFox1200) || defined(ARDUINO_SAMD_MKRWAN1300) || defined(ARDUINO_SAMD_MKRWAN1310) \
+    || defined(ARDUINO_SAMD_MKRGSM1400) || defined(ARDUINO_SAMD_MKRNB1500) || defined(ARDUINO_SAMD_MKRVIDOR4000) \
+    || defined(ARDUINO_SAMD_CIRCUITPLAYGROUND_EXPRESS) || defined(__SAMD51__) || defined(__SAMD51J20A__) \
+    || defined(__SAMD51J19A__) || defined(__SAMD51G19A__) || defined(__SAMD51P19A__)  \
+    || defined(__SAMD21E15A__) || defined(__SAMD21E16A__) || defined(__SAMD21E17A__) || defined(__SAMD21E18A__) \
+    || defined(__SAMD21G15A__) || defined(__SAMD21G16A__) || defined(__SAMD21G17A__) || defined(__SAMD21G18A__) \
+    || defined(__SAMD21J15A__) || defined(__SAMD21J16A__) || defined(__SAMD21J17A__) || defined(__SAMD21J18A__) )
   #if defined(WIFININA_USE_SAMD)
     #undef WIFININA_USE_SAMD
   #endif
@@ -49,12 +53,20 @@
   #error This code is intended to run on the SAMD platform! Please check your Tools->Board setting.  
 #endif
 
-#define WIFIMANAGER_NINA_LITE_VERSION        "WiFiManager_NINA_Lite v1.6.0"
+#ifndef WIFIMANAGER_NINA_LITE_VERSION
+  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.6.1"
+
+  #define WIFIMANAGER_NINA_LITE_VERSION_MAJOR      1
+  #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      6
+  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      1
+
+#define WIFIMANAGER_NINA_LITE_VERSION_INT        1006001
+
+#endif
 
 #include <WiFiWebServer.h>
 // Include EEPROM-like API for FlashStorage
-//#include <FlashAsEEPROM.h>                //https://github.com/cmaglie/FlashStorage
-#include <FlashAsEEPROM_SAMD.h>                //https://github.com/khoih-prog/FlashStorage_SAMD
+#include <FlashStorage_SAMD.h>                //https://github.com/khoih-prog/FlashStorage_SAMD
 #include <WiFiManager_NINA_Lite_Debug.h>
 
 //////////////////////////////////////////////
