@@ -2062,7 +2062,7 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 21. Fix the blocking issue in loop() with configurable `WIFI_RECON_INTERVAL`
 22. Update to be compatible with new `FlashStorage_SAMD`
 23. Use better `FlashStorage_STM32` library for STM32
-
+24. Add support to generic SAMD21 boards : `__SAMD21E1xA__`, `__SAMD21G1xA__` and `__SAMD21J1xA__`
 
 ---
 --- 
