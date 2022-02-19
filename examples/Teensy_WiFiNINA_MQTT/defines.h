@@ -155,6 +155,11 @@
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    true
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_Teensy.h>
 
 #define HOST_NAME   "Teensy-Master-Controller"

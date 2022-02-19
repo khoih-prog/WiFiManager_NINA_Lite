@@ -199,6 +199,11 @@
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    true
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_SAMD.h>
 
 #define HOST_NAME   "SAMD-MQTT-Controller"

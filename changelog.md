@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.6.2](#release-v162)
   * [Release v1.6.1](#release-v161)
   * [Major Release v1.6.0](#major-release-v160)
   * [Release v1.5.0](#release-v150)
@@ -36,6 +37,12 @@
 ---
 
 ## Changelog
+
+### Release v1.6.2
+
+1. Optimize code by passing by `reference` instead of `value`
+2. Optional `Board_Name` in Config Portal. Check [option to remove board name from web page #25](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/25)
+3. Update `Packages' Patches`
 
 ### Release v1.6.1
 

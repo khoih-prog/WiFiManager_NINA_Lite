@@ -178,6 +178,11 @@
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    true
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_nRF52.h>
 
 #define HOST_NAME   "nRF52-Master-Controller"

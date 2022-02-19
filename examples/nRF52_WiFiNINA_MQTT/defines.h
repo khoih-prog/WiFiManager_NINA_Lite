@@ -172,6 +172,10 @@
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    true
+
+/////////////////////////////////////////////
 
 #include <WiFiManager_NINA_Lite_nRF52.h>
 

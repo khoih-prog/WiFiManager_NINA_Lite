@@ -6,7 +6,7 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
 
 ---
 ---
@@ -65,6 +65,7 @@
   * [13. To avoid blocking in loop when WiFi is lost](#13-To-avoid-blocking-in-loop-when-wifi-is-lost)
     * [13.1 Max times to try WiFi per loop](#131-max-times-to-try-wifi-per-loop)
     * [13.2 Interval between reconnection WiFi if lost](#132-interval-between-reconnection-wifi-if-lost)
+  * [14. Not using Board_Name on Config_Portal](#14-Not-using-Board_Name-on-Config_Portal)
 * [Examples](#examples)
   * [ 1. SAMD_WiFiNINA](examples/SAMD_WiFiNINA)
   * [ 2. SAMD_WiFiNINA_MQTT](examples/SAMD_WiFiNINA_MQTT)
@@ -220,15 +221,15 @@ This [**WiFiManager_NINA_Lite** library](https://github.com/khoih-prog/WiFiManag
  3. [`Teensy core 1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy (4.1, 4.0, 3.6, 3.5, 3,2, 3.1, 3.0, LC) boards
  4. [`Arduino SAM DUE core 1.6.12+`](https://github.com/arduino/ArduinoCore-sam) for SAM DUE ARM Cortex-M3 boards
  5. [`Arduino SAMD core 1.8.12+`](https://www.arduino.cc/en/Guide/ArduinoM0) for SAMD ARM Cortex-M0+ boards. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-samd.svg)](https://github.com/arduino/ArduinoCore-samd/releases/latest)
- 6. [`Adafruit SAMD core 1.7.8+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
+ 6. [`Adafruit SAMD core 1.7.9+`](https://www.adafruit.com/) for SAMD ARM Cortex-M0+ and M4 boards (Nano 33 IoT, etc.). [![GitHub release](https://img.shields.io/github/release/adafruit/ArduinoCore-samd.svg)](https://github.com/adafruit/ArduinoCore-samd/releases/latest)
  7. [`Seeeduino SAMD core 1.8.2+`](https://github.com/Seeed-Studio/ArduinoCore-samd) for SAMD21/SAMD51 boards (XIAO M0, Wio Terminal, etc.). [![Latest release](https://img.shields.io/github/release/Seeed-Studio/ArduinoCore-samd.svg)](https://github.com/Seeed-Studio/ArduinoCore-samd/releases/latest/)
  8. [`Adafruit nRF52 v1.3.0+`](https://www.adafruit.com) for nRF52 boards such as Adafruit NRF52840_FEATHER, NRF52832_FEATHER, NRF52840_FEATHER_SENSE, NRF52840_ITSYBITSY, NRF52840_CIRCUITPLAY, NRF52840_CLUE, NRF52840_METRO, NRF52840_PCA10056, PARTICLE_XENON, **NINA_B302_ublox**, etc. [![GitHub release](https://img.shields.io/github/release/adafruit/Adafruit_nRF52_Arduino.svg)](https://github.com/adafruit/Adafruit_nRF52_Arduino/releases/latest)
- 9. [`Arduino mbed_rp2040 core 2.6.1+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
-10. [`Earle Philhower's arduino-pico core v1.10.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
+ 9. [`Arduino mbed_rp2040 core 2.7.2+`](https://github.com/arduino/ArduinoCore-mbed) for Arduino (Use Arduino Board Manager) RP2040-based boards, such as **Arduino Nano RP2040 Connect, RASPBERRY_PI_PICO, etc.**. [![GitHub release](https://img.shields.io/github/release/arduino/ArduinoCore-mbed.svg)](https://github.com/arduino/ArduinoCore-mbed/releases/latest)
+10. [`Earle Philhower's arduino-pico core v1.12.0+`](https://github.com/earlephilhower/arduino-pico) for RP2040-based boards such as **RASPBERRY_PI_PICO, ADAFRUIT_FEATHER_RP2040 and GENERIC_RP2040**, etc. [![GitHub release](https://img.shields.io/github/release/earlephilhower/arduino-pico.svg)](https://github.com/earlephilhower/arduino-pico/releases/latest)
 11. [`Functional-Vlpp library v1.0.2+`](https://github.com/khoih-prog/functional-vlpp) to use server's lambda function. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/Functional-Vlpp.svg?)](https://www.ardu-badge.com/Functional-Vlpp)
 12. [`WiFiNINA_Generic library v1.8.14-3+`](https://github.com/khoih-prog/WiFiNINA_Generic). To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic)
 13. [`Modified WiFi101 Library v0.16.1+`](https://github.com/khoih-prog/WiFi101) if using WINC1500/WiFi101 shields (MKR1000, etc.).
-14. [`WiFiWebServer library v1.5.5-1+`](https://github.com/khoih-prog/WiFiWebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
+14. [`WiFiWebServer library v1.6.1+`](https://github.com/khoih-prog/WiFiWebServer). To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiWebServer.svg?)](https://www.ardu-badge.com/WiFiWebServer)
 15. [`FlashStorage_SAMD library v1.3.2+`](https://github.com/khoih-prog/FlashStorage_SAMD) for SAMD21 and SAMD51 boards (ZERO, MKR, NANO_33_IOT, M0, M0 Pro, AdaFruit Itsy-Bitsy M4, etc.). [![GitHub release](https://img.shields.io/github/release/khoih-prog/FlashStorage_SAMD.svg)](https://github.com/khoih-prog/FlashStorage_SAMD/releases/latest)
 16. [`FlashStorage_STM32 library v1.2.0+`](https://github.com/khoih-prog/FlashStorage_STM32) for STM32F/L/H/G/WB/MP1 boards. To install. check [![arduino-library-badge](https://www.ardu-badge.com/badge/FlashStorage_STM32.svg?)](https://www.ardu-badge.com/FlashStorage_STM32)
 17. [`DueFlashStorage library v1.0.0+`](https://github.com/sebnil/DueFlashStorage) for SAM DUE. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/DueFlashStorage.svg?)](https://www.ardu-badge.com/DueFlashStorage)
@@ -368,13 +369,13 @@ Whenever the above-mentioned compiler error issue is fixed with the new Arduino 
 
 #### 5. For Adafruit SAMD boards
  
- ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.7) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.7). 
+ ***To be able to compile, run and automatically detect and display BOARD_NAME on Adafruit SAMD (Itsy-Bitsy M4, etc) boards***, you have to copy the whole [Adafruit SAMD Packages_Patches](Packages_Patches/adafruit/hardware/samd/1.7.9) directory into Adafruit samd directory (~/.arduino15/packages/adafruit/hardware/samd/1.7.9). 
 
-Supposing the Adafruit SAMD core version is 1.7.7. This file must be copied into the directory:
+Supposing the Adafruit SAMD core version is 1.7.9. This file must be copied into the directory:
 
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/platform.txt`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/cores/arduino/Print.h`
-- `~/.arduino15/packages/adafruit/hardware/samd/1.7.7/cores/arduino/Print.cpp`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/platform.txt`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.h`
+- `~/.arduino15/packages/adafruit/hardware/samd/1.7.9/cores/arduino/Print.cpp`
 
 Whenever a new version is installed, remember to copy this file into the new version directory. For example, new version is x.yy.zz
 This file must be copied into the directory:
@@ -476,12 +477,12 @@ With core after v1.5.0, this step is not necessary anymore thanks to the PR [Add
 
 #### 9. For Portenta_H7 boards using Arduino IDE in Linux
 
-  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh). 
+  **To be able to upload firmware to Portenta_H7 using Arduino IDE in Linux (Ubuntu, etc.)**, you have to copy the file [portenta_post_install.sh](Packages_Patches/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh) into mbed_portenta directory (~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh). 
   
   Then run the following command using `sudo`
   
 ```
-$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1
+$ cd ~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2
 $ chmod 755 portenta_post_install.sh
 $ sudo ./portenta_post_install.sh
 ```
@@ -494,9 +495,9 @@ This will create the file `/etc/udev/rules.d/49-portenta_h7.rules` as follows:
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="035b", GROUP="plugdev", MODE="0666"
 ```
 
-Supposing the ArduinoCore-mbed core version is 2.6.1. Now only one file must be copied into the directory:
+Supposing the ArduinoCore-mbed core version is 2.7.2. Now only one file must be copied into the directory:
 
-- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.6.1/portenta_post_install.sh`
+- `~/.arduino15/packages/arduino/hardware/mbed_portenta/2.7.2/portenta_post_install.sh`
 
 Whenever a new version is installed, remember to copy this files into the new version directory. For example, new version is x.yy.zz
 
@@ -778,7 +779,18 @@ Check [retries block the main loop #18](https://github.com/khoih-prog/WiFiManage
 #define WIFI_RECON_INTERVAL                   30000     // 30s
 ```
 
+#### 14. Not using Board_Name on Config_Portal
 
+Default is `true`. Just change to `false` to Not using `Board_Name` on Config_Portal
+
+```
+/////////////////////////////////////////////
+
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    false
+
+/////////////////////////////////////////////
+```
 
 ---
 ---
@@ -1368,6 +1380,11 @@ void loop()
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_BOARD_NAME                    true
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_SAMD.h>
 
 #define HOST_NAME   "SAMD-Master-Controller"
@@ -1543,7 +1560,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1595,7 +1612,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1642,7 +1659,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1719,7 +1736,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1783,7 +1800,7 @@ FF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1839,7 +1856,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1895,7 +1912,7 @@ This is the terminal output when running [**RP2040_WiFiNINA_MQTT**](examples/RP2
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -1947,7 +1964,7 @@ N
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.6.1
+WiFiManager_NINA_Lite v1.6.2
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -2065,6 +2082,8 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 22. Update to be compatible with new `FlashStorage_SAMD`
 23. Use better `FlashStorage_STM32` library for STM32
 24. Add support to generic SAMD21 boards : `__SAMD21E1xA__`, `__SAMD21G1xA__` and `__SAMD21J1xA__`
+25. Optimize code by passing by `reference` instead of `value`
+26. Optional `Board_Name` in Config Portal
 
 ---
 --- 

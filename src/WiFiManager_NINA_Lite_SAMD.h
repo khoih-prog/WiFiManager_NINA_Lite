@@ -8,7 +8,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.6.1
+  Version: 1.6.2
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -32,6 +32,7 @@
   1.5.0   K Hoang      05/01/2022  Fix the blocking issue in loop()
   1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
   1.6.1   K Hoang      26/01/2022  Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
+  1.6.2   K Hoang      18/02/2022  Optional Board_Name in Menu. Optimize code by using passing by reference
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_SAMD_h
@@ -54,13 +55,13 @@
 #endif
 
 #ifndef WIFIMANAGER_NINA_LITE_VERSION
-  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.6.1"
+  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.6.2"
 
   #define WIFIMANAGER_NINA_LITE_VERSION_MAJOR      1
   #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      6
-  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      1
+  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      2
 
-#define WIFIMANAGER_NINA_LITE_VERSION_INT        1006001
+#define WIFIMANAGER_NINA_LITE_VERSION_INT        1006002
 
 #endif
 
@@ -168,8 +169,14 @@ typedef struct
 
 #define NUM_WIFI_CREDENTIALS      2
 
-// Configurable items besides fixed Header
-#define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ) + 1 )
+#if USING_BOARD_NAME
+  // Configurable items besides fixed Header, just add board_name 
+  #define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ) + 1 )
+#else
+  // Configurable items besides fixed Header, just add board_name 
+  #define NUM_CONFIGURABLE_ITEMS    ( ( 2 * NUM_WIFI_CREDENTIALS ))
+#endif
+
 ////////////////
 
 #define HEADER_MAX_LEN            16
@@ -195,12 +202,20 @@ const char WIFININA_HTML_HEAD_START[] /*PROGMEM*/ = "<!DOCTYPE html><html><head>
 
 const char WIFININA_HTML_HEAD_STYLE[] /*PROGMEM*/ = "<style>div,input,select{padding:5px;font-size:1em;}input,select{width:95%;}body{text-align:center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.3rem;margin:0px;}</style>";
 
+#if USING_BOARD_NAME
 const char WIFININA_HTML_HEAD_END[]   /*PROGMEM*/ = "</head><div style='text-align:left;display:inline-block;min-width:260px;'>\
 <fieldset><div><label>*WiFi SSID</label><div>[[input_id]]</div></div>\
 <div><label>*PWD (8+ chars)</label><input value='[[pw]]' id='pw'><div></div></div>\
 <div><label>*WiFi SSID1</label><div>[[input_id1]]</div></div>\
 <div><label>*PWD1 (8+ chars)</label><input value='[[pw1]]' id='pw1'><div></div></div></fieldset>\
 <fieldset><div><label>Board Name</label><input value='[[nm]]' id='nm'><div></div></div></fieldset>";	// DO NOT CHANGE THIS STRING EVER!!!!
+#else
+const char WIFININA_HTML_HEAD_END[]   /*PROGMEM*/ = "</head><div style='text-align:left;display:inline-block;min-width:260px;'>\
+<fieldset><div><label>*WiFi SSID</label><div>[[input_id]]</div></div>\
+<div><label>*PWD (8+ chars)</label><input value='[[pw]]' id='pw'><div></div></div>\
+<div><label>*WiFi SSID1</label><div>[[input_id1]]</div></div>\
+<div><label>*PWD1 (8+ chars)</label><input value='[[pw1]]' id='pw1'><div></div></div></fieldset>";	// DO NOT CHANGE THIS STRING EVER!!!!
+#endif
 
 const char WIFININA_HTML_INPUT_ID[]   /*PROGMEM*/ = "<input value='[[id]]' id='id'>";
 const char WIFININA_HTML_INPUT_ID1[]  /*PROGMEM*/ = "<input value='[[id1]]' id='id1'>";
@@ -209,12 +224,21 @@ const char WIFININA_FLDSET_START[]    /*PROGMEM*/ = "<fieldset>";
 const char WIFININA_FLDSET_END[]      /*PROGMEM*/ = "</fieldset>";
 const char WIFININA_HTML_PARAM[]      /*PROGMEM*/ = "<div><label>{b}</label><input value='[[{v}]]' id='{i}'><div></div></div>";
 const char WIFININA_HTML_BUTTON[]     /*PROGMEM*/ = "<button onclick='sv()'>Save</button></div>";
-const char WIFININA_HTML_SCRIPT[]     /*PROGMEM*/ = "<script id='jsbin-javascript'>\
+
+#if USING_BOARD_NAME
+const char WIFININA_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
 function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+encodeURIComponent(val);\
 request.open('GET',url,false);request.send(null);}\
 function sv(){udVal('id',document.getElementById('id').value);udVal('pw',document.getElementById('pw').value);\
 udVal('id1',document.getElementById('id1').value);udVal('pw1',document.getElementById('pw1').value);\
 udVal('nm',document.getElementById('nm').value);";
+#else
+const char WIFININA_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
+function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+encodeURIComponent(val);\
+request.open('GET',url,false);request.send(null);}\
+function sv(){udVal('id',document.getElementById('id').value);udVal('pw',document.getElementById('pw').value);\
+udVal('id1',document.getElementById('id1').value);udVal('pw1',document.getElementById('pw1').value);";
+#endif
 
 const char WIFININA_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getElementById('{d}').value);";
 const char WIFININA_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
@@ -259,7 +283,7 @@ const char WM_HTTP_CORS_ALLOW_ALL[]  PROGMEM = "*";
 //////////////////////////////////////////////
 
 
-String IPAddressToString(IPAddress _address)
+String IPAddressToString(const IPAddress& _address)
 {
   String str = String(_address[0]);
   str += ".";
@@ -598,7 +622,7 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
 
-    void setConfigPortalIP(IPAddress portalIP = IPAddress(192, 168, 4, 1))
+    void setConfigPortalIP(const IPAddress& portalIP = IPAddress(192, 168, 4, 1))
     {
       portal_apIP = portalIP;
     }
@@ -608,7 +632,7 @@ class WiFiManager_NINA_Lite
     #define MIN_WIFI_CHANNEL      1
     #define MAX_WIFI_CHANNEL      11    // Channel 13 is flaky, because of bad number 13 ;-)
 
-    int setConfigPortalChannel(int channel = 1)
+    int setConfigPortalChannel(const int& channel = 1)
     {
       // If channel < MIN_WIFI_CHANNEL - 1 or channel > MAX_WIFI_CHANNEL => channel = 1
       // If channel == 0 => will use random channel from MIN_WIFI_CHANNEL to MAX_WIFI_CHANNEL
@@ -623,7 +647,7 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
     
-    void setConfigPortal(String ssid = "", String pass = "")
+    void setConfigPortal(const String& ssid = "", const String& pass = "")
     {
       portal_ssid = ssid;
       portal_pass = pass;
@@ -631,14 +655,14 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
 
-    void setSTAStaticIPConfig(IPAddress ip)
+    void setSTAStaticIPConfig(const IPAddress& ip)
     {
       static_IP = ip;
     }
     
     //////////////////////////////////////////////
     
-    String getWiFiSSID(uint8_t index)
+    String getWiFiSSID(const uint8_t& index)
     { 
       if (index >= NUM_WIFI_CREDENTIALS)
         return String("");
@@ -651,7 +675,7 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
 
-    String getWiFiPW(uint8_t index)
+    String getWiFiPW(const uint8_t& index)
     {
       if (index >= NUM_WIFI_CREDENTIALS)
         return String("");
@@ -925,7 +949,7 @@ class WiFiManager_NINA_Lite
       return RFC952_hostname;
     }
     
-    void displayConfigData(WiFiNINA_Configuration configData)
+    void displayConfigData(const WiFiNINA_Configuration& configData)
     {
       WN_LOGERROR1(F("Hdr="), configData.header);
 	  
@@ -982,7 +1006,7 @@ class WiFiManager_NINA_Lite
     
     //////////////////////////////////////////////
     
-    void setForcedCP(bool isPersistent)
+    void setForcedCP(const bool& isPersistent)
     {
       uint32_t readForcedConfigPortalFlag = isPersistent? FORCED_PERS_CONFIG_PORTAL_FLAG_DATA : FORCED_CONFIG_PORTAL_FLAG_DATA;
     
@@ -1032,7 +1056,7 @@ class WiFiManager_NINA_Lite
     
 #if USE_DYNAMIC_PARAMETERS
     
-    bool checkDynamicData(void)
+    bool checkDynamicData()
     {
       // It's too bad that emulate EEPROM.read()/write() can only deal with bytes. 
       // Have to read/write each byte. To rewrite the library
@@ -1717,7 +1741,10 @@ class WiFiManager_NINA_Lite
             result.replace("[[pw]]",     WIFININA_config.WiFi_Creds[0].wifi_pw);
             result.replace("[[id1]]",    WIFININA_config.WiFi_Creds[1].wifi_ssid);
             result.replace("[[pw1]]",    WIFININA_config.WiFi_Creds[1].wifi_pw);
+            
+#if USING_BOARD_NAME            
             result.replace("[[nm]]",     WIFININA_config.board_name);
+#endif            
           }
           else
           {
@@ -1725,7 +1752,10 @@ class WiFiManager_NINA_Lite
             result.replace("[[pw]]",  "");
             result.replace("[[id1]]", "");
             result.replace("[[pw1]]", "");
+            
+#if USING_BOARD_NAME            
             result.replace("[[nm]]",  "");
+#endif            
           }
           
 #if USE_DYNAMIC_PARAMETERS          
@@ -1778,7 +1808,10 @@ class WiFiManager_NINA_Lite
         static bool pw_Updated  = false;
         static bool id1_Updated = false;
         static bool pw1_Updated = false;
+        
+#if USING_BOARD_NAME         
         static bool nm_Updated  = false;
+#endif
           
         if (!id_Updated && (key == String("id")))
         {   
@@ -1824,6 +1857,7 @@ class WiFiManager_NINA_Lite
           else
             strncpy(WIFININA_config.WiFi_Creds[1].wifi_pw, value.c_str(), sizeof(WIFININA_config.WiFi_Creds[1].wifi_pw) - 1);
         }
+#if USING_BOARD_NAME        
         else if (!nm_Updated && (key == String("nm")))
         {
           WN_LOGDEBUG(F("h:repl nm"));
@@ -1834,7 +1868,8 @@ class WiFiManager_NINA_Lite
             strcpy(WIFININA_config.board_name, value.c_str());
           else
             strncpy(WIFININA_config.board_name, value.c_str(), sizeof(WIFININA_config.board_name) - 1);
-        }
+        }    
+#endif
 
         
 #if USE_DYNAMIC_PARAMETERS
@@ -1993,7 +2028,7 @@ class WiFiManager_NINA_Lite
 
     //////////////////////////////////////////
 	
-	  void setMinimumSignalQuality(int quality)
+	  void setMinimumSignalQuality(const int& quality)
 	  {
 	    _minimumQuality = quality;
 	  }
@@ -2001,7 +2036,7 @@ class WiFiManager_NINA_Lite
 	  //////////////////////////////////////////
 
 	  //if this is true, remove duplicate Access Points - default true
-	  void setRemoveDuplicateAPs(bool removeDuplicates)
+	  void setRemoveDuplicateAPs(const bool& removeDuplicates)
 	  {
 	    _removeDuplicateAPs = removeDuplicates;
 	  }
@@ -2121,7 +2156,7 @@ class WiFiManager_NINA_Lite
 
 	  //////////////////////////////////////////
 
-	  int getRSSIasQuality(int RSSI)
+	  int getRSSIasQuality(const int& RSSI)
 	  {
 	    int quality = 0;
 
