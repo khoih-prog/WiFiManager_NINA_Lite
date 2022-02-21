@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.6.3](#release-v163)
   * [Release v1.6.2](#release-v162)
   * [Release v1.6.1](#release-v161)
   * [Major Release v1.6.0](#major-release-v160)
@@ -37,6 +38,11 @@
 ---
 
 ## Changelog
+
+### Release v1.6.3
+
+1. Add optional `CONFIG_MODE_LED` to be `ON` when in Config Portal mode. Check [Knowing when configuration mode is on or off #26](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/26)
+2. Add function `isConfigMode()` to signal system is in Config Portal mode.
 
 ### Release v1.6.2
 

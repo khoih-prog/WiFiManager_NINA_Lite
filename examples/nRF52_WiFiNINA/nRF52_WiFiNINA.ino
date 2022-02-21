@@ -14,6 +14,8 @@
 #include "Credentials.h"
 #include "dynamicParams.h"
 
+WiFiManager_NINA_Lite* WiFiManager_NINA;
+
 void heartBeatPrint(void)
 {
   static int num = 1;
@@ -21,7 +23,12 @@ void heartBeatPrint(void)
   if (WiFi.status() == WL_CONNECTED)
     Serial.print("H");        // H means connected to WiFi
   else
-    Serial.print("F");        // F means not connected to WiFi
+  {
+    if (WiFiManager_NINA->isConfigMode())
+      Serial.print("C");        // C means in Config Mode
+    else
+      Serial.print("F");        // F means not connected to WiFi  
+  }
 
   if (num == 80)
   {
@@ -47,8 +54,6 @@ void check_status()
     checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
   }
 }
-
-WiFiManager_NINA_Lite* WiFiManager_NINA;
 
 #if USING_CUSTOMS_STYLE
 const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\

@@ -1,6 +1,6 @@
 {
   "name": "WiFiManager_NINA_Lite",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "keywords": "wifi, wi-fi, MutiWiFi, WiFiNINA, SAM DUE, SAMD, nRF52, STM32, rpi-pico, rp2040, nano-rp2040-connect, Credentials, config-portal, dynamic-params, FlashStorage-SAMD, FlashStorage-STM32, DueFlashStorage, LittleFS, Double-Reset, FlashStorage, light-weight, EEPROM, AVR Mega",
   "description": "Library to configure MultiWiFi/Credentials at runtime for AVR Mega, Teensy, SAM DUE, SAMD21, SAMD51, STM32F/L/H/G/WB/MP1, nRF52, RP2040-based (Nano RP2040 Connect, RASPBERRY_PI_PICO) boards, etc. using WiFiNINA modules/shields. You can also specify DHCP HostName, static AP and STA IP. Use much less memory compared to full-fledge WiFiManager. Config Portal will be auto-adjusted to match the number of dynamic custom parameters. Optional default Credentials to be autoloaded into Config Portal to use or change instead of manually input. Credentials are saved in LittleFS, EEPROM, FlashStorage_SAMD, FlashStorage_STM32 or DueFlashStorage. DoubleDetectDetector feature permits entering Config Portal as requested",
   "authors":

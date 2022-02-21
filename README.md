@@ -6,7 +6,9 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 
 ---
 ---
@@ -1072,6 +1074,8 @@ Please be noted that the following **reserved names are already used in library*
 #include "Credentials.h"
 #include "dynamicParams.h"
 
+WiFiManager_NINA_Lite* WiFiManager_NINA;
+
 void heartBeatPrint(void)
 {
   static int num = 1;
@@ -1079,7 +1083,12 @@ void heartBeatPrint(void)
   if (WiFi.status() == WL_CONNECTED)
     Serial.print("H");        // H means connected to WiFi
   else
-    Serial.print("F");        // F means not connected to WiFi
+  {
+    if (WiFiManager_NINA->isConfigMode())
+      Serial.print("C");        // C means in Config Mode
+    else
+      Serial.print("F");        // F means not connected to WiFi  
+  }
 
   if (num == 80)
   {
@@ -1105,8 +1114,6 @@ void check_status()
     checkstatus_timeout = millis() + HEARTBEAT_INTERVAL;
   }
 }
-
-WiFiManager_NINA_Lite* WiFiManager_NINA;
 
 #if USING_CUSTOMS_STYLE
 const char NewCustomsStyle[] /*PROGMEM*/ = "<style>div,input{padding:5px;font-size:1em;}input{width:95%;}body{text-align: center;}\
@@ -1385,6 +1392,23 @@ void loop()
 
 /////////////////////////////////////////////
 
+// Optional, to use Board Name in Menu
+#define USING_CONFIG_MODE_LED               true
+
+#if USING_CONFIG_MODE_LED
+  #if defined(LED_BUILTIN)
+    #define CONFIG_MODE_LED     LED_BUILTIN
+  #else
+    // Using default pin 13 for CONFIG_MODE_LED. To be changed as necessary
+    #define CONFIG_MODE_LED     13
+  #endif
+
+  #define LED_ON      HIGH
+  #define LED_OFF     LOW
+#endif
+
+/////////////////////////////////////////////
+
 #include <WiFiManager_NINA_Lite_SAMD.h>
 
 #define HOST_NAME   "SAMD-Master-Controller"
@@ -1560,7 +1584,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1595,7 +1619,7 @@ SetFlag write = 0xd0d01234
 [WN] IP=192.168.4.1,CH=10
 WiFi-beginAP3: return1 = 7
 WiFi-beginAP3: return2 = 7
-F
+C
 Your stored Credentials :
 Blynk Server1 = account.duckdns.org
 Token1 = token1
@@ -1605,14 +1629,14 @@ Port = 8080
 MQTT Server = mqtt.duckdns.org
 Stop doubleResetDetecting
 ClearFlag write = 0xd0d04321
-FFFFFFFFF 
+CCCCCCCCC
 ```
 
 #### 1.2 Received data from Config Portal
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1636,7 +1660,7 @@ Blynk Server2 = blank
 Token2 = blank
 Port = blank
 MQTT Server = blank
-FFFFFFFFF 
+CCCCCCCCC
 [WN] h:sv1=BlynkServer1
 [WN] h:tk1=Token1
 [WN] h:sv2=BlynkServer2
@@ -1659,7 +1683,7 @@ FFFFFFFFF
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1736,7 +1760,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1785,7 +1809,7 @@ WiFi-beginAP3: return1 = 7
 WiFi-beginAP3: return2 = 7
 Stop doubleResetDetecting
 ClearFlag write = 0xd0d04321
-F
+C
 Your stored Credentials :
 Blynk Server1 = new_account.duckdns.org
 Token1 = new_token1
@@ -1793,14 +1817,14 @@ Blynk Server2 = new_account.ddns.net
 Token2 = new_token2
 Port = 8080
 MQTT Server = new_mqtt.duckdns.org
-FF
+CCCC
 ```
 
 #### 1.6 DRD Not Detected
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1856,7 +1880,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1891,7 +1915,7 @@ ClearFlag write = 0xd0d04321
 [WN] IP=192.168.4.1,CH=10
 WiFi-beginAP3: return1 = 7
 WiFi-beginAP3: return2 = 7
-F
+C
 Your stored Credentials :
 Blynk Server1 = new_account.duckdns.org
 Token1 = new_token1
@@ -1899,7 +1923,7 @@ Blynk Server2 = new_account.ddns.net
 Token2 = new_token2
 Port = 8080
 MQTT Server = new_mqtt.duckdns.org
-
+CCCCCC
 ```
 
 ---
@@ -1912,7 +1936,7 @@ This is the terminal output when running [**RP2040_WiFiNINA_MQTT**](examples/RP2
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -1943,7 +1967,7 @@ SetFlag write = 0xd0d01234
 [WN] OK
 [WN] SSID=WIFININA_51F485,PW=MyWIFININA_51F485
 [WN] IP=192.168.4.1,CH=9
-N
+C
 Your stored Credentials :
 AIO_SERVER = io.adafruit.com
 AIO_SERVERPORT = 1883
@@ -1956,7 +1980,7 @@ Saving to DRD file : 0xd0d04321
 Saving DRD file OK
 LittleFS Flag read = 0xd0d04321
 ClearFlag write = 0xd0d04321
-N
+CCCCCC
 ```
 
 #### 2.2 Config Data Saved => Connect to AIO
@@ -1964,7 +1988,7 @@ N
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.6.2
+WiFiManager_NINA_Lite v1.6.3
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -2084,6 +2108,9 @@ Sometimes, the library will only work if you update the `WiFiNINA module/shield`
 24. Add support to generic SAMD21 boards : `__SAMD21E1xA__`, `__SAMD21G1xA__` and `__SAMD21J1xA__`
 25. Optimize code by passing by `reference` instead of `value`
 26. Optional `Board_Name` in Config Portal
+27. Add optional `CONFIG_MODE_LED` to be `ON` when in Config Portal mode.
+28. Add function `isConfigMode()` to signal system is in Config Portal mode
+
 
 ---
 --- 
@@ -2108,6 +2135,7 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
 6. Again thanks to [Michael H. "bizprof"](https://github.com/bizprof) to be `collaborator, co-author/maintainer` of this library. With the impressive new introducing feature : 
   - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.3.0
 7. Thanks to [tomtobback](https://github.com/tomtobback) to report issue [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18) leading to version v1.5.0 and v1.6.0 to fix the blocking issue in loop() with `WIFI_RECON_INTERVAL`.
+8. Thanks to [nicogou](https://github.com/nicogou) to post enhancement request [Knowing when configuration mode is on or off #26](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/26) leading to version v1.6.3 to add optional `CONFIG_MODE_LED` and function `isConfigMode()`
 
 
 
@@ -2119,6 +2147,7 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
     <td align="center"><a href="https://github.com/piecol"><img src="https://github.com/piecol.png" width="100px;" alt="piecol"/><br /><sub><b>Pierluigi Colangeli</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️⭐️ Michael H. "bizprof"</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/tomtobback"><img src="https://github.com/tomtobback.png" width="100px;" alt="tomtobback"/><br /><sub><b>tomtobback</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/nicogou"><img src="https://github.com/nicogou.png" width="100px;" alt="nicogou"/><br /><sub><b>nicogou</b></sub></a><br /></td>
   </tr> 
 </table>
 
