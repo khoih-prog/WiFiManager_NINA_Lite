@@ -2134,7 +2134,8 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
 6. Again thanks to [Michael H. "bizprof"](https://github.com/bizprof) to be `collaborator, co-author/maintainer` of this library. With the impressive new introducing feature : 
   - `Enable scan of WiFi networks for selection in Configuration Portal`. Check [PR for v1.3.0 - Enable scan of WiFi networks #10](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/10) leading to v1.3.0
 7. Thanks to [tomtobback](https://github.com/tomtobback) to report issue [retries block the main loop #18](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/18) leading to version v1.5.0 and v1.6.0 to fix the blocking issue in loop() with `WIFI_RECON_INTERVAL`.
-8. Thanks to [nicogou](https://github.com/nicogou) to post enhancement request [Knowing when configuration mode is on or off #26](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/26) leading to version v1.6.3 to add optional `CONFIG_MODE_LED` and function `isConfigMode()`
+8. Thanks to [magnusnordlander](https://github.com/magnusnordlander) to post the merged PR [Fixed case sensitive dependency #21](https://github.com/khoih-prog/WiFiManager_NINA_Lite/pull/21)
+9. Thanks to [nicogou](https://github.com/nicogou) to post enhancement request [Knowing when configuration mode is on or off #26](https://github.com/khoih-prog/WiFiManager_NINA_Lite/issues/26) leading to version v1.6.3 to add optional `CONFIG_MODE_LED` and function `isConfigMode()`
 
 
 
@@ -2148,6 +2149,7 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
     <td align="center"><a href="https://github.com/tomtobback"><img src="https://github.com/tomtobback.png" width="100px;" alt="tomtobback"/><br /><sub><b>tomtobback</b></sub></a><br /></td>
   </tr>
   <tr>
+  <td align="center"><a href="https://github.com/magnusnordlander"><img src="https://github.com/magnusnordlander.png" width="100px;" alt="magnusnordlander"/><br /><sub><b>Magnus Nordlander</b></sub></a><br /></td>
   <td align="center"><a href="https://github.com/nicogou"><img src="https://github.com/nicogou.png" width="100px;" alt="nicogou"/><br /><sub><b>nicogou</b></sub></a><br /></td>
   </tr>
 </table>
