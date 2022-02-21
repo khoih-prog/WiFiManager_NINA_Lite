@@ -6,9 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/WiFiManager_NINA_Lite.svg)](http://github.com/khoih-prog/WiFiManager_NINA_Lite/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
-
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 ---
 ---
@@ -2147,8 +2146,10 @@ Submit issues to: [WiFiManager_NINA_Lite issues](https://github.com/khoih-prog/W
     <td align="center"><a href="https://github.com/piecol"><img src="https://github.com/piecol.png" width="100px;" alt="piecol"/><br /><sub><b>Pierluigi Colangeli</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/bizprof"><img src="https://github.com/bizprof.png" width="100px;" alt="bizprof"/><br /><sub><b>⭐️⭐️ Michael H. "bizprof"</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/tomtobback"><img src="https://github.com/tomtobback.png" width="100px;" alt="tomtobback"/><br /><sub><b>tomtobback</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/nicogou"><img src="https://github.com/nicogou.png" width="100px;" alt="nicogou"/><br /><sub><b>nicogou</b></sub></a><br /></td>
-  </tr> 
+  </tr>
+  <tr>
+  <td align="center"><a href="https://github.com/nicogou"><img src="https://github.com/nicogou.png" width="100px;" alt="nicogou"/><br /><sub><b>nicogou</b></sub></a><br /></td>
+  </tr>
 </table>
 
 ---
