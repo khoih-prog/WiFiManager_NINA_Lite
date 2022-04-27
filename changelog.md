@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.7.0](#release-v170)
   * [Release v1.6.3](#release-v163)
   * [Release v1.6.2](#release-v162)
   * [Release v1.6.1](#release-v161)
@@ -38,6 +39,11 @@
 ---
 
 ## Changelog
+
+### Release v1.7.0
+
+1. Use [WiFiMulti_Generic](https://github.com/khoih-prog/WiFiMulti_Generic) library to connect to the best of **multi-WiFi APs**, with **auto-checking / auto-reconnecting** features when WiFi connection is lost.
+2. Update `Packages' Patches`
 
 ### Release v1.6.3
 

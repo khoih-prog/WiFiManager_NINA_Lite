@@ -8,7 +8,8 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
-  Version: 1.6.3
+  
+  Version: 1.7.0
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -17,7 +18,8 @@
   1.6.0   K Hoang      05/01/2022  Configurable WIFI_RECON_INTERVAL. Add support to RP2040 using arduino-pico core
   1.6.1   K Hoang      26/01/2022  Update to be compatible with new FlashStorage libraries. Add support to more SAMD/STM32 boards
   1.6.2   K Hoang      18/02/2022  Optional Board_Name in Menu. Optimize code by using passing by reference
-  1.6.3   K Hoang      20/02/2022  Add optional CONFIG_MODE_LED. Add function to
+  1.6.3   K Hoang      20/02/2022  Add optional CONFIG_MODE_LED. Add function to signal system is in Config Portal mode.
+  1.7.0   K Hoang      27/04/2022  Use WiFiMulti_Generic library for auto-checking / auto-reconnecting MultiWiFi
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_RP2040_h
@@ -34,18 +36,20 @@
 #endif
 
 #ifndef WIFIMANAGER_NINA_LITE_VERSION
-  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.6.3"
+  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.7.0"
 
   #define WIFIMANAGER_NINA_LITE_VERSION_MAJOR      1
-  #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      6
-  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      3
+  #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      7
+  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      0
 
-#define WIFIMANAGER_NINA_LITE_VERSION_INT          1006003
+#define WIFIMANAGER_NINA_LITE_VERSION_INT          1007000
 
 #endif
 
+#include <WiFiMulti_Generic.h>
 #include <WiFiWebServer.h>
 
+WiFiMulti_Generic wifiMulti;
 
 //////////////////////////////////////////
 
@@ -398,6 +402,9 @@ class WiFiManager_NINA_Lite
       if (hadConfigData && noConfigPortal && (!isForcedConfigPortal) )
       {
         hadConfigData = true;
+        
+        wifiMulti.addAP(WIFININA_config.WiFi_Creds[0].wifi_ssid, WIFININA_config.WiFi_Creds[0].wifi_pw);
+  			wifiMulti.addAP(WIFININA_config.WiFi_Creds[1].wifi_ssid, WIFININA_config.WiFi_Creds[1].wifi_pw);
 
         if (connectMultiWiFi(RETRY_TIMES_CONNECT_WIFI))
         {
@@ -1490,6 +1497,9 @@ class WiFiManager_NINA_Lite
 #if USE_DYNAMIC_PARAMETERS      
       saveDynamicData();
 #endif
+
+      wifiMulti.addAP(WIFININA_config.WiFi_Creds[0].wifi_ssid, WIFININA_config.WiFi_Creds[0].wifi_pw);
+  	  wifiMulti.addAP(WIFININA_config.WiFi_Creds[1].wifi_ssid, WIFININA_config.WiFi_Creds[1].wifi_pw);
     }
 
 //////////////////////////////////////////////
@@ -2187,159 +2197,57 @@ class WiFiManager_NINA_Lite
     }
     
     //////////////////////////////////////////////
-
-// Max times to try WiFi per loop() iteration. To avoid blocking issue in loop()
-// Default 1 and minimum 1.
-#if !defined(MAX_NUM_WIFI_RECON_TRIES_PER_LOOP)      
-  #define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     1
-#else
-  #if (MAX_NUM_WIFI_RECON_TRIES_PER_LOOP < 1)  
-    #define MAX_NUM_WIFI_RECON_TRIES_PER_LOOP     1
-  #endif
-#endif
-
-    // New connection logic from v1.2.0
+    
     bool connectMultiWiFi(int retry_time)
     {
-      int sleep_time  = 250;
-      int index       = 0;
-      int new_index   = 0;
-      uint8_t status  = WL_IDLE_STATUS;
-                       
-      static int lastConnectedIndex = 255;
+			// For general board, this better be 1000 to enable connect the 1st time
+			#define WIFI_MULTI_1ST_CONNECT_WAITING_MS             1000L
 
-      WN_LOGDEBUG(F("ConMultiWifi"));
-      
-      if (static_IP != IPAddress(0, 0, 0, 0))
-      {
-        WN_LOGDEBUG(F("UseStatIP"));
-        WiFi.config(static_IP);
-      }
-      
-      if (lastConnectedIndex != 255)
-      {
-        //  Successive connection, index = ??
-        // Checking if new_index is OK
-        new_index = (lastConnectedIndex + 1) % NUM_WIFI_CREDENTIALS;
-        
-        if ( strlen(WIFININA_config.WiFi_Creds[new_index].wifi_pw) >= PASSWORD_MIN_LEN )
-        {    
-          index = new_index;
-          WN_LOGDEBUG3(F("Using index="), index, F(", lastConnectedIndex="), lastConnectedIndex);
-        }
-        else
-        {
-          WN_LOGERROR3(F("Ignore invalid WiFi PW : index="), new_index, F(", PW="), WIFININA_config.WiFi_Creds[new_index].wifi_pw);
-          
-          // Using the previous valid index
-          index = lastConnectedIndex;
-        }
-      }
-      else
-      {
-        //  First connection ever, index = 0
-        if ( strlen(WIFININA_config.WiFi_Creds[0].wifi_pw) >= PASSWORD_MIN_LEN )
-        {    
-          WN_LOGDEBUG(F("First connection, Using index=0"));
-        }
-        else
-        {
-          WN_LOGERROR3(F("Ignore invalid WiFi PW : index=0, SSID="), WIFININA_config.WiFi_Creds[0].wifi_ssid,
-                       F(", PWD="), WIFININA_config.WiFi_Creds[0].wifi_pw);
-          
-          // Using the next valid index
-          index = 1;
-        }
-      } 
-         
-      WN_LOGERROR3(F("con2WF:SSID="), WIFININA_config.WiFi_Creds[index].wifi_ssid,
-                   F(",PW="), WIFININA_config.WiFi_Creds[index].wifi_pw);
-      
-      uint8_t numIndexTried = 0;
-      
-      uint8_t numWiFiReconTries = 0;
+			#define WIFI_MULTI_CONNECT_WAITING_MS                   500L
 
-#if 0      
-      static uint32_t lastMillis = 0;
-      
-      //if (delayBetweenReconnect)
-      {
-        if ( (millis() - lastMillis) > WIFI_RECON_INTERVAL )
-        {
-          lastMillis = millis();
-        }
-        else
-        {
-          // Don't recon WiFi
-          numWiFiReconTries = MAX_NUM_WIFI_RECON_TRIES_PER_LOOP;
-        }
-      }
-#endif
-      
-      while ( !wifi_connected && (numIndexTried++ < NUM_WIFI_CREDENTIALS) && (numWiFiReconTries++ < MAX_NUM_WIFI_RECON_TRIES_PER_LOOP) )
-      {         
-        while ( 0 < retry_time )
-        {      
-          WN_LOGDEBUG1(F("Remaining retry_time="), retry_time);
-          
-          status = WiFi.begin(WIFININA_config.WiFi_Creds[index].wifi_ssid, WIFININA_config.WiFi_Creds[index].wifi_pw); 
-              
-          // Need restart WiFi at beginning of each cycle 
-          if (status == WL_CONNECTED)
-          {
-            wifi_connected = true;          
-            lastConnectedIndex = index;                                     
-            WN_LOGDEBUG1(F("WOK, lastConnectedIndex="), lastConnectedIndex);
-            
-            break;
-          }
-          else
-          {
-            delay(sleep_time);
-            retry_time--;
-          }         
-        }
-        
-        if (status == WL_CONNECTED)
-        {         
-          break;
-        }
-        else
-        {        
-          if (retry_time <= 0)
-          {      
-            WN_LOGERROR3(F("Failed using index="), index, F(", retry_time="), retry_time);
-            retry_time = RETRY_TIMES_CONNECT_WIFI;  
-          }
-          
-          new_index = (index + 1) % NUM_WIFI_CREDENTIALS;
-          
-          // only use new index if valid (len >= PASSWORD_MIN_LEN = 8)
-          if ( strlen(WIFININA_config.WiFi_Creds[new_index].wifi_pw) >= PASSWORD_MIN_LEN )
-          {
-            index = new_index;
-          }
-          
-          //WiFi.end();
-        }
-      }
+			WN_LOGDEBUG("No WiFi. Trying to scan and reconnect");
 
-      if (wifi_connected)
-      {
-        WN_LOGERROR(F("con2WF:OK"));
-        
-        WN_LOGERROR1(F("IP="), WiFi.localIP() );
-        
-        displayWiFiData();
-      }
-      else
-      {
-        WN_LOGERROR(F("con2WF:failed"));  
-        // Can't connect, so try another index next time. Faking this index is OK and lost
-        lastConnectedIndex = index;  
-      }
+			WiFi.disconnect();
 
-      return wifi_connected;  
+			int i = 0;
+
+			uint8_t status = wifiMulti.run();
+
+			delay(WIFI_MULTI_1ST_CONNECT_WAITING_MS);
+
+			while ( ( i++ < (retry_time * 5) ) && ( status != WL_CONNECTED ) )
+			{
+				status = WiFi.status();
+
+				if ( status == WL_CONNECTED )
+				  break;
+				else
+				  delay(WIFI_MULTI_CONNECT_WAITING_MS);
+			}
+
+			if ( status == WL_CONNECTED )
+			{
+				WN_LOGERROR1(F("WiFi connected after time: "), i);
+				WN_LOGERROR3(F("SSID:"), WiFi.SSID(), F(",RSSI="), WiFi.RSSI());
+
+		#if (defined(ESP32) || defined(ESP8266))
+				WN_LOGERROR3(F("Channel:"), WiFi.channel(), F(",IP address:"), WiFi.localIP() );
+		#else
+				WN_LOGERROR1(F("IP address:"), WiFi.localIP() );
+		#endif
+			}
+			else
+			{
+				WN_LOGERROR(F("WiFi not connected"));
+
+				if (wifiMulti.run() != WL_CONNECTED)
+				{
+				  Serial.println("WiFi not connected!");
+				  delay(1000);
+				}
+			}
+
+			return (status == WL_CONNECTED);
     }
     
     //////////////////////////////////////////////
