@@ -17,12 +17,13 @@
 #define DEBUG_WIFI_WEBSERVER_PORT       Serial
 #define WIFININA_DEBUG_OUTPUT           Serial
 
-#define _WIFININA_LOGLEVEL_             2
+#define _WIFININA_LOGLEVEL_             1
+#define _WIFIMULTI_LOGLEVEL_            1
 
 #define DRD_GENERIC_DEBUG               true
 
 #if ( defined(ESP8266) || defined(ESP32) || defined(ARDUINO_AVR_MEGA) || defined(ARDUINO_AVR_MEGA2560) || !defined(CORE_TEENSY) )
-# error This code is intended to run on Teensy platform! Please check your Tools->Board setting.
+  # error This code is intended to run on Teensy platform! Please check your Tools->Board setting.
 #endif
 
 #ifdef CORE_TEENSY

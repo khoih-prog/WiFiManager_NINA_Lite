@@ -300,13 +300,14 @@ void setup()
 {
   // Debug console
   Serial.begin(115200);
-  while (!Serial);
+  while (!Serial && millis() < 5000);
 
   pinMode(LED_PIN, OUTPUT);
 
   delay(200);
 
   Serial.print(F("\nStarting SAM_DUE_WiFiNINA_MQTT on ")); Serial.println(BOARD_TYPE);
+  Serial.println(WIFIMULTI_GENERIC_VERSION);
   Serial.println(WIFIMANAGER_NINA_LITE_VERSION);
 
   WiFiManager_NINA = new WiFiManager_NINA_Lite();

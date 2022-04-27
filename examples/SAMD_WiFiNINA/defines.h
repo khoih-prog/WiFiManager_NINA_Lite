@@ -18,6 +18,7 @@
 #define WIFININA_DEBUG_OUTPUT           Serial
 
 #define _WIFININA_LOGLEVEL_             1
+#define _WIFIMULTI_LOGLEVEL_            1
 
 #define DRD_GENERIC_DEBUG               true
 
