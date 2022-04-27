@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Release v1.7.1](#release-v171)
   * [Release v1.7.0](#release-v170)
   * [Release v1.6.3](#release-v163)
   * [Release v1.6.2](#release-v162)
@@ -39,6 +40,11 @@
 ---
 
 ## Changelog
+
+### Release v1.7.1
+
+1. Fix bug for RP2040 using `arduino-pico` core
+
 
 ### Release v1.7.0
 

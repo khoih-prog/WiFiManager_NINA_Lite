@@ -1158,7 +1158,7 @@ This is the terminal output when running [**SAMD_WiFiNINA**](examples/SAMD_WiFiN
 
 ```
 Starting SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xffffffff
 No doubleResetDetected
@@ -1210,7 +1210,7 @@ CCCCCCCCC
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-WIFININA51F485
 [WN] CrCCSum=44880,CrRCSum=-1
 [WN] CCSum=53040,RCSum=-1
@@ -1257,7 +1257,7 @@ CCCCCCCCC
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1323,7 +1323,7 @@ HHHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1387,7 +1387,7 @@ CCCC
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d04321
 No doubleResetDetected
@@ -1437,7 +1437,7 @@ HHHHHHHHH HHHHHHHHHH
 
 ```
 Start SAMD_WiFiNINA on SAMD NANO_33_IOT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=SAMD-Master-Controller
 Flag read = 0xd0d01234
 doubleResetDetected
@@ -1493,7 +1493,7 @@ This is the terminal output when running [**RP2040_WiFiNINA_MQTT**](examples/RP2
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
@@ -1545,7 +1545,7 @@ CCCCCC
 
 ```
 Starting RP2040_WiFiNINA_MQTT on MBED NANO_RP2040_CONNECT
-WiFiManager_NINA_Lite v1.7.0
+WiFiManager_NINA_Lite v1.7.1
 [WN] Hostname=RP2040-Master-Controller
 LittleFS size (KB) = 64
 LittleFS Mount OK
