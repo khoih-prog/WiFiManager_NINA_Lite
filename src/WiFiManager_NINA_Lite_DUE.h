@@ -9,7 +9,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
   
-  Version: 1.7.0
+  Version: 1.7.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -20,6 +20,7 @@
   1.6.2   K Hoang      18/02/2022  Optional Board_Name in Menu. Optimize code by using passing by reference
   1.6.3   K Hoang      20/02/2022  Add optional CONFIG_MODE_LED. Add function to signal system is in Config Portal mode.
   1.7.0   K Hoang      27/04/2022  Use WiFiMulti_Generic library for auto-checking / auto-reconnecting MultiWiFi
+  1.7.1   K Hoang      27/04/2022  Fix bug for RP2040 using arduino-pico core
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_DUE_h
@@ -39,13 +40,13 @@
 #endif
 
 #ifndef WIFIMANAGER_NINA_LITE_VERSION
-  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.7.0"
+  #define WIFIMANAGER_NINA_LITE_VERSION            "WiFiManager_NINA_Lite v1.7.1"
 
   #define WIFIMANAGER_NINA_LITE_VERSION_MAJOR      1
   #define WIFIMANAGER_NINA_LITE_VERSION_MINOR      7
-  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      0
+  #define WIFIMANAGER_NINA_LITE_VERSION_PATCH      1
 
-#define WIFIMANAGER_NINA_LITE_VERSION_INT          1007000
+#define WIFIMANAGER_NINA_LITE_VERSION_INT          1007001
 
 #endif
 
@@ -407,8 +408,7 @@ class WiFiManager_NINA_Lite
       {
         hadConfigData = true;
         
-        wifiMulti.addAP(WIFININA_config.WiFi_Creds[0].wifi_ssid, WIFININA_config.WiFi_Creds[0].wifi_pw);
-  			wifiMulti.addAP(WIFININA_config.WiFi_Creds[1].wifi_ssid, WIFININA_config.WiFi_Creds[1].wifi_pw);
+        wifiMulti_addAP();
 
         if (connectMultiWiFi(RETRY_TIMES_CONNECT_WIFI))
         {
@@ -962,6 +962,18 @@ class WiFiManager_NINA_Lite
       WN_LOGERROR3(F("SSID="), WiFi.SSID(), F(",RSSI="), WiFi.RSSI());
       WN_LOGERROR1(F("IP="), localIP() );
     }
+    
+    //////////////////////////////////////////////
+
+    void wifiMulti_addAP()    
+    {
+      for (uint8_t index = 0; index < NUM_WIFI_CREDENTIALS; index++)
+      {
+        wifiMulti.addAP(WIFININA_config.WiFi_Creds[index].wifi_ssid, WIFININA_config.WiFi_Creds[index].wifi_pw);
+  	  }
+  	}  
+    
+    //////////////////////////////////////////////
 
 #define WIFININA_BOARD_TYPE       "WIFININA"
 #define WM_NO_CONFIG              "blank"
@@ -1326,8 +1338,7 @@ class WiFiManager_NINA_Lite
       dueFlashStorage_putDynamicData();
 #endif      
 
-      wifiMulti.addAP(WIFININA_config.WiFi_Creds[0].wifi_ssid, WIFININA_config.WiFi_Creds[0].wifi_pw);
-  	  wifiMulti.addAP(WIFININA_config.WiFi_Creds[1].wifi_ssid, WIFININA_config.WiFi_Creds[1].wifi_pw);
+      wifiMulti_addAP();
     }
 
     //////////////////////////////////////////////

@@ -9,7 +9,7 @@
   Built by Khoi Hoang https://github.com/khoih-prog/WiFiManager_NINA_Lite
   Licensed under MIT license
   
-  Version: 1.7.0
+  Version: 1.7.1
 
   Version Modified By   Date        Comments
   ------- -----------  ----------   -----------
@@ -20,6 +20,7 @@
   1.6.2   K Hoang      18/02/2022  Optional Board_Name in Menu. Optimize code by using passing by reference
   1.6.3   K Hoang      20/02/2022  Add optional CONFIG_MODE_LED. Add function to signal system is in Config Portal mode.
   1.7.0   K Hoang      27/04/2022  Use WiFiMulti_Generic library for auto-checking / auto-reconnecting MultiWiFi
+  1.7.1   K Hoang      27/04/2022  Fix bug for RP2040 using arduino-pico core
   **********************************************************************************************************************************/
 
 #ifndef WiFiManager_NINA_Lite_Debug_h
